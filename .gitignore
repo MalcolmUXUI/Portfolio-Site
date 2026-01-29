@@ -1,10 +1,6 @@
 .DS_Store
-index.disk-copy.html
-index.vscode-copy.html
 .vscode/
 *.code-workspace
-*.pdf
 backups/
-*.png
-*.jpg
-*.jpeg
+# local storage / not part of website
+ZZZ-AUX/
