@@ -1,0 +1,2357 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!--
+    We Three Media – single-file landing page
+    Notes:
+    - No build tools, no frameworks.
+    - Focus: clarity, consistency, accessibility, and easy future edits.
+  -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>We Three Media | UX Strategy, Design Systems, Brand</title>
+  <meta name="description" content="Clear customer paths. Consistent interfaces. Brands people trust." />
+
+  <style>
+    @layer tokens, base, components, utilities;
+
+    /* ============================================================
+       1) Tokens (palette + semantics)
+       ============================================================ */
+    @layer tokens {
+      :root{
+        /* Layout */
+        --max: 1100px;
+        --radius: 18px;
+        --shadow: 0 14px 40px rgba(17,20,24,.10);
+        --space-1: 8px;
+        --space-2: 12px;
+        --space-3: 16px;
+        --space-4: 24px;
+        --space-5: 32px;
+        --space-6: 40px;
+        --space-7: 56px;
+        --space-8: 72px;
+
+        /* Surfaces */
+        --surface-base: #F4EFE7;
+        --surface-card: #FFFCF6;
+
+        /* Text */
+        --text: #1F1A14;
+        --text-muted: #5D4F43;
+
+        /* Brand roles */
+        --primary: #0F6D66;
+        --accent-warm: #C4622A;
+        --accent-rare: #9B7AF7;
+
+        /* Derived utility */
+        --link: var(--primary);
+        --focus-ring: var(--primary);
+        --border: color-mix(in srgb, var(--text) 12%, var(--surface-base));
+        --divider: color-mix(in srgb, var(--text) 8%, var(--surface-base));
+
+        /* Gradients */
+        --grad-wash: linear-gradient(135deg, #F4EFE7 0%, #E6F2EF 100%);
+        --grad-underline: linear-gradient(90deg, #0F6D66 0%, #9B7AF7 100%);
+        --grad-hero: linear-gradient(90deg, #0F6D66 0%, #37B1A8 55%, #C4622A 100%);
+
+        /* Highlighters (light mode) */
+        --hl-amber: rgba(245, 158, 11, 0.85);
+        --hl-lime: rgba(181, 196, 68, 0.75);
+        --hl-teal: rgba(15, 118, 110, 0.65);
+        --hl-blue: rgba(37, 99, 235, 0.75);
+        --hl-cyan: rgba(96, 165, 250, 0.55);
+        --hl-lavender: rgba(155, 122, 247, 0.50);
+        --hl-magenta: rgba(216, 46, 122, 0.55);
+
+        /* Derived gradients + washes */
+        --surface-top: color-mix(in srgb, var(--surface-base) 70%, #fff);
+        --surface-bottom: var(--surface-base);
+        --card-top: color-mix(in srgb, var(--surface-card) 96%, #fff);
+        --card-bottom: color-mix(in srgb, var(--surface-card) 88%, #fff);
+        --wash1: color-mix(in srgb, var(--accent-warm) 24%, transparent);
+        --wash2: color-mix(in srgb, var(--primary) 20%, transparent);
+        --wash3: color-mix(in srgb, var(--accent-rare) 18%, transparent);
+      }
+
+      [data-theme="dark"] {
+        --surface-base: #07122D;
+        --surface-card: #0C1B3A;
+        --text: #F7F2EA;
+        --text-muted: #C9B9A8;
+        --primary: #37B1A8;
+        --accent-warm: #F2A36C;
+        --accent-rare: #BCA8FF;
+        --link: var(--primary);
+        --focus-ring: var(--primary);
+        --border: color-mix(in srgb, var(--text) 16%, var(--surface-base));
+        --divider: color-mix(in srgb, var(--text) 10%, var(--surface-base));
+
+        /* Bioluminescent glows (dark mode) */
+        --glow-teal: rgba(15, 109, 102, 0.78);
+        --glow-amber: rgba(245, 158, 11, 0.55);
+        --glow-coral: rgba(196, 98, 42, 0.55);
+        --glow-lilac: rgba(155, 122, 247, 0.62);
+        --glow-magenta: rgba(216, 46, 122, 0.62);
+
+        --surface-top: color-mix(in srgb, var(--surface-base) 70%, #000);
+        --surface-bottom: var(--surface-base);
+        --card-top: color-mix(in srgb, var(--surface-card) 92%, #000);
+        --card-bottom: color-mix(in srgb, var(--surface-card) 80%, #000);
+        --wash1: color-mix(in srgb, var(--accent-warm) 22%, transparent);
+        --wash2: color-mix(in srgb, var(--primary) 18%, transparent);
+        --wash3: color-mix(in srgb, var(--accent-rare) 16%, transparent);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+          --surface-base: #07122D;
+          --surface-card: #0C1B3A;
+          --text: #F7F2EA;
+          --text-muted: #C9B9A8;
+          --primary: #37B1A8;
+          --accent-warm: #F2A36C;
+          --accent-rare: #BCA8FF;
+        }
+      }
+    }
+
+    /* ============================================================
+       2) Base / Resets
+       ============================================================ */
+    @layer base {
+      *{ box-sizing:border-box; }
+
+      html{ scroll-behavior:smooth; }
+
+      body{
+        margin:0;
+        font: 16px/1.65 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text);
+
+        /* Warm sand + color washes */
+        background:
+          radial-gradient(1100px 640px at 18% 0%, var(--wash1), transparent 60%),
+          radial-gradient(1200px 720px at 88% 10%, var(--wash2), transparent 58%),
+          radial-gradient(950px  640px at 50% 100%, var(--wash3), transparent 55%),
+          linear-gradient(180deg, var(--surface-top), var(--surface-bottom));
+      }
+
+      html{ background: var(--surface-base); color: var(--text); }
+
+      /* Global small body copy style */
+      .fine{
+        font-size: 14px;
+        line-height: 1.65;
+        color: var(--text-muted);
+      }
+
+      a{
+        color: var(--link);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 2px;
+      }
+
+      :focus-visible{
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 2px;
+      }
+
+      .wrap{ max-width:var(--max); margin:0 auto; padding:var(--space-4); }
+
+      /* Background texture + subtle animated color drift */
+      body::before{
+        content:"";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        opacity: .14;
+        mix-blend-mode: multiply;
+
+        /* Micro-grain using repeating lines (no external assets) */
+        background:
+          repeating-linear-gradient(0deg,
+            rgba(17,20,24,.030) 0px,
+            rgba(17,20,24,.030) 1px,
+            transparent 1px,
+            transparent 3px),
+          repeating-linear-gradient(90deg,
+            rgba(17,20,24,.018) 0px,
+            rgba(17,20,24,.018) 1px,
+            transparent 1px,
+            transparent 4px);
+      }
+
+      body::after{
+        content:"";
+        position: fixed;
+        inset: -10%;
+        pointer-events:none;
+        z-index: 0;
+        opacity: .28;
+        mix-blend-mode: screen;
+        filter: blur(70px) saturate(125%);
+        background:
+          radial-gradient(900px 600px at 20% 15%, color-mix(in srgb, var(--accent-warm) 35%, transparent), transparent 62%),
+          radial-gradient(1000px 700px at 80% 20%, color-mix(in srgb, var(--primary) 30%, transparent), transparent 64%),
+          radial-gradient(900px 700px at 55% 85%, color-mix(in srgb, var(--accent-rare) 26%, transparent), transparent 62%);
+        animation: lavaDrift 22s ease-in-out infinite alternate;
+        transform: translate3d(0,0,0);
+      }
+
+      @keyframes lavaDrift{
+        0%{ transform: translate3d(-1.5%, -1%, 0) scale(1); }
+        50%{ transform: translate3d(1%, 0.5%, 0) scale(1.02); }
+        100%{ transform: translate3d(2%, 1.5%, 0) scale(1.04); }
+      }
+
+      .nav, main, footer{ position:relative; z-index:1; }
+    }
+
+    /* ============================================================
+       3) Components
+       ============================================================ */
+    @layer components {
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter:saturate(180%) blur(10px);
+      background: color-mix(in srgb, var(--surface-card) 82%, transparent);
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .nav-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+      text-decoration: none;
+    }
+
+    .brand .brand-meta{
+      font-weight:500;
+      color: var(--text-muted);
+      letter-spacing: 0;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap:8px;
+    }
+
+    .brand .brand-meta .brand-sep{
+      opacity:.5;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background: linear-gradient(135deg,
+        var(--primary),
+        var(--accent-warm));
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--primary) 18%, transparent);
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .nav-links a{
+      padding:8px 10px;
+      border-radius:12px;
+      color:var(--text-muted);
+      transition: background .2s ease, color .2s ease;
+      position:relative; /* needed for underline effect */
+      text-decoration: none;
+    }
+
+    .nav-links a:hover{
+      background: color-mix(in srgb, var(--text) 6%, transparent);
+      color:var(--text);
+    }
+
+    /* Underline effect (NAV ONLY) */
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:6px;
+      height:2px;
+      border-radius:999px;
+      background: color-mix(in srgb, var(--primary) 45%, transparent);
+      transform: scaleX(0);
+      transform-origin:left;
+      transition: transform .18s ease;
+    }
+    .nav-links a:hover::after{ transform: scaleX(1); }
+
+    /* ============================================================
+       5) Buttons
+       ============================================================ */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0.65rem 0.9rem;
+      border-radius:14px;
+      border:1px solid color-mix(in srgb, var(--text) 12%, transparent);
+      background:
+        linear-gradient(180deg,
+          color-mix(in srgb, #ffffff 65%, transparent),
+          color-mix(in srgb, var(--surface-card) 85%, transparent)),
+        color-mix(in srgb, var(--primary) 16%, transparent);
+      color: var(--text);
+      font-weight:600;
+      text-decoration: none;
+      transition: transform .15s ease,
+        background .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+      will-change: transform;
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      box-shadow:
+        0 10px 24px rgba(17,20,24,.10),
+        inset 0 1px 0 rgba(255,255,255,.65);
+    }
+
+    .btn:hover{
+      transform: translateY(-1px);
+      background:
+        linear-gradient(180deg,
+          color-mix(in srgb, #ffffff 75%, transparent),
+          color-mix(in srgb, var(--surface-card) 95%, transparent)),
+        color-mix(in srgb, var(--primary) 22%, transparent);
+      border-color: color-mix(in srgb, var(--text) 18%, transparent);
+      box-shadow:
+        0 14px 30px rgba(17,20,24,.14),
+        inset 0 1px 0 rgba(255,255,255,.75);
+    }
+
+    .btn:active{
+      transform: translateY(0px);
+    }
+
+    .ghost{
+      border:1px solid color-mix(in srgb, var(--text) 10%, transparent);
+      background:
+        linear-gradient(180deg,
+          color-mix(in srgb, #ffffff 60%, transparent),
+          color-mix(in srgb, var(--surface-card) 80%, transparent));
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .ghost:hover{
+      background:
+        linear-gradient(180deg,
+          color-mix(in srgb, #ffffff 70%, transparent),
+          color-mix(in srgb, var(--surface-card) 95%, transparent));
+    }
+
+    /* ============================================================
+       6) Hero
+       ============================================================ */
+    header{ padding:56px 0 22px; }
+
+    .kicker{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: color-mix(in srgb, var(--surface-card) 75%, transparent);
+      color: var(--text-muted);
+      box-shadow: 0 6px 20px rgba(17,20,24,.05);
+    }
+
+    .kicker strong{
+      color: var(--text);
+    }
+
+    h1{
+      margin:18px 0 10px;
+      font-size: clamp(42px, 6vw, 68px);
+      line-height:1.16;
+      letter-spacing:-.6px;
+      text-align:center;
+    }
+
+    .subhead{
+      max-width: 70ch;
+      font-size: 18px;
+      color: var(--text-muted);
+      margin: 0 0 18px;
+      line-height: 1.65;
+      text-align:center;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      justify-content:flex-end;
+    }
+
+    /* ============================================================
+       7) Sections (titles, ledes)
+       ============================================================ */
+    section{ padding:var(--space-7) 0; }
+
+    .section-title{
+      margin:0 0 8px;
+      font-size: clamp(28px, 4.5vw, 42px);
+      line-height: 1.05;
+      letter-spacing:-.3px;
+      position:relative;
+      display:inline-block;
+      --bar-scale: 1;
+    }
+
+    /* Small “brand bar” under section titles */
+    .section-title::after{
+      content:"";
+      display:block;
+      height:3px;
+      margin-top:8px;
+      border-radius:999px;
+      background: var(--grad-underline);
+      opacity:.55;
+      width: 100%;
+      transform-origin: left center;
+      transform: scaleX(var(--bar-scale));
+      transition: transform .5s ease;
+    }
+
+    .section-lede{
+      margin:0 0 18px;
+      color: var(--text-muted);
+      max-width: 75ch;
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       Testimonials
+       ============================================================ */
+    .testimonials{
+      margin-top:28px;
+    }
+
+    .testimonials-title{
+      margin:0 0 10px;
+      color: var(--text-muted);
+    }
+
+    .approach-card{
+      margin-top:24px;
+    }
+
+    #approach .callout + .callout{
+      margin-top:24px;
+    }
+
+    .testimonial-grid{
+      list-style:none;
+      margin:0;
+      padding:0;
+      display:grid;
+      gap:var(--space-3);
+    }
+
+    .testimonial-card{
+      margin:0;
+      padding:0;
+      height:100%;
+    }
+
+    .quote-figure{
+      margin: 0;
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+      row-gap: 0;
+      align-items: stretch;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      box-shadow: var(--shadow);
+      padding: var(--space-4);
+      position: relative;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .quote-figure::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; right:0;
+      height:4px;
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--accent-warm) 85%, transparent),
+        color-mix(in srgb, var(--primary) 75%, transparent),
+        color-mix(in srgb, var(--accent-rare) 65%, transparent)
+      );
+      opacity:.55;
+    }
+
+    .quote-top{
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .quote-text{
+      margin: 12px;
+      text-align: left;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .quote-divider{
+      height: 1px;
+      background: var(--divider);
+      width: calc(100% - 24px);
+      margin: 24px auto;
+    }
+
+    .quote-cite{
+      margin: 0;
+      color: var(--text-muted);
+      display: grid;
+      row-gap: 3px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    .quote-cite strong{
+      color: var(--text);
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    .quote-mark{
+      font-weight: 800;
+      font-size: clamp(42px, 6vw, 68px);
+      line-height: 1;
+      opacity: .45;
+      user-select: none;
+    }
+
+    .quote-mark--open{
+      align-self: start;
+      justify-self: start;
+    }
+
+    .quote-mark--close{
+      align-self: end;
+      justify-self: end;
+      transform: translateY(20px);
+    }
+
+    .quote-teal .quote-mark{ color: color-mix(in srgb, var(--hl-teal) 90%, var(--text)); }
+    .quote-amber .quote-mark{ color: color-mix(in srgb, var(--hl-amber) 90%, var(--text)); }
+    .quote-purple .quote-mark{ color: color-mix(in srgb, var(--hl-lavender) 90%, var(--text)); }
+
+    @media (max-width: 520px){
+      .quote-figure{ padding: var(--space-3); }
+      .quote-top{ grid-template-columns: 32px 1fr 32px; }
+      .quote-mark{
+        font-size: 36px;
+        opacity: .42;
+      }
+    }
+
+    .quote-highlight{
+      --hl-color: color-mix(in srgb, var(--accent-warm) 22%, transparent);
+      padding:2px 6px;
+      border-radius:6px;
+      background: var(--hl-color);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .quote-highlight--blue{ --hl-color: color-mix(in srgb, var(--primary) 20%, transparent); }
+    .quote-highlight--amber{ --hl-color: color-mix(in srgb, var(--accent-warm) 24%, transparent); }
+    .quote-highlight--teal{ --hl-color: color-mix(in srgb, var(--accent-rare) 20%, transparent); }
+
+    /* Bio highlights: human marker feel + staggered reveal */
+    .hl{
+      position: relative;
+      display: inline;
+      padding: 0 .08em;
+      z-index: 0;
+      white-space: break-spaces;
+    }
+
+    .hl::before{
+      content:"";
+      position:absolute;
+      left:-.08em;
+      right:-.08em;
+      top: 56%;
+      height: 1.08em;
+      transform: translateY(-50%) rotate(var(--hl-angle, -0.6deg));
+      transform-origin: left center;
+      z-index: -1;
+      border-radius: 10px;
+      background:
+        radial-gradient(16px 10px at 4% 55%,
+          rgba(var(--hl-rgb), .55),
+          rgba(var(--hl-rgb), 0) 70%),
+        radial-gradient(18px 12px at 96% 60%,
+          rgba(var(--hl-rgb), .50),
+          rgba(var(--hl-rgb), 0) 72%),
+        repeating-linear-gradient(0deg,
+          rgba(255,255,255,.14) 0px,
+          rgba(255,255,255,.14) 2px,
+          rgba(255,255,255,0) 3px,
+          rgba(255,255,255,0) 6px),
+        linear-gradient(180deg,
+          rgba(var(--hl-rgb), .05) 0%,
+          rgba(var(--hl-rgb), .45) 22%,
+          rgba(var(--hl-rgb), .38) 78%,
+          rgba(var(--hl-rgb), .10) 100%);
+      mix-blend-mode: multiply;
+      -webkit-mask-image:
+        radial-gradient(12px 8px at 10% 25%, #000 60%, transparent 64%),
+        radial-gradient(10px 7px at 30% 15%, #000 62%, transparent 66%),
+        radial-gradient(12px 9px at 55% 20%, #000 60%, transparent 65%),
+        radial-gradient(10px 8px at 75% 30%, #000 62%, transparent 67%),
+        radial-gradient(12px 9px at 92% 22%, #000 60%, transparent 65%),
+        linear-gradient(#000, #000);
+      -webkit-mask-composite: source-over, source-over, source-over, source-over, source-over, destination-in;
+      mask-image:
+        radial-gradient(12px 8px at 10% 25%, #000 60%, transparent 64%),
+        radial-gradient(10px 7px at 30% 15%, #000 62%, transparent 66%),
+        radial-gradient(12px 9px at 55% 20%, #000 60%, transparent 65%),
+        radial-gradient(10px 8px at 75% 30%, #000 62%, transparent 67%),
+        radial-gradient(12px 9px at 92% 22%, #000 60%, transparent 65%),
+        linear-gradient(#000, #000);
+      opacity: 0;
+      width: 0%;
+      transition: none;
+    }
+
+    /* Multi-line highlight support (used in testimonials) */
+    .hl--multi{
+      background:
+        radial-gradient(16px 10px at 4% 60%,
+          rgba(var(--hl-rgb), .55),
+          rgba(var(--hl-rgb), 0) 70%),
+        radial-gradient(18px 12px at 96% 60%,
+          rgba(var(--hl-rgb), .50),
+          rgba(var(--hl-rgb), 0) 72%),
+        repeating-linear-gradient(0deg,
+          rgba(255,255,255,.14) 0px,
+          rgba(255,255,255,.14) 2px,
+          rgba(255,255,255,0) 3px,
+          rgba(255,255,255,0) 6px),
+        linear-gradient(180deg,
+          rgba(var(--hl-rgb), .05) 0%,
+          rgba(var(--hl-rgb), .45) 22%,
+          rgba(var(--hl-rgb), .38) 78%,
+          rgba(var(--hl-rgb), .10) 100%);
+      background-size: 100% 1.08em;
+      background-position: 0 60%;
+      background-repeat: repeat-x;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+      white-space: normal;
+    }
+
+    .hl--multi::before{ content: none; }
+
+    .hl.is-on::before{
+      opacity: 1;
+      width: 100%;
+      animation: hl-swipe 900ms cubic-bezier(.2,.9,.2,1) both;
+    }
+
+    @keyframes hl-swipe{
+      0%{ width: 0%; filter: saturate(1.05); }
+      70%{ width: 100%; }
+      100%{ width: 100%; filter: saturate(1); }
+    }
+
+    .hl-amber{ --hl-rgb: 245, 158, 11; }
+    .hl-blue{ --hl-rgb: 37, 99, 235; }
+    .hl-teal{ --hl-rgb: 15, 118, 110; }
+    .hl-purple{ --hl-rgb: 155, 122, 247; }
+    .hl-green{ --hl-rgb: 181, 196, 68; }
+
+    .hl.a1{ --hl-angle:-0.6deg; }
+    .hl.a2{ --hl-angle:-1deg; }
+    .hl.a3{ --hl-angle: 0.4deg; }
+    .hl.a4{ --hl-angle: 0.8deg; }
+    .hl.a5{ --hl-angle:-0.3deg; }
+
+    @media (min-width: 840px){
+      .testimonial-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    /* ============================================================
+       8) Shared Card / Callout Surface
+       ============================================================ */
+    .surface{
+      position:relative;
+      overflow:hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+
+      background: linear-gradient(180deg,
+        var(--card-top),
+        var(--card-bottom));
+      transition: transform .18s ease,
+        box-shadow .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+    }
+
+    .surface::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; right:0;
+      height:4px;
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--accent-warm) 85%, transparent),
+        color-mix(in srgb, var(--primary) 75%, transparent),
+        color-mix(in srgb, var(--accent-rare) 65%, transparent)
+      );
+      opacity:.55;
+    }
+
+    /* Fine sand grain on light cards */
+    .surface::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.16;
+      mix-blend-mode: multiply;
+      background:
+        radial-gradient(1px 1px at 12% 18%, rgba(17,20,24,.10), transparent 60%),
+        radial-gradient(1px 1px at 38% 72%, rgba(17,20,24,.08), transparent 60%),
+        radial-gradient(1px 1px at 71% 32%, rgba(17,20,24,.08), transparent 60%),
+        radial-gradient(1px 1px at 86% 64%, rgba(17,20,24,.06), transparent 60%),
+        radial-gradient(1px 1px at 24% 55%, rgba(17,20,24,.08), transparent 60%);
+      background-size: 120px 120px;
+    }
+
+    /* Disable hover lift for specific surfaces (e.g., email card). */
+    .surface.no-hover:hover{
+      transform: none;
+      border-color: var(--border);
+      box-shadow: var(--shadow);
+      background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+    }
+
+    .surface:focus{
+      outline:none;
+    }
+
+    .surface:focus-visible{
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus-ring) 35%, transparent), var(--shadow);
+      border-color: color-mix(in srgb, var(--primary) 35%, transparent);
+    }
+
+    /* ============================================================
+       9) Work Cards Grid + Pills
+       ============================================================ */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:var(--space-4);
+    }
+
+    .card{
+      grid-column: span 12;
+      padding:var(--space-4);
+    }
+
+    .card h3{
+      margin:0 0 6px;
+      font-size: 26px;
+    }
+
+    .meta{
+      color: var(--text-muted);
+      margin:0 0 10px;
+      line-height: 1.6;
+    }
+
+    .win{
+      margin:12px 0 0;
+      padding-top:12px;
+      border-top:1px solid var(--divider);
+      color: var(--text);
+      font-weight:600;
+    }
+
+    .pillrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .pill{
+      font-size: 13px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(17,20,24,.04);
+      border:1px solid var(--border);
+      color: var(--text-muted);
+      text-transform: none; /* content is already Title Case */
+    }
+
+    .pill--desktop { display: none; }
+
+    @media (min-width: 840px) {
+      /* Responsive pill density: show extra pills on desktop only. */
+      .pill--desktop { display: inline-flex; }
+    }
+
+    /* ============================================================
+       10) Callouts (shared spacing)
+       ============================================================ */
+    .callout{ padding:var(--space-4); }
+    .callout > h3{ margin:0 0 8px; }
+    .callout > p{ margin:0; }
+
+    .link-accent{
+      color: var(--link);
+      text-decoration: underline;
+    }
+
+    /* ============================================================
+       APPROACH (Process list)
+       ============================================================ */
+    .process{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      counter-reset: step;
+    }
+
+    .process-step{
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: var(--step-gap, 18px);
+      align-items: start;
+      padding: 12px var(--step-gap, 18px) 12px 0;
+      border-top: 1px solid var(--divider);
+    }
+
+    .process-step:first-child{
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    /* Left column: number badge */
+    .process-num{
+      width: var(--step-badge, clamp(54px, 6vw, 72px));
+      height: var(--step-badge, clamp(54px, 6vw, 72px));
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
+      margin: 0;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--text) 6%, transparent);
+    }
+
+    .process-num::before{
+      content: counter(step);
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: clamp(42px, 6vw, 68px);
+      font-weight: 800;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      color: color-mix(in srgb, var(--text) 30%, transparent);
+    }
+
+    /* Right column: text stack */
+    .process-body{
+      min-width: 0;
+      display: grid;
+      row-gap: 6px; /* controls title-to-body spacing */
+    }
+
+    .process-title{
+      font-size: 26px;
+      line-height: 1.18;
+      letter-spacing: -.2px;
+      margin: 0; /* Tight, predictable margins (no surprise whitespace) */
+    }
+
+    .process-why{
+      color: var(--text-muted);
+      margin: 0; /* Tight, predictable margins (no surprise whitespace) */
+    }
+
+    .process-out{
+      color: var(--text-muted);
+      margin: 0; /* Tight, predictable margins (no surprise whitespace) */
+    }
+
+    .process-out strong{
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .process-step:nth-child(1) .process-num{
+      background: color-mix(in srgb, var(--hl-amber) 28%, transparent);
+      border-color: color-mix(in srgb, var(--hl-amber) 45%, transparent);
+    }
+    .process-step:nth-child(1) .process-num::before{ color: color-mix(in srgb, var(--hl-amber) 90%, var(--text)); }
+
+    .process-step:nth-child(2) .process-num{
+      background: color-mix(in srgb, var(--hl-lavender) 28%, transparent);
+      border-color: color-mix(in srgb, var(--hl-lavender) 45%, transparent);
+    }
+    .process-step:nth-child(2) .process-num::before{ color: color-mix(in srgb, var(--hl-lavender) 90%, var(--text)); }
+
+    .process-step:nth-child(3) .process-num{
+      background: color-mix(in srgb, var(--hl-teal) 28%, transparent);
+      border-color: color-mix(in srgb, var(--hl-teal) 45%, transparent);
+    }
+    .process-step:nth-child(3) .process-num::before{ color: color-mix(in srgb, var(--hl-teal) 90%, var(--text)); }
+
+    .process-step:nth-child(4) .process-num{
+      background: color-mix(in srgb, var(--hl-cyan) 26%, transparent);
+      border-color: color-mix(in srgb, var(--hl-cyan) 42%, transparent);
+    }
+    .process-step:nth-child(4) .process-num::before{ color: color-mix(in srgb, var(--hl-cyan) 90%, var(--text)); }
+
+    .process-step:nth-child(5) .process-num{
+      background: color-mix(in srgb, var(--hl-lime) 28%, transparent);
+      border-color: color-mix(in srgb, var(--hl-lime) 45%, transparent);
+    }
+    .process-step:nth-child(5) .process-num::before{ color: color-mix(in srgb, var(--hl-lime) 90%, var(--text)); }
+
+    /* Small screens */
+    @media (max-width: 520px){
+      .process-step{
+        grid-template-columns: auto 1fr;
+        column-gap: var(--step-gap, 12px);
+        padding: 10px var(--step-gap, 12px) 10px 0;
+      }
+
+      .process-num{
+        width: var(--step-badge, clamp(46px, 12vw, 60px));
+        height: var(--step-badge, clamp(46px, 12vw, 60px));
+        border-radius: 14px;
+        margin: 0;
+      }
+
+      .process-num::before{
+        font-size: clamp(34px, 10vw, 52px);
+      }
+
+    .process-title{
+      font-size: 22px;
+    }
+    }
+
+    /* ============================================================
+       11) About Grid
+       ============================================================ */
+    .about-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:var(--space-4);
+    }
+
+    .about-h3{
+      margin:0 0 8px;
+      font-size: 18px;
+    }
+
+    /* ============================================================
+       12) Help: Master-detail layout (desktop) + accordion (mobile)
+       ============================================================ */
+    .help-split{
+      display:none;
+      grid-template-columns: 1fr;
+      gap:var(--space-4);
+      align-items:start;
+    }
+
+    .help-list{
+      display:grid;
+      gap:var(--space-3);
+    }
+
+    .help-item{
+      text-align:left;
+      width:100%;
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg,
+        var(--card-top),
+        var(--card-bottom));
+      box-shadow: var(--shadow);
+      padding:var(--space-4);
+      cursor:pointer;
+      transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease, opacity .2s ease, background .2s ease;
+      position:relative;
+      overflow:hidden;
+      font: inherit;
+      color: inherit;
+    }
+
+    .help-item::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; right:0;
+      height:4px;
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--accent-warm) 85%, transparent),
+        color-mix(in srgb, var(--primary) 75%, transparent),
+        color-mix(in srgb, var(--accent-rare) 65%, transparent)
+      );
+      opacity:.55;
+    }
+
+    .help-item h3{
+      margin:0 0 6px;
+      font-size:26px;
+      line-height: 1.2;
+    }
+
+    .help-item p{
+      margin:0;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .help-item:hover{
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+      box-shadow: 0 22px 52px rgba(17,20,24,.14);
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--surface-card) 96%, #fff),
+        color-mix(in srgb, var(--surface-card) 86%, #fff));
+    }
+
+    .help-item:focus{ outline:none; }
+    .help-item:focus-visible{
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus-ring) 35%, transparent), var(--shadow);
+      border-color: color-mix(in srgb, var(--primary) 35%, transparent);
+    }
+
+    .help-item.is-active{
+      border-color: color-mix(in srgb, var(--primary) 35%, transparent);
+      box-shadow: 0 22px 52px rgba(17,20,24,.14);
+      transform: translateY(-2px);
+    }
+
+    .help-item.is-dim{
+      opacity:.72;
+      transform:none;
+    }
+
+    .help-detail{
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg,
+        var(--card-top),
+        var(--card-bottom));
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .help-detail::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; right:0;
+      height:4px;
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--accent-warm) 85%, transparent),
+        color-mix(in srgb, var(--primary) 75%, transparent),
+        color-mix(in srgb, var(--accent-rare) 65%, transparent)
+      );
+      opacity:.55;
+    }
+
+    .help-detail-inner{ padding:var(--space-4); }
+
+    .help-detail-head h3{
+      margin:0 0 6px;
+      font-size:26px;
+      line-height: 1.3;
+    }
+
+    .help-bullets{
+      margin:12px 0 0;
+      padding-left: 18px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .help-bullets li{ margin:8px 0; }
+
+    .help-detail-cta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .help-accordion{ display:block; margin-top:12px; }
+
+    .help-accordion details{
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg,
+        var(--card-top),
+        var(--card-bottom));
+      box-shadow: var(--shadow);
+      padding:var(--space-3) var(--space-4);
+      margin-bottom:12px;
+      overflow:hidden;
+    }
+
+    .help-accordion summary{
+      cursor:pointer;
+      font-weight:700;
+      list-style:none;
+    }
+
+    .help-accordion summary::-webkit-details-marker{ display:none; }
+
+    @media (min-width: 900px){
+      .help-split{ display:grid; grid-template-columns: 1fr 1.1fr; }
+      .help-accordion{ display:none; }
+    }
+
+    /* ============================================================
+       Fortune Cookie (image-based)
+       ============================================================ */
+    .fortune-wrap{
+      position: relative;
+      padding: 0 80px 0 0;
+      margin: -40px 0 -10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .fortune-stage{
+      position: relative;
+      min-height: 200px;
+      perspective: 900px;
+      width: min(520px, 100%);
+    }
+
+    .cookie{
+      position: absolute;
+      right: 0;
+      top: -30px;
+      width: 300px;
+      height: 300px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      outline: none;
+      overflow: visible;
+      --split: 0px;
+      --lift: 0px;
+      --paper-opacity: 0;
+      --paper-scale: .92;
+      --paper-tilt: 12deg;
+      --paper-y: 40%;
+      --paper-w: calc(60% + 30px);
+      --paper-h: 47px;
+      --paper-offset-x: 0px;
+      --paper-offset-y: 9px;
+    }
+
+    .cookie:focus-visible{
+      border-radius: 26px;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus-ring) 35%, transparent);
+    }
+
+    .cookie-shadow{
+      position:absolute;
+      left: 50%;
+      top: calc(var(--paper-y) + var(--paper-offset-y) + 16px);
+      width: 120px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(closest-side, rgba(17,20,24,.26), transparent 70%);
+      filter: blur(1px);
+      opacity: 0;
+      transition: transform .35s ease, opacity .35s ease;
+      z-index: 0;
+    }
+
+    .shadow-left{
+      transform: translateX(calc(-50% - var(--split))) scaleX(.95);
+    }
+    .shadow-right{
+      transform: translateX(calc(-50% + var(--split))) scaleX(.95);
+    }
+
+    .cookie-shell{
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      width: 78%;
+      height: auto;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      opacity: 1;
+      transition: opacity .35s ease;
+      filter: drop-shadow(0 16px 20px rgba(17,20,24,.18));
+      pointer-events: none;
+      display: block;
+    }
+
+    .cookie-half{
+      position:absolute;
+      top: 50%;
+      width: 52%;
+      height: auto;
+      z-index: 3;
+      opacity: 0;
+      transition: transform 650ms cubic-bezier(.2,.8,.2,1), opacity .35s ease;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.16));
+      pointer-events: none;
+      display: block;
+    }
+
+    .cookie-left{
+      left: 6%;
+      transform: translateY(-50%) translateX(calc(0px - var(--split))) translateY(var(--lift));
+    }
+    .cookie-right{
+      right: 6%;
+      transform: translateY(-50%) translateX(var(--split)) translateY(var(--lift));
+    }
+
+    .fortune-paper{
+      position:absolute;
+      left: 50%;
+      top: var(--paper-y);
+      transform: translate(-50%, -50%) translate(var(--paper-offset-x), var(--paper-offset-y)) scale(var(--paper-scale)) rotateX(var(--paper-tilt));
+      transform-origin: center;
+      width: var(--paper-w);
+      height: var(--paper-h);
+      border-radius: 0;
+      opacity: var(--paper-opacity);
+      pointer-events:none;
+      transition: opacity .4s ease, transform .55s ease;
+      filter: drop-shadow(0 6px 10px rgba(17,20,24,.12));
+      z-index: 1;
+      background: #ffffff;
+      background-repeat: no-repeat;
+      background-position: center;
+      clip-path: polygon(0 0, 100% 0, calc(100% - 15px) 100%, 15px 100%);
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        inset 0 -1px 0 rgba(0,0,0,.04);
+    }
+
+    .fortune-text{
+      position:absolute;
+      inset: 10px 16px 10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-size: 10px;
+      line-height: 1.2;
+      color: rgba(31,24,20,.88);
+      font-weight: 200;
+      letter-spacing: .1px;
+      text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    .crumbs{
+      position:absolute;
+      left: 50%;
+      top: calc(var(--paper-y) - 40px);
+      transform: translateX(-50%);
+      width: 260px;
+      height: 140px;
+      pointer-events:none;
+      overflow: visible;
+      z-index: 2;
+    }
+    .crumb{
+      position:absolute;
+      width: 8px;
+      height: 6px;
+      border-radius: 3px;
+      opacity: 0;
+      background: linear-gradient(145deg, #f6cb90, #c9823f);
+      box-shadow: 0 8px 10px rgba(17,20,24,.12);
+    }
+
+    .cookie.is-open{
+      --split: 80px;
+      --lift: 0px;
+      --paper-opacity: 1;
+      --paper-scale: 1;
+      --paper-tilt: 0deg;
+    }
+    .cookie.is-open .cookie-shell{
+      opacity: 0;
+    }
+    .cookie.is-open .cookie-half{
+      opacity: 1;
+    }
+    .cookie.is-open .cookie-left{
+      transform: translateY(-50%) translateX(calc(0px - var(--split))) translateY(calc(var(--lift) - 1px)) rotate(-2deg) scale(1.1);
+    }
+
+    .cookie.is-open .cookie-right{
+      transform: translateY(-50%) translateX(var(--split)) translateY(var(--lift)) scale(1.05);
+    }
+    .cookie.is-open .cookie-shadow{
+      opacity: .45;
+    }
+    .cookie:hover .cookie-half{
+      filter: drop-shadow(0 22px 20px rgba(17,20,24,.10));
+    }
+
+    @keyframes crumbFall{
+      0%{ transform: translateY(-6px) translateX(0px) rotate(0deg) scale(var(--scale)); opacity: 0; }
+      15%{ opacity: .95; }
+      100%{ transform: translateY(90px) translateX(var(--dx)) rotate(var(--dr)) scale(var(--scale)); opacity: .95; }
+    }
+    .cookie.is-open .crumb{
+      animation: crumbFall .85s ease forwards;
+    }
+
+    @media (max-width: 700px){
+      .fortune-wrap{ padding: 0; justify-content: center; margin: 0; }
+      .fortune-stage{ width: 100%; min-height: 240px; }
+      .cookie{ left: 50%; right: auto; transform: translateX(-50%); }
+    }
+
+    /* ============================================================
+       13) Calendly Schedule Cards
+       ============================================================ */
+    .schedule-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:var(--space-4);
+      align-items: stretch;
+    }
+
+    .schedule-card{
+      appearance:none;
+      -webkit-appearance:none;
+      text-align:left;
+      width:100%;
+      padding:var(--space-4);
+      cursor:pointer;
+      font: inherit;
+      color: inherit;
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
+
+    .schedule-card:focus{ outline: none; }
+    .schedule-card.surface:hover{
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+      box-shadow: 0 22px 52px rgba(17,20,24,.14);
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--surface-card) 96%, #fff),
+        color-mix(in srgb, var(--surface-card) 86%, #fff));
+    }
+
+    .schedule-top{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .schedule-dot{
+      width:14px;
+      height:14px;
+      border-radius:999px;
+      margin-top:6px;
+      flex: 0 0 14px;
+    }
+
+    .dot-15{ background: var(--hl-amber); }
+    .dot-30{ background: var(--hl-teal); }
+    .dot-60{ background: var(--hl-lavender); }
+
+    .schedule-title{
+      margin:0;
+      font-size: 26px;
+      line-height: 1.2;
+      letter-spacing: -.2px;
+    }
+
+    .schedule-sub{
+      margin:4px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .schedule-desc{
+      margin:0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.65;
+      max-width: 75ch;
+    }
+
+    .schedule-cta{
+      margin-top:12px;
+      color: var(--primary);
+      font-weight:700;
+      font-size: 14px;
+      margin-top:auto;
+    }
+
+    .schedule-footnote{
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       14) Footer
+       ============================================================ */
+    footer{
+      padding:24px 0;
+      color: var(--text-muted);
+      border-top: 1px solid var(--divider);
+      margin-top: 22px;
+    }
+
+    /* ============================================================
+       15) Responsive rules
+       ============================================================ */
+    @media (min-width: 840px){
+      .about-grid{ grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .schedule-grid{ grid-template-columns: 1fr 1fr 1fr; }
+      .card{ grid-column: span 4; }
+    }
+
+    /* ============================================================
+       16) Reduced motion
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce){
+      *{ transition:none !important; }
+      html{ scroll-behavior:auto; }
+      body::after{ animation:none; }
+      .hl.is-on::before{ animation: none; opacity: 1; width: 100%; }
+    }
+
+    } /* end @layer components */
+
+    @layer utilities {
+      .stack-tight > .fine{ margin:0; }
+      .stack-tight > .fine + .fine{ margin-top:10px; }
+      .mt-16{ margin-top:16px; }
+      .mb-8{ margin-bottom:8px; }
+      .m-0{ margin:0; }
+    }
+  </style>
+
+  <!-- Calendly popup widget assets -->
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+</head>
+
+<body>
+  <!-- ==========================================================
+       Sticky Navigation
+       ========================================================== -->
+  <div class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Go to top of page">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Mark Malcolm</span>
+        <span class="brand-meta" aria-hidden="true">
+          <span class="brand-sep">•</span>
+          <span>Product Strategy, Visual Direction, Brand Styling</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a class="btn" href="#contact">Let’s Talk</a>
+      </nav>
+    </div>
+  </div>
+
+  <main id="top" class="wrap">
+    <!-- ==========================================================
+         Hero
+       ========================================================== -->
+    <header>
+      <h1>Clear customer paths.<br>Consistent interfaces.<br>Brands people trust.</h1>
+
+      <p class="subhead">
+        I help teams untangle complex work and turn it into clear, buildable systems people can actually use.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn" href="#work">See Case Studies</a>
+        <a class="btn ghost" href="#contact">Book a Call</a>
+      </div>
+    </header>
+
+    
+    
+
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+<section id="work">
+      <h2 class="section-title">Here’s What That Looks Like in Real Life</h2>
+      <p class="section-lede">
+        A few examples of real projects where I helped teams clarify the problem, align stakeholders, and deliver systems that scaled beyond individual screens.
+      </p>
+
+      <div class="grid">
+        <article class="card surface">
+          <h3>BigIron</h3>
+          <p class="meta">Item-focused redesign for inventory intake and operational workflows across teams.</p>
+          <div class="pillrow" aria-label="Key skills used">
+            <!-- Mobile-first (core set) -->
+            <span class="pill">Workflow Design</span>
+            <span class="pill">Operational UX</span>
+            <span class="pill">Role-Based Paths</span>
+
+            <!-- Desktop-only (adds richness) -->
+            <span class="pill pill--desktop">Intake Standardization</span>
+            <span class="pill pill--desktop">Edge Cases</span>
+            <span class="pill pill--desktop">Handoff Clarity</span>
+          </div>
+          <p class="win">The win: Guided intake plus role-based views turned rework into a first-pass standard.</p>
+        </article>
+
+        <article class="card surface">
+          <h3>Cedar Bluff Tech</h3>
+          <p class="meta">Co-created a fundable product concept that prevents bad data at the source during equipment intake.</p>
+          <div class="pillrow" aria-label="Key skills used">
+            <!-- Mobile-first (core set) -->
+            <span class="pill">Product Narrative</span>
+            <span class="pill">UX + Brand Alignment</span>
+            <span class="pill">Clarity In Messaging</span>
+
+            <!-- Desktop-only (adds richness) -->
+            <span class="pill pill--desktop">Investor Storytelling</span>
+            <span class="pill pill--desktop">Value Proposition</span>
+            <span class="pill pill--desktop">Go-To-Market Support</span>
+          </div>
+          <p class="win">The win: A believable story and experience direction for accuracy at the moment records are created.</p>
+        </article>
+
+        <article class="card surface">
+          <h3>Moss Rock Ranch</h3>
+          <p class="meta">Defined the brand foundation for a digital overhaul, preserved through a store-first pivot.</p>
+          <div class="pillrow" aria-label="Key skills used">
+            <!-- Mobile-first (core set) -->
+            <span class="pill">Brand Strategy</span>
+            <span class="pill">Voice + Tone</span>
+            <span class="pill">Audience Segments</span>
+
+            <!-- Desktop-only (adds richness) -->
+            <span class="pill pill--desktop">Positioning</span>
+            <span class="pill pill--desktop">Messaging Framework</span>
+            <span class="pill pill--desktop">Visual System Direction</span>
+          </div>
+          <p class="win">The win: A clear brand system the owners could use immediately, and reuse later.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2 class="section-title">About Me</h2>
+      <p class="section-lede">
+        My background spans high-stakes projects in design, brand systems, and customer-facing operations. That combination taught me how to see the system, not just the interface.
+      </p>
+
+      <div class="callout surface stack-tight">
+        <p class="fine">
+          I’m Mark Malcolm, a <span class="hl hl-blue bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-amber bio-highlight a2">product partner, not just a screen designer</span>.
+        </p>
+        <p class="fine">
+          My work sits at the intersection of UX strategy, brand systems, and real-world delivery. I’ve spent my career inside environments where <span class="hl hl-teal bio-highlight a3">clarity matters</span>: strict brand guidelines, multi-role workflows, high-stakes operations, and teams trying to move fast without breaking things. That background trained me to look beyond individual screens and focus on how decisions ripple across people, tools, and process.
+        </p>
+        <p class="fine">
+          I’m especially effective when problems feel messy or undefined. I <span class="hl hl-purple bio-highlight a4">turn complex workflows into clear, buildable systems</span>, helping teams surface what’s really happening, align stakeholders around shared goals, and translate ambiguity into clear structure. That often means guiding conversations, tightening requirements, and designing systems that scale, not just interfaces that look good.
+        </p>
+        <p class="fine">
+          I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-green bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
+        </p>
+      </div>
+    </section>
+
+    <section id="help">
+      <h2 class="section-title">How I Can Help</h2>
+      <p class="section-lede">
+        These are the ways I typically support teams when the work is complex, cross-functional, or starting to feel fragile as it grows.
+      </p>
+
+      <div class="help-split" aria-label="Services list with expanded details">
+        <div class="help-list" role="tablist" aria-label="Service areas">
+          <button class="help-item is-active" role="tab" aria-selected="true" aria-controls="help-panel" data-service="ux" type="button">
+            <h3>UX Strategy for Complex Workflows</h3>
+            <p>When people keep asking the same questions, the process isn’t clear enough yet. I make the next step obvious.</p>
+          </button>
+
+          <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="systems" type="button">
+            <h3>Design Systems and UI Architecture</h3>
+            <p>If your interface depends on who designed it that week, you don’t have a system yet. I build the rules.</p>
+          </button>
+
+          <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="brand" type="button">
+            <h3>Brand Strategy, Copywriting, and Visual Design</h3>
+            <p>If you sound different in every deck, page, and email, people can’t form a clear picture of you.</p>
+          </button>
+
+          <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="training" type="button">
+            <h3>Training That Scales</h3>
+            <p>Growth breaks when the know-how lives with one person. We turn process into clear onboarding and playbooks.</p>
+          </button>
+        </div>
+
+        <div id="help-panel" class="help-detail" role="tabpanel" aria-live="polite">
+          <div class="help-detail-inner">
+            <div class="help-detail-head">
+              <h3 id="helpDetailTitle">UX Strategy for Complex Workflows</h3>
+              <p id="helpDetailDesc" class="fine">
+                When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.
+              </p>
+            </div>
+
+            <ul id="helpDetailBullets" class="help-bullets">
+              <li>Workflow mapping that shows where people get stuck</li>
+              <li>Role-based paths and guardrails to reduce mistakes</li>
+              <li>Clear requirements and edge cases so dev can ship confidently</li>
+              <li>Prototype and validate before you build the expensive thing</li>
+              <li>Simple, practical handoff that holds up in the real world</li>
+            </ul>
+
+            <div class="help-detail-cta">
+              <a class="btn" href="#contact">Talk it through</a>
+              <a class="btn ghost" href="#work">See examples</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-accordion" aria-label="Service details (mobile)">
+        <details open>
+          <summary>UX Strategy for Complex Workflows</summary>
+          <p class="fine">When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.</p>
+          <ul class="help-bullets">
+            <li>Workflow mapping that shows where people get stuck</li>
+            <li>Role-based paths and guardrails to reduce mistakes</li>
+            <li>Clear requirements and edge cases so dev can ship confidently</li>
+            <li>Prototype and validate before you build the expensive thing</li>
+            <li>Simple, practical handoff that holds up in the real world</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>Design Systems and UI Architecture</summary>
+          <p class="fine">If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.</p>
+          <ul class="help-bullets">
+            <li>Component inventory and standards that reduce redesign</li>
+            <li>Patterns for forms, tables, empty states, and errors</li>
+            <li>Spacing, typography, and layout rules that scale</li>
+            <li>Accessible-by-default choices, so fewer surprises later</li>
+            <li>Practical documentation developers actually use</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>Brand Strategy, Copywriting, and Visual Design</summary>
+          <p class="fine">If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.</p>
+          <ul class="help-bullets">
+            <li>Clear positioning and a voice that sounds human</li>
+            <li>Messaging frameworks that stay consistent across channels</li>
+            <li>Visual systems that look modern without trying too hard</li>
+            <li>Copy that explains complex things in plain language</li>
+            <li>Lightweight guidelines your team can reuse</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>Training That Scales</summary>
+          <p class="fine">Growth breaks when the know-how lives with one person. We capture your process and turn it into clear onboarding, training, and playbooks so the work stays good as the team gets bigger.</p>
+          <ul class="help-bullets">
+            <li>Onboarding that doesn’t rely on a “go ask Sarah” person</li>
+            <li>Step-by-step “how we do it here” guides</li>
+            <li>Playbooks and checklists people actually use</li>
+            <li>Workshops to roll out changes without confusion</li>
+            <li>Simple standards that keep quality consistent</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         Fortune Cookie Delight (optional, small)
+         ========================================================== -->
+    <div class="fortune-wrap" aria-label="Fortune cookie interaction">
+      <div class="fortune-stage" id="fortuneStage">
+        <button class="cookie" id="cookieBtn" type="button" aria-label="Open the fortune cookie" data-fortune-cookie>
+          <img class="cookie-shell" src="assets/fortune/cookie-closed.png" alt="" aria-hidden="true" />
+          <span class="cookie-shadow shadow-left" aria-hidden="true"></span>
+          <span class="cookie-shadow shadow-right" aria-hidden="true"></span>
+          <img class="cookie-half cookie-left" src="assets/fortune/cookie-left.png" alt="" aria-hidden="true" />
+          <img class="cookie-half cookie-right" src="assets/fortune/cookie-right.png" alt="" aria-hidden="true" />
+
+          <span class="fortune-paper">
+            <span class="fortune-text" id="fortuneText" role="status" aria-live="polite" data-fortune-text></span>
+          </span>
+
+          <span class="crumbs" id="crumbs" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <section id="approach">
+      <h2 class="section-title">How We’ll Tackle It</h2>
+      <p class="section-lede">
+        I use a repeatable framework that keeps decisions grounded and reduces rework as we go, but I’m not precious about it. We’ll adjust to fit real constraints, timelines, and stakeholders.
+      </p>
+
+      <div class="callout surface approach-card">
+        <ol class="process" aria-label="Project process steps">
+          <li class="process-step">
+            <span class="process-num" aria-hidden="true"></span>
+
+            <div class="process-body">
+              <h3 class="process-title">Define the Target</h3>
+              <p class="fine process-why">
+                We agree on the real problem, the users involved, and what success looks like. This prevents solving the wrong thing elegantly.
+              </p>
+              <p class="fine process-out">
+                <strong>Output:</strong> a short problem statement, success criteria, and constraints.
+              </p>
+            </div>
+          </li>
+
+          <li class="process-step">
+            <span class="process-num" aria-hidden="true"></span>
+
+            <div class="process-body">
+              <h3 class="process-title">Map the Reality</h3>
+              <p class="fine process-why">
+                We document the current workflow and handoffs, then mark where people get stuck, repeat questions, or make avoidable mistakes.
+              </p>
+              <p class="fine process-out">
+                <strong>Output:</strong> workflow map, friction points, and priority opportunities.
+              </p>
+            </div>
+          </li>
+
+          <li class="process-step">
+            <span class="process-num" aria-hidden="true"></span>
+
+            <div class="process-body">
+              <h3 class="process-title">Design the Next Version</h3>
+              <p class="fine process-why">
+                We propose a clearer path with roles, steps, and guardrails, then make the next action obvious at every decision point.
+              </p>
+              <p class="fine process-out">
+                <strong>Output:</strong> proposed flow, UI structure, content guidelines, and edge cases.
+              </p>
+            </div>
+          </li>
+
+          <li class="process-step">
+            <span class="process-num" aria-hidden="true"></span>
+
+            <div class="process-body">
+              <h3 class="process-title">Validate Before You Build</h3>
+              <p class="fine process-why">
+                We test the direction early, using lightweight prototypes or structured reviews, so you don’t pay engineering costs for assumptions.
+              </p>
+              <p class="fine process-out">
+                <strong>Output:</strong> validated changes, notes, and final decisions.
+              </p>
+            </div>
+          </li>
+
+          <li class="process-step">
+            <span class="process-num" aria-hidden="true"></span>
+
+            <div class="process-body">
+              <h3 class="process-title">Ship, Learn, Tighten</h3>
+              <p class="fine process-why">
+                Once it’s live, we watch for repeat questions, missed steps, and support load, then tighten the system so it holds up over time.
+              </p>
+              <p class="fine process-out">
+                <strong>Output:</strong> iteration list, updated standards, and next improvements.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="callout surface stack-tight">
+        <h3 class="about-h3">Why I work this way</h3>
+
+        <p class="fine">
+          I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.
+        </p>
+
+        <p class="fine">
+          Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.
+        </p>
+      </div>
+
+      <div class="testimonials">
+        <p class="testimonials-title">
+          A few things teammates and leaders have said about working with me:
+        </p>
+
+        <ul class="testimonial-grid">
+          <li class="testimonial-card">
+            <figure class="quote-figure quote-teal">
+              <div class="quote-top">
+                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+                <p class="quote-text">
+                  Mark <span class="hl hl-teal hl--multi is-on a1">takes initiative</span> and really takes the time to understand user needs. I was impressed with his ability to take complex feedback and simplify it into simple solutions in a timely manner.
+                </p>
+                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+              </div>
+              <div class="quote-divider" aria-hidden="true"></div>
+              <div class="quote-cite">
+                <strong>Kai Mills</strong>
+                <span>UI Designer</span>
+              </div>
+            </figure>
+          </li>
+
+          <li class="testimonial-card">
+            <figure class="quote-figure quote-purple">
+              <div class="quote-top">
+                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+                <p class="quote-text">
+                  Mark makes the role of project manager a lot easier, and <span class="hl hl-purple hl--multi is-on a3">listens and respects everyone</span> on the team’s thoughts and opinions.
+                </p>
+                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+              </div>
+              <div class="quote-divider" aria-hidden="true"></div>
+              <div class="quote-cite">
+                <strong>Michael McTavish</strong>
+                <span>Project Manager</span>
+              </div>
+            </figure>
+          </li>
+
+          <li class="testimonial-card">
+            <figure class="quote-figure quote-amber">
+              <div class="quote-top">
+                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+                <p class="quote-text">
+                  Mark goes the extra step to ensure his design is thorough and truly addressing the users’ needs. He’s diligent in his research and <span class="hl hl-amber hl--multi is-on a2">backs up every decision with well constructed reasoning</span>.
+                </p>
+                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+              </div>
+              <div class="quote-divider" aria-hidden="true"></div>
+              <div class="quote-cite">
+                <strong>Alan Donth</strong>
+                <span>Product Design</span>
+              </div>
+            </figure>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2 class="section-title">Let’s Talk</h2>
+      <p class="section-lede">
+        If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.
+      </p>
+
+      <div class="schedule-grid" aria-label="Calendly scheduling options">
+        <button
+          class="schedule-card surface"
+          type="button"
+          onclick="openCalendly('https://calendly.com/mark-w3m/15-min-chat')"
+          aria-haspopup="dialog"
+          aria-label="Book a 15 minute chat"
+        >
+          <div class="schedule-top">
+            <span class="schedule-dot dot-15" aria-hidden="true"></span>
+            <div>
+              <h3 class="schedule-title">15 Min Chat</h3>
+              <p class="schedule-sub">Quick clarity and next steps</p>
+            </div>
+          </div>
+
+          <p class="schedule-desc">
+            Best for a quick intro, one focused question, or a fast direction check.
+            We’ll name what’s stuck, what “good” looks like, and the next best step.
+          </p>
+
+          <div class="schedule-cta">Book 15 minutes →</div>
+        </button>
+
+        <button
+          class="schedule-card surface"
+          type="button"
+          onclick="openCalendly('https://calendly.com/mark-w3m/30-min-alignment')"
+          aria-haspopup="dialog"
+          aria-label="Book a 30 minute meeting"
+        >
+          <div class="schedule-top">
+            <span class="schedule-dot dot-30" aria-hidden="true"></span>
+            <div>
+              <h3 class="schedule-title">30 Min Alignment</h3>
+              <p class="schedule-sub">Align, decide, unblock</p>
+            </div>
+          </div>
+
+          <p class="schedule-desc">
+            Great for reviewing work in progress, clarifying requirements, or mapping a workflow.
+            We’ll surface tradeoffs, make a clear decision, and define who does what next.
+          </p>
+
+          <div class="schedule-cta">Book 30 minutes →</div>
+        </button>
+
+        <button
+          class="schedule-card surface"
+          type="button"
+          onclick="openCalendly('https://calendly.com/mark-w3m/60-min-consult')"
+          aria-haspopup="dialog"
+          aria-label="Book a 60 minute consult"
+        >
+          <div class="schedule-top">
+            <span class="schedule-dot dot-60" aria-hidden="true"></span>
+            <div>
+              <h3 class="schedule-title">60 Min Consult</h3>
+              <p class="schedule-sub">Deep dive and a plan</p>
+            </div>
+          </div>
+
+          <p class="schedule-desc">
+            Ideal when the problem is messy or the stakes are high. We’ll map the situation clearly,
+            identify root causes, and leave with a practical plan you can act on right away.
+          </p>
+
+          <div class="schedule-cta">Book 60 minutes →</div>
+        </button>
+      </div>
+
+      <p class="fine schedule-footnote">
+        Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.
+      </p>
+
+      <noscript>
+        <div class="callout surface mt-16">
+          <p class="fine mb-8">
+            JavaScript is disabled, so Calendly popups aren’t available. Use the direct links instead:
+          </p>
+          <p class="fine m-0">
+            <a class="link-accent" href="https://calendly.com/mark-w3m/15-min-chat">Book 15 minutes</a><br />
+            <a class="link-accent" href="https://calendly.com/mark-w3m/30-min-alignment">Book 30 minutes</a><br />
+            <a class="link-accent" href="https://calendly.com/mark-w3m/60-min-consult">Book 60 minutes</a>
+          </p>
+        </div>
+      </noscript>
+
+      <div class="callout surface no-hover mt-16">
+        <p class="fine">
+          <!-- Update these lines with your real contact info. -->
+          Email: <a class="link-accent" href="mailto:mark@we3.design">mark@we3.design</a><br />
+        </p>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         Footer
+       ========================================================== -->
+    <footer>
+      <div class="fine">© <span id="y"></span> Mark Malcolm. Temporary site, full portfolio in progress.</div>
+    </footer></main>
+
+  <script>
+    /* ==========================================================
+       Utility: Current year in footer
+       ========================================================== */
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    /* ==========================================================
+       Calendly: open popup if available, else fallback to new tab
+       ========================================================== */
+    function openCalendly(url){
+      if (!window.Calendly || !Calendly.initPopupWidget){
+        window.open(url, "_blank", "noopener,noreferrer");
+        return;
+      }
+      Calendly.initPopupWidget({ url: url });
+    }
+
+    /* ==========================================================
+       Help: Service detail content (single source of truth)
+       ========================================================== */
+    const HELP_DETAILS = {
+      ux: {
+        title: "UX Strategy for Complex Workflows",
+        desc: "When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.",
+        bullets: [
+          "Workflow mapping that shows where people get stuck",
+          "Role-based paths and guardrails to reduce mistakes",
+          "Clear requirements and edge cases so dev can ship confidently",
+          "Prototype and validate before you build the expensive thing",
+          "Simple, practical handoff that holds up in the real world"
+        ]
+      },
+      systems: {
+        title: "Design Systems and UI Architecture",
+        desc: "If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.",
+        bullets: [
+          "Component inventory and standards that reduce redesign",
+          "Patterns for forms, tables, empty states, and errors",
+          "Spacing, typography, and layout rules that scale",
+          "Accessible-by-default choices, so fewer surprises later",
+          "Practical documentation developers actually use"
+        ]
+      },
+      brand: {
+        title: "Brand Strategy, Copywriting, and Visual Design",
+        desc: "If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.",
+        bullets: [
+          "Clear positioning and a voice that sounds human",
+          "Messaging frameworks that stay consistent across channels",
+          "Visual systems that look modern without trying too hard",
+          "Copy that explains complex things in plain language",
+          "Lightweight guidelines your team can reuse"
+        ]
+      },
+      training: {
+        title: "Training That Scales",
+        desc: "Growth breaks when the know-how lives with one person. We capture your process and turn it into clear onboarding, training, and playbooks so the work stays good as the team gets bigger.",
+        bullets: [
+          "New-hire onboarding that doesn’t rely on one “go ask Sarah” person",
+          "Step-by-step “how we do it here” guides",
+          "Playbooks and checklists people actually use",
+          "Workshops to roll out changes without confusion",
+          "Simple standards that keep quality consistent"
+        ]
+      }
+    };
+
+    /* ==========================================================
+       Help: Wire up master-detail clicks
+       ========================================================== */
+    (function initHelpMasterDetail(){
+      const items = Array.from(document.querySelectorAll(".help-item"));
+      const titleEl = document.getElementById("helpDetailTitle");
+      const descEl  = document.getElementById("helpDetailDesc");
+      const listEl  = document.getElementById("helpDetailBullets");
+
+      if (!items.length || !titleEl || !descEl || !listEl) return;
+
+      function render(key){
+        const data = HELP_DETAILS[key];
+        if (!data) return;
+
+        titleEl.textContent = data.title;
+        descEl.textContent  = data.desc;
+
+        listEl.innerHTML = "";
+        data.bullets.forEach(text => {
+          const li = document.createElement("li");
+          li.textContent = text;
+          listEl.appendChild(li);
+        });
+
+        items.forEach(btn => {
+          const active = btn.dataset.service === key;
+          btn.classList.toggle("is-active", active);
+          btn.classList.toggle("is-dim", !active);
+          btn.setAttribute("aria-selected", active ? "true" : "false");
+        });
+      }
+
+      items.forEach(btn => {
+        btn.addEventListener("click", () => render(btn.dataset.service));
+        btn.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            render(btn.dataset.service);
+          }
+        });
+      });
+
+      const initial = items.find(b => b.classList.contains("is-active"))?.dataset.service || items[0].dataset.service;
+      render(initial);
+    })();
+
+    /* ==========================================================
+       Help: Mobile accordion (one open at a time)
+       ========================================================== */
+    (function initHelpAccordion(){
+      const wrap = document.querySelector(".help-accordion");
+      if (!wrap) return;
+      const details = Array.from(wrap.querySelectorAll("details"));
+      if (!details.length) return;
+
+      details.forEach((item) => {
+        item.addEventListener("toggle", () => {
+          if (!item.open) return;
+          details.forEach((other) => {
+            if (other !== item) other.open = false;
+          });
+        });
+      });
+    })();
+
+    /* ==========================================================
+       Bio highlight reveal (staggered on view)
+       ========================================================== */
+    (function initBioHighlights(){
+      const highlights = Array.from(document.querySelectorAll(".bio-highlight"));
+      if (!highlights.length) return;
+
+      function reveal(){
+        highlights.forEach((el, i) => {
+          setTimeout(() => {
+            el.classList.add("is-on");
+          }, i * 500);
+        });
+      }
+
+      const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+      if (prefersReduce.matches){
+        highlights.forEach(el => el.classList.add("is-on"));
+        return;
+      }
+
+      let revealed = false;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (revealed) return;
+          if (entry.isIntersecting){
+            revealed = true;
+            reveal();
+            io.disconnect();
+          }
+        });
+      }, { threshold: 0.25 });
+
+      io.observe(highlights[0]);
+    })();
+
+    /* ==========================================================
+       Fortune cookie: small delight
+       ========================================================== */
+    (function initFortuneCookie(){
+      const cookieBtn = document.getElementById("cookieBtn");
+      const stage = document.getElementById("fortuneStage");
+      const fortuneText = document.getElementById("fortuneText");
+      const crumbsWrap = document.getElementById("crumbs");
+
+      if (!cookieBtn || !stage || !fortuneText || !crumbsWrap) return;
+
+      const COMMON = [
+        "Clarity comes quietly.<br>Confusion leaves when the path is clear.",
+        "The next step is small.<br>Small steps remove big doubt.",
+        "A good system hums.<br>People stop asking what’s next.",
+        "Slow down to see more.<br>Speed follows understanding.",
+        "When work feels heavy,<br>Something important is unnamed.",
+        "Make the right thing easy.<br>The rest fixes itself.",
+        "If everyone agrees too fast,<br>You may be skipping the hard truth."
+      ];
+
+      const UNCOMMON = [
+        "The problem is shy.<br>Listen longer than feels efficient.",
+        "Most friction is a signal,<br>Not a failure of effort.",
+        "You don’t need brilliance here.<br>You need alignment.",
+        "What feels obvious to you<br>Is invisible to someone else.",
+        "Strong systems reduce heroics.<br>Good teams rest better."
+      ];
+
+      const RARE = [
+        "The map is not wrong.<br>It’s just missing a traveler.",
+        "This will work,<br>Once you stop solving yesterday’s version."
+      ];
+
+      const ULTRA_RARE = [
+        "You are not behind.<br>The interface is."
+      ];
+
+      const POOLS = [
+        { weight: 70, items: COMMON },
+        { weight: 25, items: UNCOMMON },
+        { weight: 5, items: RARE }
+      ];
+
+      function pickWeightedPool(){
+        const total = POOLS.reduce((sum, p) => sum + p.weight, 0);
+        let r = Math.random() * total;
+        for (const p of POOLS){
+          r -= p.weight;
+          if (r <= 0) return p.items;
+        }
+        return POOLS[POOLS.length - 1].items;
+      }
+
+      let lastIndex = -1;
+      function pickFrom(list){
+        if (list.length === 1) return 0;
+        let i = Math.floor(Math.random() * list.length);
+        while (i === lastIndex) i = Math.floor(Math.random() * list.length);
+        lastIndex = i;
+        return i;
+      }
+
+      function setFortune(){
+        const useUltra = Math.random() < 0.01;
+        const list = useUltra ? ULTRA_RARE : pickWeightedPool();
+        const idx = pickFrom(list);
+        fortuneText.innerHTML = list[idx];
+      }
+
+      function clearCrumbs(){
+        crumbsWrap.innerHTML = "";
+      }
+
+      function spawnCrumbs(){
+        clearCrumbs();
+        const count = 14;
+        for (let i = 0; i < count; i++){
+          const c = document.createElement("span");
+          c.className = "crumb";
+
+          const x = 120 + (Math.random() * 100 - 50);
+          const y = 26 + (Math.random() * 26 - 10);
+          c.style.left = x + "px";
+          c.style.top = y + "px";
+
+          const dx = (Math.random() * 46 - 23).toFixed(1) + "px";
+          const dr = (Math.random() * 240 - 120).toFixed(0) + "deg";
+          c.style.setProperty("--dx", dx);
+          c.style.setProperty("--dr", dr);
+          const scale = (0.45 + Math.random() * 0.45).toFixed(2);
+          c.style.setProperty("--scale", scale);
+
+          c.style.animationDelay = (Math.random() * 0.12).toFixed(2) + "s";
+          c.style.opacity = "0";
+
+          crumbsWrap.appendChild(c);
+        }
+      }
+
+      function openCookie(){
+        if (cookieBtn.classList.contains("is-open")) return;
+        cookieBtn.classList.add("is-open");
+        spawnCrumbs();
+      }
+
+      function closeAndReset(){
+        cookieBtn.classList.remove("is-open");
+        clearCrumbs();
+        setFortune();
+      }
+
+      setFortune();
+
+      cookieBtn.addEventListener("mouseenter", openCookie);
+      cookieBtn.addEventListener("focus", openCookie);
+      cookieBtn.addEventListener("click", openCookie);
+
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries){
+          if (!entry.isIntersecting){
+            closeAndReset();
+          }
+        }
+      }, { threshold: 0.15 });
+
+      io.observe(stage);
+    })();
+
+    /* ==========================================================
+       Section title bars: consistent scale + scroll emphasis
+       ========================================================== */
+    (function initSectionBars(){
+      const titles = Array.from(document.querySelectorAll(".section-title"));
+      if (!titles.length || !("IntersectionObserver" in window)) return;
+
+      const bySection = new Map();
+      titles.forEach((title) => {
+        const section = title.closest("section");
+        if (!section) return;
+        bySection.set(section, title);
+      });
+
+      const minScale = 0.35;
+      const maxScale = 1.01;
+
+      function setScale(section, ratio){
+        const title = bySection.get(section);
+        if (!title) return;
+        const t = Math.max(0, Math.min(1, ratio));
+        const scale = minScale + (maxScale - minScale) * t;
+        title.style.setProperty("--bar-scale", scale.toFixed(3));
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!bySection.has(entry.target)) return;
+          setScale(entry.target, entry.intersectionRatio);
+        });
+      }, { threshold: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1] });
+
+      bySection.forEach((_, section) => io.observe(section));
+    })();
+  </script>
+</body>
+</html>
