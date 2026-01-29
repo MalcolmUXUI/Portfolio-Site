@@ -35,22 +35,30 @@
 
         /* Surfaces */
         --surface-base: #F4EFE7;
+        --surface-base-rgb: 244, 239, 231;
         --surface-card: #FFFCF6;
+        --surface-card-rgb: 255, 252, 246;
 
         /* Text */
         --text: #1F1A14;
+        --text-rgb: 31, 26, 20;
         --text-muted: #5D4F43;
+        --text-muted-rgb: 93, 79, 67;
 
         /* Brand roles */
         --primary: #0F6D66;
+        --primary-rgb: 15, 109, 102;
         --accent-warm: #C4622A;
+        --accent-warm-rgb: 196, 98, 42;
         --accent-rare: #9B7AF7;
+        --accent-rare-rgb: 155, 122, 247;
 
         /* Derived utility */
         --link: var(--primary);
         --focus-ring: var(--primary);
-        --border: color-mix(in srgb, var(--text) 12%, var(--surface-base));
-        --divider: color-mix(in srgb, var(--text) 8%, var(--surface-base));
+        --focus-ring-rgb: var(--primary-rgb);
+        --border: #DAD5CE;
+        --divider: #E3DED6;
 
         /* Gradients */
         --grad-wash: linear-gradient(135deg, #F4EFE7 0%, #E6F2EF 100%);
@@ -58,36 +66,59 @@
         --grad-hero: linear-gradient(90deg, #0F6D66 0%, #37B1A8 55%, #C4622A 100%);
 
         /* Highlighters (light mode) */
-        --hl-amber: rgba(245, 158, 11, 0.85);
-        --hl-lime: rgba(181, 196, 68, 0.75);
-        --hl-teal: rgba(15, 118, 110, 0.65);
-        --hl-blue: rgba(37, 99, 235, 0.75);
-        --hl-cyan: rgba(96, 165, 250, 0.55);
-        --hl-lavender: rgba(155, 122, 247, 0.50);
-        --hl-magenta: rgba(216, 46, 122, 0.55);
+        --hl-amber-rgb: 245, 158, 11;
+        --hl-lime-rgb: 181, 196, 68;
+        --hl-teal-rgb: 15, 118, 110;
+        --hl-blue-rgb: 37, 99, 235;
+        --hl-cyan-rgb: 96, 165, 250;
+        --hl-lavender-rgb: 155, 122, 247;
+        --hl-magenta-rgb: 216, 46, 122;
+        --hl-amber: rgba(var(--hl-amber-rgb), 0.85);
+        --hl-lime: rgba(var(--hl-lime-rgb), 0.75);
+        --hl-teal: rgba(var(--hl-teal-rgb), 0.65);
+        --hl-blue: rgba(var(--hl-blue-rgb), 0.75);
+        --hl-cyan: rgba(var(--hl-cyan-rgb), 0.55);
+        --hl-lavender: rgba(var(--hl-lavender-rgb), 0.50);
+        --hl-magenta: rgba(var(--hl-magenta-rgb), 0.55);
+
+        --ink-amber: #E0910C;
+        --ink-lime: #A6B33F;
+        --ink-teal: #116D65;
+        --ink-cyan: #5A97E3;
+        --ink-lavender: #8F70E0;
 
         /* Derived gradients + washes */
-        --surface-top: color-mix(in srgb, var(--surface-base) 70%, #fff);
+        --surface-top: #F7F4EE;
         --surface-bottom: var(--surface-base);
-        --card-top: color-mix(in srgb, var(--surface-card) 96%, #fff);
-        --card-bottom: color-mix(in srgb, var(--surface-card) 88%, #fff);
-        --wash1: color-mix(in srgb, var(--accent-warm) 24%, transparent);
-        --wash2: color-mix(in srgb, var(--primary) 20%, transparent);
-        --wash3: color-mix(in srgb, var(--accent-rare) 18%, transparent);
+        --card-top: #FFFCF6;
+        --card-bottom: #FFFCF7;
+        --surface-card-soft-96: #FFFCF6;
+        --surface-card-soft-86: #FFFCF7;
+        --wash1: rgba(var(--accent-warm-rgb), 0.24);
+        --wash2: rgba(var(--primary-rgb), 0.20);
+        --wash3: rgba(var(--accent-rare-rgb), 0.18);
       }
 
       [data-theme="dark"] {
         --surface-base: #07122D;
+        --surface-base-rgb: 7, 18, 45;
         --surface-card: #0C1B3A;
+        --surface-card-rgb: 12, 27, 58;
         --text: #F7F2EA;
+        --text-rgb: 247, 242, 234;
         --text-muted: #C9B9A8;
+        --text-muted-rgb: 201, 185, 168;
         --primary: #37B1A8;
+        --primary-rgb: 55, 177, 168;
         --accent-warm: #F2A36C;
+        --accent-warm-rgb: 242, 163, 108;
         --accent-rare: #BCA8FF;
+        --accent-rare-rgb: 188, 168, 255;
         --link: var(--primary);
         --focus-ring: var(--primary);
-        --border: color-mix(in srgb, var(--text) 16%, var(--surface-base));
-        --divider: color-mix(in srgb, var(--text) 10%, var(--surface-base));
+        --focus-ring-rgb: var(--primary-rgb);
+        --border: #2D364B;
+        --divider: #1F2840;
 
         /* Bioluminescent glows (dark mode) */
         --glow-teal: rgba(15, 109, 102, 0.78);
@@ -96,24 +127,59 @@
         --glow-lilac: rgba(155, 122, 247, 0.62);
         --glow-magenta: rgba(216, 46, 122, 0.62);
 
-        --surface-top: color-mix(in srgb, var(--surface-base) 70%, #000);
+        --surface-top: #050D1F;
         --surface-bottom: var(--surface-base);
-        --card-top: color-mix(in srgb, var(--surface-card) 92%, #000);
-        --card-bottom: color-mix(in srgb, var(--surface-card) 80%, #000);
-        --wash1: color-mix(in srgb, var(--accent-warm) 22%, transparent);
-        --wash2: color-mix(in srgb, var(--primary) 18%, transparent);
-        --wash3: color-mix(in srgb, var(--accent-rare) 16%, transparent);
+        --card-top: #0B1935;
+        --card-bottom: #0A162E;
+        --surface-card-soft-96: #162442;
+        --surface-card-soft-86: #2E3B56;
+        --wash1: rgba(var(--accent-warm-rgb), 0.22);
+        --wash2: rgba(var(--primary-rgb), 0.18);
+        --wash3: rgba(var(--accent-rare-rgb), 0.16);
+
+        --ink-amber: #F5A621;
+        --ink-lime: #BCC955;
+        --ink-teal: #26827A;
+        --ink-cyan: #6FADF8;
+        --ink-lavender: #A486F6;
       }
 
       @media (prefers-color-scheme: dark) {
         :root:not([data-theme]) {
           --surface-base: #07122D;
+          --surface-base-rgb: 7, 18, 45;
           --surface-card: #0C1B3A;
+          --surface-card-rgb: 12, 27, 58;
           --text: #F7F2EA;
+          --text-rgb: 247, 242, 234;
           --text-muted: #C9B9A8;
+          --text-muted-rgb: 201, 185, 168;
           --primary: #37B1A8;
+          --primary-rgb: 55, 177, 168;
           --accent-warm: #F2A36C;
+          --accent-warm-rgb: 242, 163, 108;
           --accent-rare: #BCA8FF;
+          --accent-rare-rgb: 188, 168, 255;
+          --link: var(--primary);
+          --focus-ring: var(--primary);
+          --focus-ring-rgb: var(--primary-rgb);
+          --border: #2D364B;
+          --divider: #1F2840;
+          --surface-top: #050D1F;
+          --surface-bottom: var(--surface-base);
+          --card-top: #0B1935;
+          --card-bottom: #0A162E;
+          --surface-card-soft-96: #162442;
+          --surface-card-soft-86: #2E3B56;
+          --wash1: rgba(var(--accent-warm-rgb), 0.22);
+          --wash2: rgba(var(--primary-rgb), 0.18);
+          --wash3: rgba(var(--accent-rare-rgb), 0.16);
+
+          --ink-amber: #F5A621;
+          --ink-lime: #BCC955;
+          --ink-teal: #26827A;
+          --ink-cyan: #6FADF8;
+          --ink-lavender: #A486F6;
         }
       }
     }
@@ -195,9 +261,9 @@
         mix-blend-mode: screen;
         filter: blur(70px) saturate(125%);
         background:
-          radial-gradient(900px 600px at 20% 15%, color-mix(in srgb, var(--accent-warm) 35%, transparent), transparent 62%),
-          radial-gradient(1000px 700px at 80% 20%, color-mix(in srgb, var(--primary) 30%, transparent), transparent 64%),
-          radial-gradient(900px 700px at 55% 85%, color-mix(in srgb, var(--accent-rare) 26%, transparent), transparent 62%);
+          radial-gradient(900px 600px at 20% 15%, rgba(var(--accent-warm-rgb), 0.35), transparent 62%),
+          radial-gradient(1000px 700px at 80% 20%, rgba(var(--primary-rgb), 0.30), transparent 64%),
+          radial-gradient(900px 700px at 55% 85%, rgba(var(--accent-rare-rgb), 0.26), transparent 62%);
         animation: lavaDrift 22s ease-in-out infinite alternate;
         transform: translate3d(0,0,0);
       }
@@ -219,8 +285,9 @@
       position:sticky;
       top:0;
       z-index:50;
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
       backdrop-filter:saturate(180%) blur(10px);
-      background: color-mix(in srgb, var(--surface-card) 82%, transparent);
+      background: rgba(var(--surface-card-rgb), 0.82);
       border-bottom: 1px solid var(--divider);
     }
 
@@ -265,6 +332,7 @@
         var(--primary),
         var(--accent-warm));
       box-shadow: 0 0 0 6px color-mix(in srgb, var(--primary) 18%, transparent);
+      box-shadow: 0 0 0 6px rgba(var(--primary-rgb), 0.18);
     }
 
     .nav-links{
@@ -283,7 +351,7 @@
     }
 
     .nav-links a:hover{
-      background: color-mix(in srgb, var(--text) 6%, transparent);
+      background: rgba(var(--text-rgb), 0.06);
       color:var(--text);
     }
 
@@ -296,7 +364,7 @@
       bottom:6px;
       height:2px;
       border-radius:999px;
-      background: color-mix(in srgb, var(--primary) 45%, transparent);
+      background: rgba(var(--primary-rgb), 0.45);
       transform: scaleX(0);
       transform-origin:left;
       transition: transform .18s ease;
