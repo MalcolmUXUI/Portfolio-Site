@@ -9,8 +9,15 @@
   -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
   <title>We Three Media | Product Strategy, Visual Direction, Brand Styling</title>
   <meta name="description" content="Clear customer paths. Consistent interfaces. Brands people trust." />
+  <link rel="canonical" href="https://we3.design/" />
+  <meta property="og:title" content="We Three Media | Product Strategy, Visual Direction, Brand Styling" />
+  <meta property="og:description" content="Clear customer paths. Consistent interfaces. Brands people trust." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://we3.design/" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <style>
     @layer tokens, base, components, utilities;
@@ -32,7 +39,12 @@
         --space-6: 40px;
         --space-7: 56px;
         --space-8: 72px;
-
+        /* Breakpoints (Webflow-ish defaults + large desktop) */
+        --bp-xs: 480px;
+        --bp-sm: 720px;
+        --bp-md: 960px;
+        --bp-lg: 1200px;
+        --bp-xl: 1440px;
         /* Surfaces */
         --surface-base: #F4EFE7;
         --surface-base-rgb: 244, 239, 231;
@@ -52,6 +64,14 @@
         --accent-warm-rgb: 196, 98, 42;
         --accent-rare: #9B7AF7;
         --accent-rare-rgb: 155, 122, 247;
+        --brand: var(--primary);
+        --accent: var(--accent-warm);
+        --success: var(--ink-lime);
+
+        /* Dot colors: token-based so they adapt with themes */
+        --dot-15: var(--accent-warm);
+        --dot-30: color-mix(in srgb, var(--ink-lime) 60%, var(--accent-warm) 40%);
+        --dot-60: color-mix(in srgb, var(--accent) 70%, var(--ink-teal) 30%);
 
         /* Derived utility */
         --link: var(--primary);
@@ -92,11 +112,30 @@
         --surface-bottom: var(--surface-base);
         --card-top: #FFFCF6;
         --card-bottom: #FFFCF7;
+        --moon-phase: 0;
+        --sun-core: #ffd55e;
+        --sun-glow: rgba(255, 213, 94, 0.7);
+        --moon-core: #ced4e1;
         --surface-card-soft-96: #FFFCF6;
         --surface-card-soft-86: #FFFCF7;
         --wash1: rgba(var(--accent-warm-rgb), 0.24);
         --wash2: rgba(var(--primary-rgb), 0.20);
         --wash3: rgba(var(--accent-rare-rgb), 0.18);
+
+        /* Glass */
+        --glass-surface: rgba(var(--surface-card-rgb), 0.55);
+        --glass-surface-strong: rgba(var(--surface-card-rgb), 0.85);
+        --glass-tint: rgba(var(--primary-rgb), 0.10);
+        --glass-stroke: rgba(var(--text-rgb), 0.14);
+        --glass-stroke-strong: rgba(var(--text-rgb), 0.22);
+        --glass-sheen: rgba(255,255,255,0.55);
+        --glass-sheen-strong: rgba(255,255,255,0.86);
+        --glass-shadow: 0 18px 36px rgba(17,20,24,.14);
+        --glass-shadow-hover: 0 22px 44px rgba(17,20,24,.18);
+        --glass-shadow-press: 0 12px 24px rgba(17,20,24,.12);
+        --glass-inner: inset 0 1px 0 rgba(255,255,255,.65);
+        --hero-title-size: clamp(42px, 6vw, 68px);
+        --section-gap: clamp(80px, calc(0.4vw + 76px), 100px);
       }
 
       [data-theme="dark"] {
@@ -137,11 +176,27 @@
         --wash2: rgba(var(--primary-rgb), 0.18);
         --wash3: rgba(var(--accent-rare-rgb), 0.16);
 
+        --glass-surface: rgba(var(--surface-card-rgb), 0.60);
+        --glass-surface-strong: rgba(var(--surface-card-rgb), 0.86);
+        --glass-tint: rgba(var(--primary-rgb), 0.18);
+        --glass-stroke: rgba(255,255,255,0.18);
+        --glass-stroke-strong: rgba(255,255,255,0.28);
+        --glass-sheen: rgba(255,255,255,0.18);
+        --glass-sheen-strong: rgba(255,255,255,0.35);
+        --glass-shadow: 0 16px 32px rgba(0,0,0,.45);
+        --glass-shadow-hover: 0 22px 44px rgba(0,0,0,.55);
+        --glass-shadow-press: 0 12px 24px rgba(0,0,0,.42);
+        --glass-inner: inset 0 1px 0 rgba(255,255,255,.08);
+
         --ink-amber: #F5A621;
         --ink-lime: #BCC955;
         --ink-teal: #26827A;
         --ink-cyan: #6FADF8;
         --ink-lavender: #A486F6;
+
+        --dot-15: color-mix(in srgb, var(--accent-warm) 90%, #000 10%);
+        --dot-30: color-mix(in srgb, var(--ink-lime) 60%, var(--card-top, #0B1C2A) 40%);
+        --dot-60: color-mix(in srgb, var(--accent) 70%, var(--card-top, #0B1C2A) 30%);
       }
 
       @media (prefers-color-scheme: dark) {
@@ -175,12 +230,26 @@
           --wash2: rgba(var(--primary-rgb), 0.18);
           --wash3: rgba(var(--accent-rare-rgb), 0.16);
 
-          --ink-amber: #F5A621;
-          --ink-lime: #BCC955;
-          --ink-teal: #26827A;
-          --ink-cyan: #6FADF8;
-          --ink-lavender: #A486F6;
-        }
+          --glass-surface: rgba(var(--surface-card-rgb), 0.60);
+          --glass-surface-strong: rgba(var(--surface-card-rgb), 0.86);
+          --glass-tint: rgba(var(--primary-rgb), 0.18);
+          --glass-stroke: rgba(255,255,255,0.18);
+          --glass-stroke-strong: rgba(255,255,255,0.28);
+          --glass-sheen: rgba(255,255,255,0.18);
+          --glass-sheen-strong: rgba(255,255,255,0.35);
+          --glass-shadow: 0 16px 32px rgba(0,0,0,.45);
+          --glass-shadow-hover: 0 22px 44px rgba(0,0,0,.55);
+          --glass-shadow-press: 0 12px 24px rgba(0,0,0,.42);
+        --glass-inner: inset 0 1px 0 rgba(255,255,255,.08);
+
+        --ink-amber: #F5A621;
+        --ink-lime: #BCC955;
+        --ink-teal: #26827A;
+        --ink-cyan: #6FADF8;
+        --ink-lavender: #A486F6;
+
+        --moon-core: #1F273A;
+      }
       }
     }
 
@@ -193,6 +262,8 @@
       html{ scroll-behavior:smooth; }
 
       body{
+        min-height: 100vh;
+        width: 100%;
         margin:0;
         font: 16px/1.65 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         color: var(--text);
@@ -205,7 +276,7 @@
           linear-gradient(180deg, var(--surface-top), var(--surface-bottom));
       }
 
-      html{ background: var(--surface-base); color: var(--text); }
+      html, body{ background: var(--surface-base); color: var(--text); width: 100%; }
 
       /* Global small body copy style */
       .fine{
@@ -213,6 +284,7 @@
         line-height: 1.65;
         color: var(--text-muted);
       }
+      .no-italic{ font-style: normal; }
 
       a{
         color: var(--link);
@@ -220,9 +292,21 @@
         text-underline-offset: 2px;
       }
 
+      /* ============================================================
+         Global focus styles (keyboard-first, calm, consistent)
+         ============================================================ */
+      :focus{ outline:none; }
+
       :focus-visible{
-        outline: 3px solid var(--focus-ring);
-        outline-offset: 2px;
+        outline: 3px solid color-mix(in srgb, var(--accent) 70%, transparent);
+        outline-offset: 3px;
+        border-radius: calc(var(--radius) + 2px);
+      }
+
+      /* For links specifically (so focus isn’t lost on inline text) */
+      a:focus-visible{
+        text-decoration: underline;
+        text-underline-offset: 3px;
       }
 
       .wrap{ max-width:var(--max); margin:0 auto; padding:var(--space-4); }
@@ -281,24 +365,101 @@
        3) Components
        ============================================================ */
     @layer components {
+    .skip-link{
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      z-index: 1000;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(var(--surface-card-rgb), 0.92);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      box-shadow: var(--shadow);
+      transform: translateY(-160%);
+      transition: transform .18s ease;
+    }
+
+    .skip-link:focus{
+      transform: translateY(0);
+    }
     .nav{
-      position:sticky;
-      top:0;
-      z-index:50;
-      -webkit-backdrop-filter: saturate(180%) blur(10px);
-      backdrop-filter:saturate(180%) blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
       background: rgba(var(--surface-card-rgb), 0.82);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      backdrop-filter: saturate(180%) blur(10px);
       border-bottom: 1px solid var(--divider);
+      box-shadow: 0 1px 0 rgba(255,255,255,.4) inset;
+      transition: transform .25s ease;
+    }
+    .nav.nav-hidden{
+      transform: translateY(-110%);
     }
 
     .nav-inner{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:14px 24px;
-      display:flex;
+      max-width: var(--max);
+      width: 100%;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+    .nav-toggle{
+      display:none;
       align-items:center;
-      justify-content:space-between;
-      gap:16px;
+      justify-content:center;
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .mobile-nav-panel{
+      position: fixed;
+      inset: 0;
+      background: rgba(var(--surface-card-rgb), 0.96);
+      backdrop-filter: saturate(160%) blur(14px);
+      padding: 120px 24px 32px;
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 60;
+      border-top: 1px solid var(--divider);
+      box-shadow: 0 18px 40px rgba(0,0,0,.28);
+    }
+    .mobile-nav-panel.is-open{
+      display: flex;
+    }
+    .mobile-nav-panel a{
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .mobile-nav-close{
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      border: 0;
+      background: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text);
+    }
+    body.nav-open{
+      overflow: hidden;
     }
 
     .brand{
@@ -308,7 +469,10 @@
       font-weight:700;
       letter-spacing:.2px;
       text-decoration: none;
+      color: inherit;
     }
+
+    .brand:hover{ opacity: .92; }
 
     .brand .brand-meta{
       font-weight:500;
@@ -340,7 +504,7 @@
       gap:14px;
     }
 
-    .nav-links a{
+    .nav-links a:not(.btn){
       padding:8px 10px;
       border-radius:12px;
       color:var(--text-muted);
@@ -348,14 +512,35 @@
       position:relative; /* needed for underline effect */
       text-decoration: none;
     }
+    @media (max-width: 720px){
+      .nav-links{ display: none; }
+      .nav-toggle{ display: inline-flex; }
+    }
 
-    .nav-links a:hover{
+    @media (max-width: 880px){
+      .nav-inner{ gap:12px; }
+      .brand{
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+      }
+      .brand-meta{
+        width: 100%;
+        font-size: 14px;
+      }
+    }
+
+    .nav-links a:not(.btn):hover{
+      background: rgba(var(--text-rgb), 0.06);
+      color:var(--text);
+    }
+    .nav-links a:not(.btn):focus-visible{
       background: rgba(var(--text-rgb), 0.06);
       color:var(--text);
     }
 
     /* Underline effect (NAV ONLY) */
-    .nav-links a::after{
+    .nav-links a:not(.btn)::after{
       content:"";
       position:absolute;
       left:10px;
@@ -368,76 +553,149 @@
       transform-origin:left;
       transition: transform .18s ease;
     }
-    .nav-links a:hover::after{ transform: scaleX(1); }
+    .nav-links a:not(.btn):hover::after{ transform: scaleX(1); }
+    .nav-links a:not(.btn):focus-visible::after{ transform: scaleX(1); }
 
     /* ============================================================
        5) Buttons
        ============================================================ */
     .btn{
+      position: relative;
+      overflow: hidden;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:0.65rem 0.9rem;
-      border-radius:14px;
-      border:1px solid rgba(var(--text-rgb), 0.12);
+      padding:0.7rem 1.1rem;
+      border-radius:999px;
+      border:1px solid var(--glass-stroke);
       background:
         linear-gradient(180deg,
-          rgba(255,255,255,0.65),
-          rgba(var(--surface-card-rgb), 0.85)),
-        rgba(var(--primary-rgb), 0.16);
+          var(--glass-sheen-strong) 0%,
+          rgba(255,255,255,0) 62%),
+        linear-gradient(180deg,
+          var(--glass-surface-strong),
+          var(--glass-surface)),
+        var(--glass-tint);
       color: var(--text);
       font-weight:600;
       text-decoration: none;
       transition: transform .15s ease,
-        background .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease;
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease,
+        filter .25s ease;
       will-change: transform;
-      -webkit-backdrop-filter: blur(10px) saturate(140%);
-      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      backdrop-filter: blur(16px) saturate(160%);
       box-shadow:
-        0 10px 24px rgba(17,20,24,.10),
-        inset 0 1px 0 rgba(255,255,255,.65);
+        var(--glass-shadow),
+        var(--glass-inner),
+        inset 0 -1px 0 rgba(0,0,0,.04);
+    }
+
+    .btn::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius: inherit;
+      background:
+        radial-gradient(120% 120% at 15% -20%,
+          var(--glass-sheen-strong),
+          rgba(255,255,255,0) 60%);
+      opacity: .7;
+      transform: translateX(-8%);
+      transition: opacity .25s ease, transform .45s ease;
+      pointer-events:none;
+    }
+
+    .btn::after{
+      content:"";
+      position:absolute;
+      inset:1px;
+      border-radius: inherit;
+      border:1px solid var(--glass-sheen);
+      opacity: .65;
+      pointer-events:none;
     }
 
     .btn:hover{
       transform: translateY(-1px);
       background:
         linear-gradient(180deg,
-          rgba(255,255,255,0.75),
-          rgba(var(--surface-card-rgb), 0.95)),
-        rgba(var(--primary-rgb), 0.22);
-      border-color: rgba(var(--text-rgb), 0.18);
+          var(--glass-sheen-strong) 0%,
+          rgba(255,255,255,0) 58%),
+        linear-gradient(180deg,
+          var(--glass-surface-strong),
+          var(--glass-surface)),
+        rgba(var(--primary-rgb), 0.18);
+      border-color: var(--glass-stroke-strong);
       box-shadow:
-        0 14px 30px rgba(17,20,24,.14),
-        inset 0 1px 0 rgba(255,255,255,.75);
+        var(--glass-shadow-hover),
+        var(--glass-inner),
+        inset 0 -1px 0 rgba(0,0,0,.06);
+      filter: saturate(1.05);
+    }
+
+    .btn:hover::before{
+      opacity: .9;
+      transform: translateX(0%);
     }
 
     .btn:active{
       transform: translateY(0px);
+      box-shadow:
+        var(--glass-shadow-press),
+        var(--glass-inner),
+        inset 0 -1px 0 rgba(0,0,0,.08);
+    }
+
+    .btn:active::before{
+      opacity: .55;
+      transform: translateX(-4%);
     }
 
     .ghost{
-      border:1px solid rgba(var(--text-rgb), 0.10);
+      border:1px solid rgba(var(--text-rgb), 0.12);
       background:
         linear-gradient(180deg,
-          rgba(255,255,255,0.60),
-          rgba(var(--surface-card-rgb), 0.80));
+          var(--glass-sheen) 0%,
+          rgba(255,255,255,0) 70%),
+        rgba(var(--surface-card-rgb), 0.38);
       color: var(--text);
       text-decoration: none;
+      box-shadow:
+        0 10px 20px rgba(17,20,24,.08),
+        inset 0 1px 0 rgba(255,255,255,.55);
     }
 
     .ghost:hover{
       background:
         linear-gradient(180deg,
-          rgba(255,255,255,0.70),
-          rgba(var(--surface-card-rgb), 0.95));
+          var(--glass-sheen-strong) 0%,
+          rgba(255,255,255,0) 65%),
+        rgba(var(--surface-card-rgb), 0.48);
+      border-color: var(--glass-stroke-strong);
+      box-shadow:
+        0 14px 26px rgba(17,20,24,.12),
+        inset 0 1px 0 rgba(255,255,255,.65);
+    }
+
+    .ghost::before{
+      opacity: .45;
+    }
+
+    .ghost:hover::before{
+      opacity: .65;
     }
 
     /* ============================================================
        6) Hero
        ============================================================ */
-    header{ padding:56px 0 22px; }
+    header{
+      padding:56px 0 0;
+      position: relative;
+      margin-bottom:100px;
+    }
 
     .kicker{
       display:inline-flex;
@@ -456,18 +714,19 @@
     }
 
     h1{
-      margin:18px 0 10px;
-      font-size: clamp(42px, 6vw, 68px);
+      margin:18px 0 18px;
+      font-size: var(--hero-title-size);
       line-height:1.16;
       letter-spacing:-.6px;
       text-align:center;
     }
 
     .subhead{
-      max-width: 70ch;
+      max-width: 66.6%;
       font-size: 18px;
       color: var(--text-muted);
-      margin: 0 0 18px;
+      padding: 0 16px;
+      margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
       line-height: 1.65;
       text-align:center;
       margin-left:auto;
@@ -479,13 +738,32 @@
       gap:12px;
       flex-wrap:wrap;
       margin-top:14px;
-      justify-content:flex-end;
+      justify-content:center;
     }
 
     /* ============================================================
        7) Sections (titles, ledes)
        ============================================================ */
-    section{ padding:var(--space-7) 0; }
+    section{
+      padding:0;
+      margin: 100px 0;
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+    }
+    section:first-of-type{
+      margin-top: 0;
+      border-top: 0;
+    }
+
+    .ticker-section,
+    .fortune-section{
+      position: relative;
+    }
+
+    #work{
+      padding-top: 100px;
+      margin-top: 0;
+    }
 
     .section-title{
       margin:0 0 8px;
@@ -513,9 +791,9 @@
     }
 
     .section-lede{
-      margin:0 0 18px;
+      margin:0 0 16px;
       color: var(--text-muted);
-      max-width: 75ch;
+      max-width: 66.6ch;
       line-height: 1.65;
     }
 
@@ -859,49 +1137,293 @@
     .card{
       grid-column: span 12;
       padding:var(--space-4);
+      display:grid;
+      grid-template-rows: auto auto 1fr auto;
+      row-gap: 12px;
     }
 
     .card h3{
-      margin:0 0 6px;
+      margin:0;
       font-size: 26px;
     }
 
+    .meta strong,
+    .fine strong,
+    .win strong{
+      color: var(--text);
+      font-weight: 800;
+    }
+
     .meta{
-      color: var(--text-muted);
-      margin:0 0 10px;
+      margin:0;
       line-height: 1.6;
     }
 
+    .card .fine{
+      margin:0;
+    }
+
     .win{
-      margin:12px 0 0;
-      padding-top:12px;
-      border-top:1px solid var(--divider);
+      margin:0;
+    }
+
+    .proofline{
+      margin: 6px 0 0;
+    }
+
+    .proofline strong{
       color: var(--text);
-      font-weight:600;
+      font-weight: 700;
     }
 
-    .pillrow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:10px;
+    /* ============================================================
+       Ticker Tape (analog paper strip)
+       ============================================================ */
+    .ticker-bleed{
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 0;
+      height: 50px;
+      margin: 0;
+      padding: 0;
+    }
+    .ticker-clip{
+      position: relative;
+      height: 50px;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .ticker-bleed::before{
+      content:"";
+      position:absolute;
+      inset: 6px 0 6px 10px;
+      border-top: 1px solid #fff;
+      border-bottom: 0;
+      background: #fcfcfc;
+      box-shadow:
+        0 6px 10px -8px rgba(17,20,24,.10);
+      pointer-events:none;
+      z-index: 1;
     }
 
-    .pill{
-      font-size: 13px;
-      padding:6px 10px;
-      border-radius:999px;
-      background: rgba(17,20,24,.04);
-      border:1px solid var(--border);
+    .ticker-label{
+      margin: 24px 0 6px;
+      margin-left: 24px;
+    }
+
+    #tickerTape{
+      position: absolute;
+      inset: 6px 0 6px 10px;
+      z-index: 2;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      will-change: transform;
+      transform: translate3d(0,0,0);
+    }
+
+    .tape-edge{
+      display: none;
+    }
+
+    .tape-track{
+      position: absolute;
+      inset: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 22px;
+      white-space: nowrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(17,20,24,.78);
+      --tape-ink: rgba(17,20,24,.78);
+      --tape-dot-size: 1.5px;
+      --tape-dot-ink: 0.5px;
+      --tape-dot-clear: 0.9px;
+      text-shadow:
+        0.6px 0 rgba(0,0,0,.10),
+        -0.6px 0 rgba(0,0,0,.06);
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    .tape-run{
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      padding-right: 18px;
+    }
+
+    .tape-item{
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 0;
+    }
+
+    .tape-key{
+      font-weight: 800;
+      color: rgba(17,20,24,.86);
+      --tape-ink: rgba(17,20,24,.86);
+    }
+
+    .tape-sep{
+      opacity: .55;
+    }
+
+    .tape-val{
+      font-style: italic;
+      font-weight: 500;
+      letter-spacing: .03em;
+      opacity: .72;
+      text-transform: none;
+    }
+
+    .tape-track .tape-key,
+    .tape-track .tape-val,
+    .tape-track .tape-sep{
+      background-image:
+        radial-gradient(circle, var(--tape-ink) var(--tape-dot-ink), transparent var(--tape-dot-clear));
+      background-size: var(--tape-dot-size) var(--tape-dot-size);
+      background-position: 0 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      filter: contrast(1.22) saturate(0.92);
+      text-shadow: none;
+    }
+
+
+    .ticker-controls-row{
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .ticker-controls{
+      grid-column: 2;
+      display: inline-flex;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+    }
+    .ticker-btn{
+      display: inline-flex;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      max-width: 32px;
+      flex: 0 0 32px;
+      position: relative;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+      overflow: visible;
+      font-size: 20px;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      transition: transform .22s ease;
+    }
+    .ticker-btn .speed-label{
+      position: absolute;
+      top: 50%;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
       color: var(--text-muted);
-      text-transform: none; /* content is already Title Case */
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(-50%) scale(0.98);
+      transition: opacity .18s ease, transform .18s ease;
+      pointer-events: none;
+    }
+    .ticker-btn .speed-label--left{
+      right: 100%;
+      margin-right: 8px;
+    }
+    .ticker-btn .speed-label--right{
+      left: 100%;
+      margin-left: 8px;
+    }
+    .ticker-btn:hover .speed-label,
+    .ticker-btn:focus-visible .speed-label{
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+    .ticker-btn .ticker-icon{
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+    .ticker-btn::before,
+    .ticker-btn::after{
+      content: none;
+    }
+    .ticker-btn:hover,
+    .ticker-btn:active{
+      transform: scale(1.1);
+      background: none;
+      box-shadow: none;
+      filter: none;
+    }
+    .ticker-helper{
+      grid-column: 3;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 32px;
+      justify-self: end;
+      text-align: right;
+      max-width: 48ch;
+      margin-right: 24px;
+    }
+    @media (max-width: 720px){
+      .ticker-controls-row{
+        grid-template-columns: 1fr;
+        justify-items: center;
+        row-gap: 8px;
+      }
+      .ticker-controls{ grid-column: 1; }
+      .ticker-helper{
+        grid-column: 1;
+        justify-content: center;
+        justify-self: center;
+        text-align: center;
+      }
     }
 
-    .pill--desktop { display: none; }
+    @media (prefers-reduced-motion: reduce){
+      #tickerTape{ transform: none !important; }
+    }
 
-    @media (min-width: 840px) {
-      /* Responsive pill density: show extra pills on desktop only. */
-      .pill--desktop { display: inline-flex; }
+    .ticker-section{
+      margin: -60px 0 -60px 0;
+      padding: 0;
+      border-radius: 0;
+      border: 0;
+      background: none;
+      box-shadow: none;
+      overflow: visible;
     }
 
     /* ============================================================
@@ -1229,7 +1751,8 @@
     .fortune-wrap{
       position: relative;
       padding: 0 80px 0 0;
-      margin: -40px 0 -10px;
+      margin: -120px 0 -80px 0;
+      overflow: visible;
       display: flex;
       justify-content: flex-end;
     }
@@ -1425,116 +1948,491 @@
     }
 
     @media (max-width: 700px){
-      .fortune-wrap{ padding: 0; justify-content: center; margin: 0; }
-      .fortune-stage{ width: 100%; min-height: 240px; }
+      .fortune-wrap{ padding: 0; justify-content: center; margin: calc(-1 * var(--section-gap)) 0 var(--section-gap) 0; }
+      .fortune-stage{ width: 100%; min-height: 200px; }
       .cookie{ left: 50%; right: auto; transform: translateX(-50%); }
     }
 
     /* ============================================================
-       13) Calendly Schedule Cards
+       13) Calendly Schedule Cards (clean + consistent)
        ============================================================ */
+
     .schedule-grid{
       display:grid;
+      gap: var(--space-4);
       grid-template-columns: 1fr;
-      gap:var(--space-4);
       align-items: stretch;
     }
 
+    /* Use the shared surface style, but make schedule cards behave like real buttons */
+    /* Make schedule cards feel like tappable tiles */
     .schedule-card{
-      -webkit-appearance:none;
       appearance:none;
+      -webkit-appearance:none;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at 20% -20%, rgba(var(--primary-rgb),0.14), transparent 45%),
+        linear-gradient(180deg, rgba(var(--surface-card-rgb),0.95), rgba(var(--surface-card-rgb),0.9));
+      box-shadow:
+        0 16px 30px rgba(15,26,36,0.12),
+        0 4px 12px rgba(255,255,255,0.42) inset;
+      padding: 28px 26px;
       text-align:left;
       width:100%;
-      padding:var(--space-4);
       cursor:pointer;
       font: inherit;
       color: inherit;
+
+      display:flex;
+      flex-direction: column;
+      gap:14px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+
+      transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+    }
+
+    /* Thin brand bar like your other surfaces */
+    .schedule-card::before{
+      content:"";
+      position:absolute;
+      inset: 0;
+      z-index:-1;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 80% 0, rgba(255,255,255,0.2), transparent 50%),
+        linear-gradient(180deg, rgba(var(--surface-card-rgb),0.98), rgba(var(--surface-card-rgb),0.88));
+    }
+
+    /* Hover/press: subtle, not “game UI” */
+    /* Accessible, good-looking focus ring */
+    /* Accessible, good-looking focus ring */
+    .schedule-card:focus { outline: none; }
+
+    .schedule-card:focus-visible{
+      outline: 3px solid color-mix(in srgb, var(--accent), white 20%);
+      outline-offset: 3px;
+      border-radius: calc(var(--radius) + 2px);
+    }
+
+    /* Nice micro-interaction for mouse users */
+    .schedule-card:hover{
+      transform: translateY(-4px);
+      box-shadow:
+        0 22px 40px rgba(15,26,36,0.24),
+        0 6px 20px rgba(255,255,255,0.3) inset;
+    }
+
+    .schedule-card:active{
+      transform: translateY(0px);
+      box-shadow:
+        0 14px 32px rgba(17,20,24,.12),
+        inset 0 0 0 rgba(255,255,255,0);
+    }
+
+        /* ============================================================
+       Pomodoro timer badge (bottom-right) + hover wiggle
+       - Fixes conic seam artifacts
+       - Adds segmented “LCD wedge” fill
+       ============================================================ */
+
+    /* Make custom property animatable so the sweep is smooth */
+    @property --pomo-fill{
+      syntax: "<number>";
+      inherits: true;
+      initial-value: 0;
+    }
+
+    .pomo{
+      --pomo-size: 44px;
+      --pomo-fill-target: 0.25;
+      --pomo-fill: 0;
+      --pomo-ring: rgba(var(--text-rgb), 0.14);
+      --pomo-fill-ink: rgba(var(--primary-rgb), 0.88);
+      --seg-count: 60;
+      --seg-gap-deg: 0.75deg;
+      --ring-cut: 62%;
+      --ring-thickness: 64%;
+
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: var(--pomo-size);
+      height: var(--pomo-size);
+      border-radius: 999px;
+      border: 1px solid var(--pomo-ring);
+      box-shadow: 0 8px 18px rgba(17,20,24,.10);
+      overflow: hidden;
+      isolation: isolate;
+      pointer-events: auto;
+      transform-origin: 50% 85%;
+      will-change: transform;
+
+      background:
+        radial-gradient(circle at 35% 30%,
+          rgba(255,255,255,.55),
+          rgba(255,255,255,0) 58%),
+        rgba(var(--surface-card-rgb), 0.70);
+    }
+
+    .pomo::before{
+      content:"";
+      position:absolute;
+      inset: 0;
+      border-radius: inherit;
+      z-index: 0;
+      background:
+        conic-gradient(
+          from -90deg,
+          var(--pomo-fill-ink) 0turn calc(var(--pomo-fill) * 1turn),
+          rgba(0,0,0,0) calc(var(--pomo-fill) * 1turn) 1turn
+        );
+      -webkit-mask-image:
+        repeating-conic-gradient(
+          from -90deg,
+          #000 0deg calc((360deg / var(--seg-count)) - var(--seg-gap-deg)),
+          transparent calc((360deg / var(--seg-count)) - var(--seg-gap-deg)) calc(360deg / var(--seg-count))
+        ),
+        radial-gradient(circle, transparent 0 var(--ring-cut), #000 var(--ring-thickness) 100%);
+      -webkit-mask-composite: source-in;
+      mask-image:
+        repeating-conic-gradient(
+          from -90deg,
+          #000 0deg calc((360deg / var(--seg-count)) - var(--seg-gap-deg)),
+          transparent calc((360deg / var(--seg-count)) - var(--seg-gap-deg)) calc(360deg / var(--seg-count))
+        ),
+        radial-gradient(circle, transparent 0 var(--ring-cut), #000 var(--ring-thickness) 100%);
+      mask-composite: intersect;
+      filter: saturate(1.02);
+    }
+
+    .pomo::after{
+      content:"";
+      position:absolute;
+      inset: 8px;
+      border-radius: 999px;
+      z-index: 1;
+      background: rgba(var(--surface-card-rgb), 0.80);
+      border: 1px solid rgba(var(--text-rgb), 0.10);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+    }
+
+    .pomo-15{ --pomo-fill-target: 0.25; }
+    .pomo-30{ --pomo-fill-target: 0.50; }
+    .pomo-60{ --pomo-fill-target: 1.00; }
+
+    .schedule-card:hover .pomo,
+    .schedule-card:focus-visible .pomo{
+      --pomo-fill: var(--pomo-fill-target);
+      transition: --pomo-fill 520ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    .pomo:hover{
+      animation: alarmWiggle 520ms ease-in-out infinite;
+    }
+
+    @keyframes alarmWiggle{
+      0%{ transform: rotate(0deg) translateY(0); }
+      12%{ transform: rotate(-6deg) translateY(-1px); }
+      24%{ transform: rotate(6deg) translateY(0); }
+      36%{ transform: rotate(-5deg) translateY(-1px); }
+      48%{ transform: rotate(5deg) translateY(0); }
+      60%{ transform: rotate(-3deg) translateY(-1px); }
+      72%{ transform: rotate(3deg) translateY(0); }
+      100%{ transform: rotate(0deg) translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .pomo:hover{ animation: none; }
+      .schedule-card:hover .pomo,
+      .schedule-card:focus-visible .pomo{
+        transition: none;
+      }
+    }
+@media (prefers-reduced-motion: reduce){
+      .pomo:hover{ animation: none; }
+      .schedule-card:hover .pomo,
+      .schedule-card:focus-visible .pomo{
+        transition: none;
+      }
+    }
+
+    .schedule-body{
+      flex: 1;
+    }
+
+    .schedule-footer{
+      margin-top: 16px;
       display:flex;
       flex-direction:column;
-      height:100%;
+      gap:6px;
     }
 
-    .schedule-card:focus{ outline: none; }
-    .schedule-card.surface:hover{
-      transform: translateY(-2px);
-      border-color: rgba(var(--primary-rgb), 0.25);
-      box-shadow: 0 22px 52px rgba(17,20,24,.14);
-      background: linear-gradient(180deg,
-        var(--surface-card-soft-96),
-        var(--surface-card-soft-86));
-    }
-
+    /* Layout pieces */
+    /* These margins become redundant once gap is doing the work */
     .schedule-top{
       display:flex;
-      align-items:flex-start;
-      gap:12px;
-      margin-bottom:10px;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 0;
     }
 
     .schedule-dot{
-      width:14px;
-      height:14px;
-      border-radius:999px;
-      margin-top:6px;
-      flex: 0 0 14px;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      margin-top: 6px;
+      flex: 0 0 12px;
+      box-shadow: 0 0 0 8px rgba(var(--primary-rgb), 0.12);
     }
 
-    .dot-15{ background: var(--hl-amber); }
-    .dot-30{ background: var(--hl-teal); }
-    .dot-60{ background: var(--hl-lavender); }
+    .dot-15{ background: var(--dot-15); }
+    .dot-30{ background: var(--dot-30); }
+    .dot-60{ background: var(--dot-60); }
 
     .schedule-title{
       margin:0;
-      font-size: 26px;
-      line-height: 1.2;
+      font-size: 22px;
+      line-height: 1.18;
       letter-spacing: -.2px;
     }
 
     .schedule-sub{
-      margin:4px 0 0;
+      margin: 0;
       color: var(--text-muted);
       font-size: 14px;
       line-height: 1.45;
     }
 
     .schedule-desc{
-      margin:0;
+      margin: 0;
       color: var(--text-muted);
       font-size: 14px;
-      line-height: 1.65;
-      max-width: 75ch;
+      line-height: 1.6;
+      max-width: 70ch;
+      flex: 1;
     }
 
+    /* Make “Book” line sit at the bottom with subtle styling */
+    /* Push the CTA to the bottom so cards feel uniform */
     .schedule-cta{
-      margin-top:12px;
-      color: var(--primary);
-      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      font-weight: 700;
       font-size: 14px;
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color .22s ease;
+      padding: 0;
       margin-top:auto;
+      padding-top:8px;
     }
 
-    .schedule-footnote{
-      margin-top: 12px;
-      font-style: italic;
+    .schedule-card:hover .schedule-cta{
+      border-color: rgba(var(--primary-rgb), 0.35);
     }
 
     /* ============================================================
-       14) Footer
+       14) Coachmarks / Tooltips (Accessible Popovers)
+       ============================================================ */
+    .hero-theme-control{
+      position: absolute;
+      right: 0;
+      top: 12px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      overflow: visible;
+    }
+    .theme-toggle{
+      position: relative;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 0;
+      background:
+        radial-gradient(circle at 32% 32%,
+          rgba(255,255,255,.6) 0%,
+          rgba(255,244,215,.35) 20%,
+          rgba(255,214,128,.2) 48%,
+          rgba(255,180,90,.1) 70%,
+          transparent 90%),
+        radial-gradient(circle at 50% 60%,
+          #ffe7a2 0%,
+          #f0b45c 45%,
+          #e78c2a 75%,
+          #d25d06 100%);
+      box-shadow:
+        0 0 12px rgba(255, 190, 120, 0.45),
+        0 0 28px rgba(255, 140, 30, 0.25);
+      transition: box-shadow .25s ease, transform .15s ease;
+      cursor: pointer;
+      overflow: hidden;
+      isolation: isolate;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      will-change: transform;
+    }
+    .theme-toggle__glow{
+      position:absolute;
+      inset: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 25%,
+          rgba(255,245,204,.45) 0%,
+          rgba(255,213,128,.28) 35%,
+          rgba(255,184,90,0) 70%);
+      box-shadow:
+        0 0 10px rgba(255, 190, 140, 0.35),
+        0 0 22px rgba(255, 140, 50, 0.2);
+      z-index: -2;
+      animation: glowPulse 6s ease-in-out infinite;
+      pointer-events:none;
+    }
+    :root[data-theme="dark"] .theme-toggle__glow{
+      background:
+        radial-gradient(circle at 35% 35%,
+          rgba(255,255,255,0.18) 0%,
+          rgba(255,255,255,0) 55%),
+        radial-gradient(circle at 50% 50%,
+          rgba(145, 163, 195, 0.28) 0%,
+          rgba(95, 114, 144, 0) 70%);
+      box-shadow:
+        0 0 14px rgba(170, 190, 220, 0.24),
+        0 0 26px rgba(90, 115, 150, 0.18);
+    }
+    @keyframes glowPulse{
+      0%{ transform: scale(1); opacity: 0.85; }
+      50%{ transform: scale(1.06); opacity:0.98; }
+      100%{ transform: scale(1); opacity:0.85; }
+    }
+    .theme-toggle::before{
+      content:"";
+      position:absolute;
+      inset: 10%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 34%,
+          rgba(255,255,255,.40) 0%,
+          rgba(255,255,255,.18) 22%,
+          rgba(255,255,255,0) 52%);
+      opacity: .9;
+      pointer-events:none;
+      z-index: 1;
+    }
+    :root[data-theme="dark"] .theme-toggle{
+      background:
+        radial-gradient(circle at 30% 30%,
+          rgba(255,255,255,.35) 0%,
+          rgba(255,255,255,0) 45%),
+        radial-gradient(circle at 50% 55%,
+          #eef0f6 0%,
+          #cfd6e3 55%,
+          #9aa6bf 100%);
+      box-shadow:
+        0 0 14px rgba(255,255,255,.30),
+        inset 0 0 3px rgba(255,255,255,.2);
+    }
+    :root[data-theme="dark"] .theme-toggle::after{
+      content:"";
+      position:absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(7,18,45,.88);
+      transform: translateX(calc((var(--moon-phase) - 0.5) * 96px));
+      filter: blur(0.2px);
+      opacity: .9;
+      pointer-events:none;
+      z-index: 0;
+    }
+
+
+    /* ============================================================
+       15) Footer
        ============================================================ */
     footer{
       padding:24px 0;
       color: var(--text-muted);
       border-top: 1px solid var(--divider);
-      margin-top: 22px;
+      margin-top: var(--section-gap);
+      text-align: center;
     }
 
     /* ============================================================
-       15) Responsive rules
+       Responsive rules (5 breakpoints)
+       Breakpoints:
+       - xs: <= 480px (mobile portrait)
+       - sm: 481–720px (mobile landscape / small)
+       - md: 721–960px (tablet)
+       - lg: 961–1200px (small desktop / laptop)
+       - xl: >= 1440px (large desktop / ultra-wide)
        ============================================================ */
-    @media (min-width: 840px){
+
+    /* XS: Mobile portrait */
+    @media (max-width: var(--bp-xs)){
+      .wrap{ padding: var(--space-3); }
+
+      .subhead{
+        max-width: 100%;
+        padding: 0 18px;
+        margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
+      }
+
+      .schedule-grid{ gap: var(--space-3); }
+      .schedule-card{ padding: 18px 16px 16px; }
+      .schedule-title{ font-size: 20px; }
+      .schedule-desc{ font-size: 13px; line-height: 1.55; }
+
+      .fortune-wrap{ padding: 0; justify-content: center; }
+    }
+
+    /* SM: Mobile landscape / small */
+    @media (min-width: calc(var(--bp-xs) + 1px)) and (max-width: var(--bp-sm)){
+      .wrap{ padding: var(--space-4); }
+
+      .subhead{
+        max-width: 100%;
+        padding: 0 28px;
+        margin: calc(var(--hero-title-size) / 3) 28px var(--hero-title-size);
+      }
+
+      .schedule-grid{ gap: var(--space-3); }
+
+      .fortune-wrap{ padding: 0; justify-content: center; }
+    }
+
+    /* MD: Tablet */
+    @media (min-width: calc(var(--bp-sm) + 1px)) and (max-width: var(--bp-md)){
+      .wrap{ padding: var(--space-5); }
+
+      .subhead{ max-width: 72ch; }
+
+      .about-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* LG: Desktop / laptop */
+    @media (min-width: calc(var(--bp-md) + 1px)) and (max-width: var(--bp-lg)){
       .about-grid{ grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .schedule-grid{ grid-template-columns: 1fr 1fr 1fr; }
       .card{ grid-column: span 4; }
+
+      .schedule-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .schedule-card{ padding: 22px 22px 20px; }
+    }
+
+    /* XL: Large desktop / ultra-wide (polish only) */
+    @media (min-width: var(--bp-xl)){
+      :root{ --max: 1200px; }
+
+      section{ margin: 120px 0; }
+      header{ margin-bottom: 120px; }
+
+      .section-lede{ max-width: 72ch; }
+      .subhead{ max-width: 72ch; }
+      :root{ --section-gap: calc(var(--space-7) + 44px); }
     }
 
     /* ============================================================
@@ -1555,15 +2453,37 @@
       .mt-16{ margin-top:16px; }
       .mb-8{ margin-bottom:8px; }
       .m-0{ margin:0; }
+      .sr-only{
+        position:absolute;
+        width:1px;
+        height:1px;
+        padding:0;
+        margin:-1px;
+        overflow:hidden;
+        clip: rect(0,0,0,0);
+        white-space:nowrap;
+        border:0;
+      }
+      .sr-only.is-visible{
+        position:static;
+        width:auto;
+        height:auto;
+        margin:8px 0 0;
+        overflow:visible;
+        clip:auto;
+        white-space:normal;
+      }
     }
   </style>
 
   <!-- Calendly popup widget assets -->
+  <link rel="preconnect" href="https://assets.calendly.com" crossorigin>
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
   <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 </head>
 
 <body>
+  <a class="skip-link" href="#top">Skip to main content</a>
   <!-- ==========================================================
        Sticky Navigation
        ========================================================== -->
@@ -1581,8 +2501,18 @@
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#work">Work</a>
         <a href="#about">About</a>
-        <a class="btn" href="#contact">Let’s Talk</a>
+        <a class="btn" href="#contact">Book a Call</a>
       </nav>
+      <button class="nav-toggle" type="button" aria-controls="mobileNavPanel" aria-expanded="false">
+        <span class="sr-only">Open navigation</span>
+        <span aria-hidden="true">☰</span>
+      </button>
+    </div>
+    <div class="mobile-nav-panel" id="mobileNavPanel" aria-hidden="true">
+      <button class="mobile-nav-close" type="button" aria-label="Close navigation">✕</button>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a class="btn" href="#contact">Book a Call</a>
     </div>
   </div>
 
@@ -1594,14 +2524,22 @@
       <h1>Clear customer paths.<br>Consistent interfaces.<br>Brands people trust.</h1>
 
       <p class="subhead">
-        I help teams untangle complex work and turn it into clear, buildable systems people can actually use.
+        I help teams turn messy workflows into clear, buildable systems, so people move faster, make fewer mistakes, and trust what they’re looking at. I work across product strategy, visual direction, and branding systems when the work is complex and the stakes are real.
       </p>
 
-      <div class="hero-actions">
-        <a class="btn" href="#work">See Case Studies</a>
-        <a class="btn ghost" href="#contact">Book a Call</a>
-      </div>
-    </header>
+    <div class="hero-actions">
+      <a class="btn" href="#work">See Case Studies</a>
+      <a class="btn ghost" href="#contact">Book a Call</a>
+    </div>
+
+    <div class="hero-theme-control" aria-live="polite">
+      <span class="sr-only">Theme follows your system preference.</span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+        <span class="sr-only">Toggle theme</span>
+        <span class="theme-toggle__glow" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
 
     
     
@@ -1629,58 +2567,98 @@
       <div class="grid">
         <article class="card surface">
           <h3>BigIron</h3>
-          <p class="meta">Item-focused redesign for inventory intake and operational workflows across teams.</p>
-          <div class="pillrow" aria-label="Key skills used">
-            <!-- Mobile-first (core set) -->
-            <span class="pill">Workflow Design</span>
-            <span class="pill">Operational UX</span>
-            <span class="pill">Role-Based Paths</span>
-
-            <!-- Desktop-only (adds richness) -->
-            <span class="pill pill--desktop">Intake Standardization</span>
-            <span class="pill pill--desktop">Edge Cases</span>
-            <span class="pill pill--desktop">Handoff Clarity</span>
-          </div>
-          <p class="win">The win: Guided intake plus role-based views turned rework into a first-pass standard.</p>
+          <p class="meta"><strong>Role:</strong> UX Consultant</p>
+          <p class="fine"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
+          <p class="win"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
         </article>
 
         <article class="card surface">
           <h3>Cedar Bluff Tech</h3>
-          <p class="meta">Co-created a fundable product concept that prevents bad data at the source during equipment intake.</p>
-          <div class="pillrow" aria-label="Key skills used">
-            <!-- Mobile-first (core set) -->
-            <span class="pill">Product Narrative</span>
-            <span class="pill">UX + Brand Alignment</span>
-            <span class="pill">Clarity In Messaging</span>
-
-            <!-- Desktop-only (adds richness) -->
-            <span class="pill pill--desktop">Investor Storytelling</span>
-            <span class="pill pill--desktop">Value Proposition</span>
-            <span class="pill pill--desktop">Go-To-Market Support</span>
-          </div>
-          <p class="win">The win: A believable story and experience direction for accuracy at the moment records are created.</p>
+          <p class="meta"><strong>Role:</strong> UX Consultant &amp; Designer</p>
+          <p class="fine"><strong>Scope:</strong> Built the brand system from scratch, including logo and guidelines. Shaped the story, positioning, and experience direction for the parent brand and then applied the same foundation to their flagship software.</p>
+          <p class="win"><strong>Outcome:</strong> Humanized and unified the product story across product, marketing, and investor communication, supporting pitch wins, fundraising, and pilot recruitment.</p>
         </article>
 
         <article class="card surface">
           <h3>Moss Rock Ranch</h3>
-          <p class="meta">Defined the brand foundation for a digital overhaul, preserved through a store-first pivot.</p>
-          <div class="pillrow" aria-label="Key skills used">
-            <!-- Mobile-first (core set) -->
-            <span class="pill">Brand Strategy</span>
-            <span class="pill">Voice + Tone</span>
-            <span class="pill">Audience Segments</span>
-
-            <!-- Desktop-only (adds richness) -->
-            <span class="pill pill--desktop">Positioning</span>
-            <span class="pill pill--desktop">Messaging Framework</span>
-            <span class="pill pill--desktop">Visual System Direction</span>
-          </div>
-          <p class="win">The win: A clear brand system the owners could use immediately, and reuse later.</p>
+          <p class="meta"><strong>Role:</strong> Brand Strategist</p>
+          <p class="fine"><strong>Scope:</strong> Built the brand foundation and guidelines, clarified purpose and voice, defined audience segments, and created a reusable messaging system the team can apply across channels.</p>
+          <p class="win"><strong>Outcome:</strong> Clarified what made the brand distinct and gave the owners a repeatable way to express it, so every channel reinforced the same story instead of competing with itself.</p>
         </article>
+      </div>
+
+    </section>
+
+    <section class="ticker-section" aria-label="Skills ticker">
+      <!-- ==========================================================
+           Ticker Tape (full-bleed, analog)
+           ========================================================== -->
+      <p class="fine ticker-label" id="tickerLabel">Skills I tap into...</p>
+      <div class="ticker-bleed" role="region" aria-labelledby="tickerLabel" aria-describedby="tickerA11y">
+        <span class="sr-only" id="tickerA11y">
+          Outcome-first UX, clearer workflows. Design systems, consistent UI. Workflow mapping, fewer mistakes.
+          Requirements, less ambiguity. Handoff clarity, faster delivery. Brand systems, cohesive output. Alignment, less rework.
+        </span>
+        <div class="ticker-clip" aria-hidden="true">
+          <div id="tickerTape">
+            <div class="tape-edge top" aria-hidden="true"></div>
+            <div class="tape-edge bottom" aria-hidden="true"></div>
+
+            <div class="tape-track" id="tickerTrack">
+              <div class="tape-run">
+                <span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep">•</span><span class="tape-val">clearer workflows</span></span>
+                <span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep">•</span><span class="tape-val">consistent UI</span></span>
+                <span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep">•</span><span class="tape-val">fewer mistakes</span></span>
+                <span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep">•</span><span class="tape-val">less ambiguity</span></span>
+                <span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep">•</span><span class="tape-val">faster delivery</span></span>
+                <span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep">•</span><span class="tape-val">cohesive output</span></span>
+                <span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep">•</span><span class="tape-val">less rework</span></span>
+              </div>
+
+              <div class="tape-run" aria-hidden="true">
+                <span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep">•</span><span class="tape-val">clearer workflows</span></span>
+                <span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep">•</span><span class="tape-val">consistent UI</span></span>
+                <span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep">•</span><span class="tape-val">fewer mistakes</span></span>
+                <span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep">•</span><span class="tape-val">less ambiguity</span></span>
+                <span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep">•</span><span class="tape-val">faster delivery</span></span>
+                <span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep">•</span><span class="tape-val">cohesive output</span></span>
+                <span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep">•</span><span class="tape-val">less rework</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ticker-controls-row">
+        <div class="ticker-controls" role="group" aria-label="Ticker controls">
+          <button class="btn ghost ticker-btn" type="button" data-speed="0.55" aria-pressed="false" aria-label="Slow ticker">
+            <span class="speed-label speed-label--left" aria-hidden="true">Slower</span>
+            <svg class="ticker-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10" cy="12" r="5"></circle>
+              <circle cx="16.8" cy="12" r="2"></circle>
+              <path d="M7 17v2M11 17v2"></path>
+              <path d="M6 7v-2M10 7v-2"></path>
+              <path d="M4 12h-2"></path>
+            </svg>
+          </button>
+          <button class="btn ticker-btn" type="button" id="tickerToggle" aria-pressed="false" aria-label="Pause motion">⏸</button>
+          <button class="btn ghost ticker-btn" type="button" data-speed="1.15" aria-pressed="false" aria-label="Speed up ticker">
+            <svg class="ticker-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="13" r="4"></circle>
+              <path d="M10 3v6M14 3v6"></path>
+              <path d="M8 16c2 2 6 2 8 0"></path>
+            </svg>
+            <span class="speed-label speed-label--right" aria-hidden="true">Faster</span>
+          </button>
+        </div>
+
+        <div class="ticker-helper fine" id="tickerHelper">
+          <em>Tip: Click <span class="no-italic">⏸</span> to stop motion.</em>
+        </div>
       </div>
     </section>
 
-    <section id="about">
+    <section id="about" style="margin-bottom:0; padding-bottom:100px;">
       <h2 class="section-title">About Me</h2>
       <p class="section-lede">
         My background spans high-stakes projects in design, brand systems, and customer-facing operations. That combination taught me how to see the system, not just the interface.
@@ -1702,7 +2680,7 @@
       </div>
     </section>
 
-    <section id="help">
+    <section id="help" style="margin-top:0; padding-top:100px;">
       <h2 class="section-title">How I Can Help</h2>
       <p class="section-lede">
         These are the ways I typically support teams when the work is complex, cross-functional, or starting to feel fragile as it grows.
@@ -1810,26 +2788,30 @@
     <!-- ==========================================================
          Fortune Cookie Delight (optional, small)
          ========================================================== -->
-    <div class="fortune-wrap" aria-label="Fortune cookie interaction">
-      <div class="fortune-stage" id="fortuneStage">
-        <button class="cookie" id="cookieBtn" type="button" aria-label="Open the fortune cookie" data-fortune-cookie>
-          <img class="cookie-shell" src="assets/fortune/cookie-closed.png" alt="" aria-hidden="true" />
-          <span class="cookie-shadow shadow-left" aria-hidden="true"></span>
-          <span class="cookie-shadow shadow-right" aria-hidden="true"></span>
-          <img class="cookie-half cookie-left" src="assets/fortune/cookie-left.png" alt="" aria-hidden="true" />
-          <img class="cookie-half cookie-right" src="assets/fortune/cookie-right.png" alt="" aria-hidden="true" />
+    <section class="fortune-section" aria-label="Fortune cookie interaction">
+      <div class="fortune-wrap">
+        <div class="fortune-stage" id="fortuneStage">
+          <button class="cookie" id="cookieBtn" type="button" aria-label="Open the fortune cookie" data-fortune-cookie>
+            <img class="cookie-shell" src="assets/fortune/cookie-closed.png" alt="" aria-hidden="true" />
+            <span class="cookie-shadow shadow-left" aria-hidden="true"></span>
+            <span class="cookie-shadow shadow-right" aria-hidden="true"></span>
+            <img class="cookie-half cookie-left" src="assets/fortune/cookie-left.png" alt="" aria-hidden="true" />
+            <img class="cookie-half cookie-right" src="assets/fortune/cookie-right.png" alt="" aria-hidden="true" />
 
-          <span class="fortune-paper">
-            <span class="fortune-text" id="fortuneText" role="status" aria-live="polite" data-fortune-text></span>
-          </span>
+            <span class="fortune-paper">
+              <span class="fortune-text" id="fortuneText" role="status" aria-live="polite" data-fortune-text></span>
+            </span>
 
-          <span class="crumbs" id="crumbs" aria-hidden="true"></span>
-        </button>
+            <span class="crumbs" id="crumbs" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <section id="approach">
-      <h2 class="section-title">How We’ll Tackle It</h2>
+    <section id="approach" style="margin-bottom:0; padding-bottom:100px;">
+      <h2 class="section-title">
+        How We’ll Tackle It
+      </h2>
       <p class="section-lede">
         I use a repeatable framework that keeps decisions grounded and reduces rework as we go, but I’m not precious about it. We’ll adjust to fit real constraints, timelines, and stakeholders.
       </p>
@@ -1920,7 +2902,10 @@
         </p>
       </div>
 
-      <div class="testimonials">
+    </section>
+
+    <section id="testimonials" class="testimonials" style="margin: 0 0 100px 0; padding-top: 100px;">
+        <h3 class="section-title">What People Are Saying</h3>
         <p class="testimonials-title">
           A few things teammates and leaders have said about working with me:
         </p>
@@ -1986,80 +2971,103 @@
         If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.
       </p>
 
-      <div class="schedule-grid" aria-label="Calendly scheduling options">
-        <button
+    <div class="schedule-grid" aria-label="Calendly scheduling options">
+      <span class="sr-only" id="calendlyHint">
+        Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.
+      </span>
+          <button
           class="schedule-card surface"
           type="button"
           onclick="openCalendly('https://calendly.com/mark-w3m/15-min-chat')"
           aria-haspopup="dialog"
           aria-label="Book a 15 minute chat"
+          aria-describedby="calendlyHint"
         >
-          <div class="schedule-top">
-            <span class="schedule-dot dot-15" aria-hidden="true"></span>
-            <div>
-              <h3 class="schedule-title">15 Min Chat</h3>
-              <p class="schedule-sub">Quick clarity and next steps</p>
+          <div class="schedule-body">
+            <div class="schedule-top">
+              <span class="schedule-dot dot-15" aria-hidden="true"></span>
+              <div>
+                <h3 class="schedule-title">15 Min Chat</h3>
+                <p class="schedule-sub">Quick clarity and next steps</p>
+              </div>
             </div>
+
+            <p class="schedule-desc">
+              Best for a quick intro, one focused question, or a fast direction check.
+              We’ll name what’s stuck, what “good” looks like, and the next best step.
+            </p>
           </div>
 
-          <p class="schedule-desc">
-            Best for a quick intro, one focused question, or a fast direction check.
-            We’ll name what’s stuck, what “good” looks like, and the next best step.
-          </p>
-
-          <div class="schedule-cta">Book 15 minutes →</div>
+          <div class="schedule-footer">
+            <div class="schedule-cta">Book 15 minutes →</div>
+          </div>
+          <span class="pomo pomo-15" aria-hidden="true">
+            <span class="pomo-ticks" aria-hidden="true"></span>
+          </span>
         </button>
 
-        <button
+          <button
           class="schedule-card surface"
           type="button"
           onclick="openCalendly('https://calendly.com/mark-w3m/30-min-alignment')"
           aria-haspopup="dialog"
           aria-label="Book a 30 minute meeting"
+          aria-describedby="calendlyHint"
         >
-          <div class="schedule-top">
-            <span class="schedule-dot dot-30" aria-hidden="true"></span>
-            <div>
-              <h3 class="schedule-title">30 Min Alignment</h3>
-              <p class="schedule-sub">Align, decide, unblock</p>
+          <div class="schedule-body">
+            <div class="schedule-top">
+              <span class="schedule-dot dot-30" aria-hidden="true"></span>
+              <div>
+                <h3 class="schedule-title">30 Min Alignment</h3>
+                <p class="schedule-sub">Align, decide, unblock</p>
+              </div>
             </div>
+
+            <p class="schedule-desc">
+              Great for reviewing work in progress, clarifying requirements, or mapping a workflow.
+              We’ll surface tradeoffs, make a clear decision, and define who does what next.
+            </p>
           </div>
 
-          <p class="schedule-desc">
-            Great for reviewing work in progress, clarifying requirements, or mapping a workflow.
-            We’ll surface tradeoffs, make a clear decision, and define who does what next.
-          </p>
-
-          <div class="schedule-cta">Book 30 minutes →</div>
+          <div class="schedule-footer">
+            <div class="schedule-cta">Book 30 minutes →</div>
+          </div>
+          <span class="pomo pomo-30" aria-hidden="true">
+            <span class="pomo-ticks" aria-hidden="true"></span>
+          </span>
         </button>
 
-        <button
+          <button
           class="schedule-card surface"
           type="button"
           onclick="openCalendly('https://calendly.com/mark-w3m/60-min-consult')"
           aria-haspopup="dialog"
           aria-label="Book a 60 minute consult"
+          aria-describedby="calendlyHint"
         >
-          <div class="schedule-top">
-            <span class="schedule-dot dot-60" aria-hidden="true"></span>
-            <div>
-              <h3 class="schedule-title">60 Min Consult</h3>
-              <p class="schedule-sub">Deep dive and a plan</p>
+          <div class="schedule-body">
+            <div class="schedule-top">
+              <span class="schedule-dot dot-60" aria-hidden="true"></span>
+              <div>
+                <h3 class="schedule-title">60 Min Consult</h3>
+                <p class="schedule-sub">Deep dive and a plan</p>
+              </div>
             </div>
+
+            <p class="schedule-desc">
+              Ideal when the problem is messy or the stakes are high. We’ll map the situation clearly,
+              identify root causes, and leave with a practical plan you can act on right away.
+            </p>
           </div>
 
-          <p class="schedule-desc">
-            Ideal when the problem is messy or the stakes are high. We’ll map the situation clearly,
-            identify root causes, and leave with a practical plan you can act on right away.
-          </p>
-
-          <div class="schedule-cta">Book 60 minutes →</div>
+          <div class="schedule-footer">
+            <div class="schedule-cta">Book 60 minutes →</div>
+          </div>
+          <span class="pomo pomo-60" aria-hidden="true">
+            <span class="pomo-ticks" aria-hidden="true"></span>
+          </span>
         </button>
       </div>
-
-      <p class="fine schedule-footnote">
-        Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.
-      </p>
 
       <noscript>
         <div class="callout surface mt-16">
@@ -2087,7 +3095,9 @@
        ========================================================== -->
     <footer>
       <div class="fine">© <span id="y"></span> Mark Malcolm. Temporary site, full portfolio in progress.</div>
-    </footer></main>
+    </footer>
+
+  </main>
 
   <script>
     /* ==========================================================
@@ -2220,6 +3230,116 @@
           });
         });
       });
+    })();
+
+    /* ==========================================================
+       Ticker: motion, pause/play, speed buttons, out-of-view reset
+       ========================================================== */
+    (function initTicker(){
+      const track = document.getElementById("tickerTrack");
+      const tape = document.getElementById("tickerTape");
+      const toggleBtn = document.getElementById("tickerToggle");
+      const helper = document.getElementById("tickerHelper");
+      const speedBtns = Array.from(document.querySelectorAll("[data-speed]"));
+
+      if (!track || !toggleBtn || !tape) return;
+
+      const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      let paused = prefersReduced ? true : false;
+      let userPaused = paused;
+      let speed = 0.85;
+      let x = 0;
+      let raf = null;
+
+      function setToggleUI(){
+        toggleBtn.textContent = paused ? "▶" : "⏸";
+        toggleBtn.setAttribute("aria-pressed", paused ? "true" : "false");
+        toggleBtn.setAttribute("aria-label", paused ? "Resume motion" : "Pause motion");
+      }
+      function setPaused(next, fromUser = false){
+        paused = next;
+        if (fromUser) userPaused = next;
+        setToggleUI();
+      }
+      function syncSpeedButtons(){
+        speedBtns.forEach(b => {
+          const v = parseFloat(b.dataset.speed);
+          const isActive = Number.isFinite(v) && Math.abs(v - speed) < 0.001;
+          b.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+      }
+
+      function loopWidth(){
+        const firstRun = track.querySelector(".tape-run");
+        return firstRun ? firstRun.offsetWidth : 0;
+      }
+
+      function reset(){
+        x = 0;
+        tape.style.transform = "translate3d(0,0,0)";
+      }
+
+      function step(){
+        if (!paused && !prefersReduced){
+          x -= speed;
+
+          const w = loopWidth();
+          if (w && Math.abs(x) >= w) x = 0;
+
+          const t = performance.now() / 1000;
+          const wobbleY = 0;
+          const wobbleR = 0;
+          const jitter = 0;
+
+          tape.style.transform =
+            `translate3d(${x}px, ${wobbleY + jitter}px, 0) rotate(${wobbleR}deg)`;
+        }
+
+        raf = requestAnimationFrame(step);
+      }
+
+      function start(){
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(step);
+      }
+
+      toggleBtn.addEventListener("click", () => {
+        setPaused(!paused, true);
+      });
+
+      speedBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const v = parseFloat(btn.dataset.speed);
+          if (!Number.isFinite(v)) return;
+          speed = v;
+          syncSpeedButtons();
+          if (helper){
+            helper.innerHTML = paused
+              ? "<em>Tip: Click <span class=\"no-italic\">▶</span> to resume motion.</em>"
+              : "<em>Tip: Click <span class=\"no-italic\">⏸</span> to stop motion.</em>";
+          }
+        });
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting){
+            reset();
+            setPaused(true, false);
+          } else if (!prefersReduced){
+            if (!userPaused) setPaused(false, false);
+          }
+        });
+      }, { threshold: 0 });
+
+      const bleed = document.querySelector(".ticker-bleed");
+      if (bleed) observer.observe(bleed);
+
+      setToggleUI();
+      syncSpeedButtons();
+      if (prefersReduced) return;
+      start();
     })();
 
     /* ==========================================================
@@ -2421,6 +3541,223 @@
 
       bySection.forEach((_, section) => io.observe(section));
     })();
+
+    (function initThemeToggle(){
+      const toggle = document.querySelector("[data-theme-toggle]");
+      if (!toggle) return;
+
+      const STORAGE_KEY = "we3_theme_mode";
+      const prefers = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+      function safeRead(){
+        if (!window.localStorage) return null;
+        try { return localStorage.getItem(STORAGE_KEY); }
+        catch (err){ return null; }
+      }
+      function safeWrite(value){
+        if (!window.localStorage) return;
+        try { localStorage.setItem(STORAGE_KEY, value); }
+        catch (err){ /* ignore */ }
+      }
+
+      let manualTheme = null;
+      let currentTheme = null;
+
+      const stored = safeRead();
+      if (stored === "dark" || stored === "light"){
+        manualTheme = stored;
+      }
+
+      function refreshButton(){
+        const srText = toggle.querySelector(".sr-only");
+        const label = currentTheme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+        if (srText) srText.textContent = label;
+        toggle.setAttribute("aria-pressed", currentTheme === "dark" ? "true" : "false");
+        toggle.setAttribute("aria-label", label);
+        toggle.setAttribute("title", label);
+      }
+
+      function inspectSystem(){
+        return prefers && prefers.matches ? "dark" : "light";
+      }
+
+      function syncTheme(){
+        if (manualTheme){
+          document.documentElement.setAttribute("data-theme", manualTheme);
+          currentTheme = manualTheme;
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          currentTheme = inspectSystem();
+        }
+        refreshButton();
+      }
+
+      toggle.addEventListener("click", () => {
+        manualTheme = currentTheme === "dark" ? "light" : "dark";
+        safeWrite(manualTheme);
+        syncTheme();
+      });
+
+      if (prefers){
+        const handleChange = () => {
+          if (manualTheme) return;
+          syncTheme();
+        };
+        if (prefers.addEventListener){
+          prefers.addEventListener("change", handleChange);
+        } else if (prefers.addListener){
+          prefers.addListener(handleChange);
+        }
+      }
+
+      syncTheme();
+    })();
+
+    (function initMoonPhases(){
+      const toggle = document.querySelector("[data-theme-toggle]");
+      const hero = document.querySelector("header");
+      if (!toggle || !hero) return;
+
+      const idleThreshold = 8000;
+      const phaseDuration = 30000;
+      let idleTimer = null;
+      let animationFrame = null;
+      let animationStart = null;
+      let heroVisible = false;
+      let manualInteraction = false;
+
+      function setPhase(value){
+        toggle.style.setProperty("--moon-phase", value.toFixed(3));
+      }
+
+      function step(timestamp){
+        if (!animationStart) animationStart = timestamp;
+        const progress = ((timestamp - animationStart) % phaseDuration) / phaseDuration;
+        setPhase(progress);
+        animationFrame = requestAnimationFrame(step);
+      }
+
+      function startPhaseAnimation(){
+        if (animationFrame) return;
+        animationStart = null;
+        animationFrame = requestAnimationFrame(step);
+      }
+
+      function stopPhaseAnimation(){
+        if (animationFrame){
+          cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+        }
+        animationStart = null;
+        setPhase(0);
+      }
+
+      function scheduleIdle(){
+        if (idleTimer) clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+          manualInteraction = false;
+          if (heroVisible){
+            startPhaseAnimation();
+          }
+        }, idleThreshold);
+        stopPhaseAnimation();
+      }
+
+      function handleInteraction(){
+        manualInteraction = true;
+        scheduleIdle();
+      }
+
+      const observer = new IntersectionObserver(entries => {
+        heroVisible = entries.some(entry => entry.isIntersecting && entry.intersectionRatio > 0.6);
+        if (!heroVisible){
+          stopPhaseAnimation();
+        } else {
+          scheduleIdle();
+        }
+      }, { threshold: [0.6] });
+
+      observer.observe(hero);
+
+      ["scroll","keydown","pointerdown","touchstart"].forEach(eventName => {
+        window.addEventListener(eventName, () => {
+          manualInteraction = true;
+          scheduleIdle();
+        }, { passive: true });
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden"){
+          stopPhaseAnimation();
+        } else {
+          scheduleIdle();
+        }
+      });
+
+      scheduleIdle();
+    })();
+
+    (function initMobileNav(){
+      const toggle = document.querySelector(".nav-toggle");
+      const panel = document.getElementById("mobileNavPanel");
+      if (!toggle || !panel) return;
+
+      const closeBtn = panel.querySelector(".mobile-nav-close");
+      const links = Array.from(panel.querySelectorAll("a"));
+
+      function setOpen(open){
+        panel.classList.toggle("is-open", open);
+        panel.setAttribute("aria-hidden", open ? "false" : "true");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        document.body.classList.toggle("nav-open", open);
+      }
+
+      toggle.addEventListener("click", () => {
+        setOpen(!panel.classList.contains("is-open"));
+      });
+
+      closeBtn?.addEventListener("click", () => setOpen(false));
+      panel.addEventListener("click", (event) => {
+        if (event.target === panel) setOpen(false);
+      });
+      links.forEach(link => link.addEventListener("click", () => setOpen(false)));
+    })();
+
+    (function initScrollNav(){
+      const navEl = document.querySelector(".nav");
+      if (!navEl) return;
+      let lastY = window.scrollY;
+      let latestY = lastY;
+      let ticking = false;
+
+      function update(){
+        ticking = false;
+        if (document.body.classList.contains("nav-open")){
+          navEl.classList.remove("nav-hidden");
+          lastY = window.scrollY;
+          return;
+        }
+
+        latestY = window.scrollY;
+        const delta = latestY - lastY;
+        if (Math.abs(delta) < 10){
+          return;
+        }
+        if (delta > 0 && latestY > 60){
+          navEl.classList.add("nav-hidden");
+        } else {
+          navEl.classList.remove("nav-hidden");
+        }
+        lastY = latestY;
+      }
+
+      window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      }, { passive: true });
+    })();
   </script>
+
 </body>
 </html>
