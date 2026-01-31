@@ -2033,103 +2033,165 @@
     }
 
         /* ============================================================
-       Pomodoro timer badge (bottom-right) + hover wiggle
-       - Fixes conic seam artifacts
-       - Adds segmented “LCD wedge” fill
+       Pomodoro timer badge (alarm clock) + hover wiggle
+       - Alarm clock silhouette with bells + feet + subtle shadow
+       - Segmented LCD-ring fill inside the clock body
        ============================================================ */
 
-    /* Make custom property animatable so the sweep is smooth */
     @property --pomo-fill{
       syntax: "<number>";
       inherits: true;
       initial-value: 0;
     }
 
-    .pomo{
-      --pomo-size: 44px;
+    .pomo-clock{
+      --pomo-size: 54px;
       --pomo-fill-target: 0.25;
       --pomo-fill: 0;
-      --pomo-ring: rgba(var(--text-rgb), 0.14);
-      --pomo-fill-ink: rgba(var(--primary-rgb), 0.88);
-      --seg-count: 60;
-      --seg-gap-deg: 0.75deg;
-      --ring-cut: 62%;
-      --ring-thickness: 64%;
 
       position: absolute;
       right: 16px;
       bottom: 16px;
       width: var(--pomo-size);
       height: var(--pomo-size);
-      border-radius: 999px;
-      border: 1px solid var(--pomo-ring);
-      box-shadow: 0 8px 18px rgba(17,20,24,.10);
-      overflow: hidden;
-      isolation: isolate;
       pointer-events: auto;
-      transform-origin: 50% 85%;
+      isolation: isolate;
+      transform-origin: 50% 78%;
       will-change: transform;
 
-      background:
-        radial-gradient(circle at 35% 30%,
-          rgba(255,255,255,.55),
-          rgba(255,255,255,0) 58%),
-        rgba(var(--surface-card-rgb), 0.70);
+      --clock-body: rgba(var(--text-rgb), 0.62);
+      --clock-body-dark: rgba(var(--text-rgb), 0.78);
+      --clock-highlight: rgba(255,255,255,0.35);
+
+      --lcd-bg: rgba(var(--surface-card-rgb), 0.90);
+      --lcd-border: rgba(var(--text-rgb), 0.14);
+      --fill-ink: rgba(var(--primary-rgb), 0.82);
+
+      --seg-count: 30;
+      --seg-gap: 6%;
+      --tick-ink: rgba(var(--text-rgb), 0.18);
+
+      --lcd-x: 50%;
+      --lcd-y: 56%;
+      --lcd-w: 58%;
+      --lcd-h: 40%;
+      --lcd-r: 12px;
     }
 
-    .pomo::before{
+    .pomo-clock::before{
+      content:"";
+      position:absolute;
+      left: 50%;
+      bottom: -9px;
+      width: 86%;
+      height: 12px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: radial-gradient(closest-side, rgba(17,20,24,.22), transparent 70%);
+      filter: blur(1.2px);
+      opacity: .55;
+      z-index: 0;
+    }
+
+    .pomo-clock::after{
       content:"";
       position:absolute;
       inset: 0;
-      border-radius: inherit;
-      z-index: 0;
+      z-index: 3;
       background:
-        conic-gradient(
-          from -90deg,
-          var(--pomo-fill-ink) 0turn calc(var(--pomo-fill) * 1turn),
-          rgba(0,0,0,0) calc(var(--pomo-fill) * 1turn) 1turn
-        );
-      -webkit-mask-image:
-        repeating-conic-gradient(
-          from -90deg,
-          #000 0deg calc((360deg / var(--seg-count)) - var(--seg-gap-deg)),
-          transparent calc((360deg / var(--seg-count)) - var(--seg-gap-deg)) calc(360deg / var(--seg-count))
-        ),
-        radial-gradient(circle, transparent 0 var(--ring-cut), #000 var(--ring-thickness) 100%);
-      -webkit-mask-composite: source-in;
-      mask-image:
-        repeating-conic-gradient(
-          from -90deg,
-          #000 0deg calc((360deg / var(--seg-count)) - var(--seg-gap-deg)),
-          transparent calc((360deg / var(--seg-count)) - var(--seg-gap-deg)) calc(360deg / var(--seg-count))
-        ),
-        radial-gradient(circle, transparent 0 var(--ring-cut), #000 var(--ring-thickness) 100%);
-      mask-composite: intersect;
-      filter: saturate(1.02);
+        radial-gradient(60% 55% at 22% 14%,
+          var(--clock-body) 0 62%,
+          transparent 63%),
+        radial-gradient(60% 55% at 78% 14%,
+          var(--clock-body) 0 62%,
+          transparent 63%),
+        radial-gradient(26% 26% at 50% 10%,
+          var(--clock-body-dark) 0 62%,
+          transparent 63%),
+        radial-gradient(34% 26% at 30% 92%,
+          var(--clock-body-dark) 0 58%,
+          transparent 59%),
+        radial-gradient(34% 26% at 70% 92%,
+          var(--clock-body-dark) 0 58%,
+          transparent 59%),
+        radial-gradient(circle at 50% 54%,
+          transparent 0 38%,
+          var(--clock-body-dark) 39% 52%,
+          transparent 53%),
+        radial-gradient(120% 90% at 30% 25%,
+          var(--clock-highlight),
+          transparent 55%);
+      filter: drop-shadow(0 10px 16px rgba(17,20,24,.14));
+      opacity: .95;
     }
 
-    .pomo::after{
-      content:"";
-      position:absolute;
-      inset: 8px;
-      border-radius: 999px;
-      z-index: 1;
-      background: rgba(var(--surface-card-rgb), 0.80);
-      border: 1px solid rgba(var(--text-rgb), 0.10);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+    .pomo-clock{
+      z-index: 2;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(0,0,0,0) 0 calc((100% / var(--seg-count)) - var(--seg-gap)),
+          var(--tick-ink) calc((100% / var(--seg-count)) - var(--seg-gap)) calc(100% / var(--seg-count))
+        ),
+        linear-gradient(
+          90deg,
+          var(--fill-ink) 0 calc(var(--pomo-fill) * 100%),
+          rgba(0,0,0,0) calc(var(--pomo-fill) * 100%) 100%
+        ),
+        radial-gradient(120% 140% at 30% 20%,
+          rgba(255,255,255,0.22),
+          rgba(255,255,255,0) 52%),
+        linear-gradient(180deg,
+          rgba(255,255,255,0.10),
+          rgba(0,0,0,0.05)),
+        linear-gradient(180deg, var(--lcd-bg), var(--lcd-bg));
+      background-repeat: no-repeat;
+      background-size:
+        var(--lcd-w) var(--lcd-h),
+        var(--lcd-w) var(--lcd-h),
+        var(--lcd-w) var(--lcd-h),
+        var(--lcd-w) var(--lcd-h),
+        var(--lcd-w) var(--lcd-h);
+      background-position:
+        var(--lcd-x) var(--lcd-y),
+        var(--lcd-x) var(--lcd-y),
+        var(--lcd-x) var(--lcd-y),
+        var(--lcd-x) var(--lcd-y),
+        var(--lcd-x) var(--lcd-y);
+      -webkit-mask-image:
+        radial-gradient(
+          circle at 0 0,
+          transparent 0,
+          transparent 0
+        );
+      -webkit-mask-repeat: no-repeat;
+              mask-repeat: no-repeat;
+      clip-path: inset(
+        calc(56% - (var(--lcd-h) / 2))
+        calc(50% - (var(--lcd-w) / 2))
+        calc(44% - (var(--lcd-h) / 2))
+        calc(50% - (var(--lcd-w) / 2))
+        round var(--lcd-r)
+      );
+    }
+
+    .pomo-clock{
+      box-shadow:
+        inset 0 0 0 1px rgba(var(--text-rgb), 0.08),
+        inset 0 0 0 10px rgba(0,0,0,0);
     }
 
     .pomo-15{ --pomo-fill-target: 0.25; }
     .pomo-30{ --pomo-fill-target: 0.50; }
     .pomo-60{ --pomo-fill-target: 1.00; }
 
-    .schedule-card:hover .pomo,
-    .schedule-card:focus-visible .pomo{
+    .schedule-card:hover .pomo-clock,
+    .schedule-card:focus-visible .pomo-clock{
       --pomo-fill: var(--pomo-fill-target);
       transition: --pomo-fill 520ms cubic-bezier(.2,.9,.2,1);
     }
 
-    .pomo:hover{
+    .pomo-clock:hover{
       animation: alarmWiggle 520ms ease-in-out infinite;
     }
 
@@ -2145,16 +2207,9 @@
     }
 
     @media (prefers-reduced-motion: reduce){
-      .pomo:hover{ animation: none; }
-      .schedule-card:hover .pomo,
-      .schedule-card:focus-visible .pomo{
-        transition: none;
-      }
-    }
-@media (prefers-reduced-motion: reduce){
-      .pomo:hover{ animation: none; }
-      .schedule-card:hover .pomo,
-      .schedule-card:focus-visible .pomo{
+      .pomo-clock:hover{ animation: none; }
+      .schedule-card:hover .pomo-clock,
+      .schedule-card:focus-visible .pomo-clock{
         transition: none;
       }
     }
@@ -3001,9 +3056,7 @@
           <div class="schedule-footer">
             <div class="schedule-cta">Book 15 minutes →</div>
           </div>
-          <span class="pomo pomo-15" aria-hidden="true">
-            <span class="pomo-ticks" aria-hidden="true"></span>
-          </span>
+          <span class="pomo-clock pomo-15" aria-hidden="true"></span>
         </button>
 
           <button
@@ -3032,9 +3085,7 @@
           <div class="schedule-footer">
             <div class="schedule-cta">Book 30 minutes →</div>
           </div>
-          <span class="pomo pomo-30" aria-hidden="true">
-            <span class="pomo-ticks" aria-hidden="true"></span>
-          </span>
+          <span class="pomo-clock pomo-30" aria-hidden="true"></span>
         </button>
 
           <button
@@ -3063,9 +3114,7 @@
           <div class="schedule-footer">
             <div class="schedule-cta">Book 60 minutes →</div>
           </div>
-          <span class="pomo pomo-60" aria-hidden="true">
-            <span class="pomo-ticks" aria-hidden="true"></span>
-          </span>
+          <span class="pomo-clock pomo-60" aria-hidden="true"></span>
         </button>
       </div>
 
