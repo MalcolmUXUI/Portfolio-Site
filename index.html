@@ -69,14 +69,16 @@
         --success: var(--ink-lime);
 
         /* Dot colors: token-based so they adapt with themes */
-        --dot-15: var(--accent-warm);
-        --dot-30: color-mix(in srgb, var(--ink-lime) 60%, var(--accent-warm) 40%);
-        --dot-60: color-mix(in srgb, var(--accent) 70%, var(--ink-teal) 30%);
+        --dot-15: var(--hl-amber);
+        --dot-30: var(--hl-lime);
+        --dot-60: var(--hl-teal);
 
         /* Derived utility */
         --link: var(--primary);
         --focus-ring: var(--primary);
         --focus-ring-rgb: var(--primary-rgb);
+        --focus-outline: var(--accent);
+        --focus-outline-strong: var(--accent);
         --border: #DAD5CE;
         --divider: #E3DED6;
 
@@ -135,7 +137,18 @@
         --glass-shadow-press: 0 12px 24px rgba(17,20,24,.12);
         --glass-inner: inset 0 1px 0 rgba(255,255,255,.65);
         --hero-title-size: clamp(42px, 6vw, 68px);
-        --section-gap: clamp(80px, calc(0.4vw + 76px), 100px);
+        /* Type scale (keep it simple) */
+        --type-body: 16px;
+        --type-meta: 14px;
+        --type-h2: clamp(28px, 4.5vw, 42px);
+        --type-h3: 26px;
+        --type-small: var(--type-body);
+        --lh-body: 1.65;
+        --lh-tight: 1.2;
+        --fw-body: 400;
+        --fw-strong: 700;
+        --meta-color: var(--text-muted);
+        --section-gap: clamp(72px, 6vw + 48px, 104px);
       }
 
       [data-theme="dark"] {
@@ -194,9 +207,9 @@
         --ink-cyan: #6FADF8;
         --ink-lavender: #A486F6;
 
-        --dot-15: color-mix(in srgb, var(--accent-warm) 90%, #000 10%);
-        --dot-30: color-mix(in srgb, var(--ink-lime) 60%, var(--card-top, #0B1C2A) 40%);
-        --dot-60: color-mix(in srgb, var(--accent) 70%, var(--card-top, #0B1C2A) 30%);
+        --dot-15: color-mix(in srgb, var(--hl-amber) 90%, #000 10%);
+        --dot-30: color-mix(in srgb, var(--hl-lime) 60%, var(--card-top, #0B1C2A) 40%);
+        --dot-60: color-mix(in srgb, var(--hl-teal) 70%, var(--card-top, #0B1C2A) 30%);
       }
 
       @media (prefers-color-scheme: dark) {
@@ -240,16 +253,24 @@
           --glass-shadow: 0 16px 32px rgba(0,0,0,.45);
           --glass-shadow-hover: 0 22px 44px rgba(0,0,0,.55);
           --glass-shadow-press: 0 12px 24px rgba(0,0,0,.42);
-        --glass-inner: inset 0 1px 0 rgba(255,255,255,.08);
+          --glass-inner: inset 0 1px 0 rgba(255,255,255,.08);
 
-        --ink-amber: #F5A621;
-        --ink-lime: #BCC955;
-        --ink-teal: #26827A;
-        --ink-cyan: #6FADF8;
-        --ink-lavender: #A486F6;
+          --ink-amber: #F5A621;
+          --ink-lime: #BCC955;
+          --ink-teal: #26827A;
+          --ink-cyan: #6FADF8;
+          --ink-lavender: #A486F6;
 
-        --moon-core: #1F273A;
+          --moon-core: #1F273A;
+        }
       }
+    }
+
+    /* Progressive enhancement for outlines */
+    @supports (color: color-mix(in srgb, black, white)) {
+      :root{
+        --focus-outline: color-mix(in srgb, var(--accent) 70%, transparent);
+        --focus-outline-strong: color-mix(in srgb, var(--accent), white 20%);
       }
     }
 
@@ -265,7 +286,8 @@
         min-height: 100vh;
         width: 100%;
         margin:0;
-        font: 16px/1.65 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        font: var(--type-body)/var(--lh-body) system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        font-weight: var(--fw-body);
         color: var(--text);
 
         /* Warm sand + color washes */
@@ -276,14 +298,15 @@
           linear-gradient(180deg, var(--surface-top), var(--surface-bottom));
       }
 
-      html, body{ background: var(--surface-base); color: var(--text); width: 100%; }
+      /* Keep html solid for overscroll; let body keep the layered washes */
+      html{ background: var(--surface-base); color: var(--text); width: 100%; }
 
       /* Global small body copy style */
-      .fine{
-        font-size: 14px;
-        line-height: 1.65;
-        color: var(--text-muted);
-      }
+    .fine{
+      font-size: var(--type-body);
+      line-height: var(--lh-body);
+      color: var(--text-muted);
+    }
       .no-italic{ font-style: normal; }
 
       a{
@@ -298,7 +321,7 @@
       :focus{ outline:none; }
 
       :focus-visible{
-        outline: 3px solid color-mix(in srgb, var(--accent) 70%, transparent);
+        outline: 3px solid var(--focus-outline);
         outline-offset: 3px;
         border-radius: calc(var(--radius) + 2px);
       }
@@ -309,7 +332,7 @@
         text-underline-offset: 3px;
       }
 
-      .wrap{ max-width:var(--max); margin:0 auto; padding:var(--space-4); }
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--space-4); }
 
       /* Background texture + subtle animated color drift */
       body::before{
@@ -404,7 +427,7 @@
       max-width: var(--max);
       width: 100%;
       margin: 0 auto;
-      padding: 14px 24px;
+      padding: 14px var(--space-4);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -424,18 +447,21 @@
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
       box-shadow: var(--shadow);
       cursor:pointer;
-      font-size: 18px;
-      color: var(--text);
+      font-size: var(--type-body);
+      font-weight: var(--fw-body);
+      color: rgba(var(--text-rgb), 0.82);
+      text-shadow: none;
     }
     .mobile-nav-panel{
       position: fixed;
       inset: 0;
       background: rgba(var(--surface-card-rgb), 0.96);
+      -webkit-backdrop-filter: saturate(160%) blur(14px);
       backdrop-filter: saturate(160%) blur(14px);
-      padding: 120px 24px 32px;
+      padding: 72px 20px 28px;
       display: none;
       flex-direction: column;
-      gap: 18px;
+      gap: 12px;
       z-index: 60;
       border-top: 1px solid var(--divider);
       box-shadow: 0 18px 40px rgba(0,0,0,.28);
@@ -444,9 +470,16 @@
       display: flex;
     }
     .mobile-nav-panel a{
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--text);
+      display: block;
+      font-size: var(--type-body);
+      font-weight: var(--fw-strong);
+      color: rgba(var(--text-rgb), 0.9);
+      text-shadow: none;
+      text-decoration: none;
+      padding: 12px 10px;
+      border-radius: 12px;
+      background: rgba(var(--surface-card-rgb), 0.65);
+      border: 1px solid rgba(var(--text-rgb), 0.12);
     }
     .mobile-nav-close{
       position: absolute;
@@ -454,7 +487,7 @@
       right: 18px;
       border: 0;
       background: none;
-      font-size: 18px;
+      font-size: var(--type-body);
       cursor: pointer;
       color: var(--text);
     }
@@ -474,11 +507,17 @@
 
     .brand:hover{ opacity: .92; }
 
+    .brand-logo{
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+    }
+
     .brand .brand-meta{
       font-weight:500;
       color: var(--text-muted);
       letter-spacing: 0;
-      font-size: 14px;
+      font-size: var(--type-meta);
       display: inline-flex;
       align-items: center;
       gap:8px;
@@ -507,14 +546,24 @@
     .nav-links a:not(.btn){
       padding:8px 10px;
       border-radius:12px;
-      color:var(--text-muted);
-      transition: background .2s ease, color .2s ease;
+      color: rgba(var(--text-rgb), 0.78);
+      font-size: var(--type-body);
+      font-weight: var(--fw-body);
+      text-shadow: none;
+      transition: background .2s ease, color .2s ease, box-shadow .18s ease;
       position:relative; /* needed for underline effect */
       text-decoration: none;
     }
     @media (max-width: 720px){
       .nav-links{ display: none; }
-      .nav-toggle{ display: inline-flex; }
+      .nav-toggle{
+        display: inline-flex;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+      }
+      .nav{ padding: 8px 12px; }
+      .nav-inner{ gap: 10px; padding: 10px var(--space-3); }
     }
 
     @media (max-width: 880px){
@@ -524,19 +573,18 @@
         align-items: center;
         gap: 6px;
       }
-      .brand-meta{
-        width: 100%;
-        font-size: 14px;
-      }
+      .brand-meta{ display:none; }
     }
 
     .nav-links a:not(.btn):hover{
-      background: rgba(var(--text-rgb), 0.06);
+      background: rgba(var(--text-rgb), 0.08);
       color:var(--text);
+      box-shadow: inset 0 -2px 0 rgba(var(--accent-warm-rgb), 0.45);
     }
     .nav-links a:not(.btn):focus-visible{
-      background: rgba(var(--text-rgb), 0.06);
+      background: rgba(var(--text-rgb), 0.10);
       color:var(--text);
+      box-shadow: inset 0 -2px 0 rgba(var(--accent-warm-rgb), 0.55);
     }
 
     /* Underline effect (NAV ONLY) */
@@ -548,10 +596,11 @@
       bottom:6px;
       height:2px;
       border-radius:999px;
-      background: rgba(var(--primary-rgb), 0.45);
+      background: rgba(var(--primary-rgb), 0.55);
       transform: scaleX(0);
       transform-origin:left;
       transition: transform .18s ease;
+      box-shadow: 0 0 0 1px rgba(var(--surface-card-rgb),0.25);
     }
     .nav-links a:not(.btn):hover::after{ transform: scaleX(1); }
     .nav-links a:not(.btn):focus-visible::after{ transform: scaleX(1); }
@@ -566,18 +615,15 @@
       align-items:center;
       justify-content:center;
       padding:0.7rem 1.1rem;
-      border-radius:999px;
-      border:1px solid var(--glass-stroke);
+      border-radius:12px;
+      border:1px solid rgba(var(--text-rgb), 0.12);
       background:
         linear-gradient(180deg,
-          var(--glass-sheen-strong) 0%,
-          rgba(255,255,255,0) 62%),
-        linear-gradient(180deg,
-          var(--glass-surface-strong),
-          var(--glass-surface)),
-        var(--glass-tint);
+          var(--card-top),
+          var(--card-bottom));
       color: var(--text);
-      font-weight:600;
+      font-size: var(--type-body);
+      font-weight: var(--fw-strong);
       text-decoration: none;
       transition: transform .15s ease,
         background .25s ease,
@@ -585,12 +631,10 @@
         box-shadow .25s ease,
         filter .25s ease;
       will-change: transform;
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
-      backdrop-filter: blur(16px) saturate(160%);
       box-shadow:
-        var(--glass-shadow),
-        var(--glass-inner),
-        inset 0 -1px 0 rgba(0,0,0,.04);
+        var(--shadow),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      text-shadow: none;
     }
 
     .btn::before{
@@ -602,9 +646,9 @@
         radial-gradient(120% 120% at 15% -20%,
           var(--glass-sheen-strong),
           rgba(255,255,255,0) 60%);
-      opacity: .7;
-      transform: translateX(-8%);
-      transition: opacity .25s ease, transform .45s ease;
+      opacity: .55;
+      transform: translateX(-6%);
+      transition: opacity .25s ease, transform .35s ease;
       pointer-events:none;
     }
 
@@ -613,8 +657,8 @@
       position:absolute;
       inset:1px;
       border-radius: inherit;
-      border:1px solid var(--glass-sheen);
-      opacity: .65;
+      border:1px solid rgba(255,255,255,0.6);
+      opacity: .75;
       pointer-events:none;
     }
 
@@ -622,17 +666,15 @@
       transform: translateY(-1px);
       background:
         linear-gradient(180deg,
-          var(--glass-sheen-strong) 0%,
-          rgba(255,255,255,0) 58%),
+          rgba(255,255,255,0.65),
+          rgba(255,255,255,0) 48%),
         linear-gradient(180deg,
-          var(--glass-surface-strong),
-          var(--glass-surface)),
-        rgba(var(--primary-rgb), 0.18);
-      border-color: var(--glass-stroke-strong);
+          var(--card-top),
+          var(--card-bottom));
+      border-color: rgba(var(--text-rgb), 0.18);
       box-shadow:
         var(--glass-shadow-hover),
-        var(--glass-inner),
-        inset 0 -1px 0 rgba(0,0,0,.06);
+        inset 0 1px 0 rgba(255,255,255,.65);
       filter: saturate(1.05);
     }
 
@@ -655,12 +697,15 @@
     }
 
     .ghost{
+      border-radius:12px;
       border:1px solid rgba(var(--text-rgb), 0.12);
       background:
         linear-gradient(180deg,
-          var(--glass-sheen) 0%,
-          rgba(255,255,255,0) 70%),
-        rgba(var(--surface-card-rgb), 0.38);
+          rgba(255,255,255,0.65),
+          rgba(255,255,255,0) 60%),
+        linear-gradient(180deg,
+          var(--card-top),
+          var(--card-bottom));
       color: var(--text);
       text-decoration: none;
       box-shadow:
@@ -671,10 +716,12 @@
     .ghost:hover{
       background:
         linear-gradient(180deg,
-          var(--glass-sheen-strong) 0%,
-          rgba(255,255,255,0) 65%),
-        rgba(var(--surface-card-rgb), 0.48);
-      border-color: var(--glass-stroke-strong);
+          rgba(255,255,255,0.65),
+          rgba(255,255,255,0) 60%),
+        linear-gradient(180deg,
+          var(--card-top),
+          var(--card-bottom));
+      border-color: rgba(var(--text-rgb), 0.18);
       box-shadow:
         0 14px 26px rgba(17,20,24,.12),
         inset 0 1px 0 rgba(255,255,255,.65);
@@ -694,7 +741,7 @@
     header{
       padding:56px 0 0;
       position: relative;
-      margin-bottom:100px;
+      margin-bottom: var(--section-gap);
     }
 
     .kicker{
@@ -746,7 +793,7 @@
        ============================================================ */
     section{
       padding:0;
-      margin: 100px 0;
+      margin: var(--section-gap) 0;
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
     }
@@ -765,9 +812,15 @@
       margin-top: 0;
     }
 
+    @media (max-width: var(--bp-md)){
+      #work{
+        padding-top: 60px;
+      }
+    }
+
     .section-title{
       margin:0 0 8px;
-      font-size: clamp(28px, 4.5vw, 42px);
+      font-size: var(--type-h2);
       line-height: 1.05;
       letter-spacing:-.3px;
       position:relative;
@@ -886,7 +939,7 @@
       margin: 0;
       color: var(--text-muted);
       display: grid;
-      row-gap: 3px;
+      row-gap: 2px;
       text-align: center;
       font-style: italic;
     }
@@ -895,6 +948,16 @@
       color: var(--text);
       font-weight: 700;
       font-style: normal;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .quote-cite h4{
+      margin: 0;
+      font-size: var(--type-body);
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-muted);
     }
 
     .quote-mark{
@@ -947,9 +1010,12 @@
     .hl{
       position: relative;
       display: inline;
-      padding: 0 .08em;
+      padding: 0 .06em;
       z-index: 0;
-      white-space: break-spaces;
+      white-space: normal;
+      line-height: 1.2;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
     }
 
     .hl::before{
@@ -957,9 +1023,9 @@
       position:absolute;
       left:-.08em;
       right:-.08em;
-      top: 56%;
-      height: 1.08em;
-      transform: translateY(-50%) rotate(var(--hl-angle, -0.6deg));
+      top: 55%;
+      height: 1.05em;
+      transform: translateY(-50%) rotate(var(--hl-angle, -0.4deg));
       transform-origin: left center;
       z-index: -1;
       border-radius: 10px;
@@ -1022,7 +1088,7 @@
           rgba(var(--hl-rgb), .38) 78%,
           rgba(var(--hl-rgb), .10) 100%);
       background-size: 100% 1.08em;
-      background-position: 0 60%;
+      background-position: 0 58%;
       background-repeat: repeat-x;
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
@@ -1041,6 +1107,35 @@
       0%{ width: 0%; filter: saturate(1.05); }
       70%{ width: 100%; }
       100%{ width: 100%; filter: saturate(1); }
+    }
+
+    /* Mobile: simplify bio highlights to static multi-line style */
+    @media (max-width: var(--bp-sm)){
+      .bio .hl{
+        padding: 0 .06em;
+        white-space: normal;
+        background:
+          radial-gradient(16px 10px at 4% 60%,
+            rgba(var(--hl-rgb, 245,158,11), .55),
+            rgba(var(--hl-rgb, 245,158,11), 0) 70%),
+          radial-gradient(18px 12px at 96% 60%,
+            rgba(var(--hl-rgb, 245,158,11), .50),
+            rgba(var(--hl-rgb, 245,158,11), 0) 72%),
+          repeating-linear-gradient(0deg,
+            rgba(255,255,255,.14) 0px,
+            rgba(255,255,255,.14) 2px,
+            rgba(255,255,255,0) 3px,
+            rgba(255,255,255,0) 6px),
+          linear-gradient(180deg,
+            rgba(var(--hl-rgb, 245,158,11), .05) 0%,
+            rgba(var(--hl-rgb, 245,158,11), .45) 22%,
+            rgba(var(--hl-rgb, 245,158,11), .38) 78%,
+            rgba(var(--hl-rgb, 245,158,11), .10) 100%);
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+      }
+      .bio .hl::before{ content:none; }
+      .bio .hl.is-on::before{ content:none; }
     }
 
     .hl-amber{ --hl-rgb: 245, 158, 11; }
@@ -1144,27 +1239,45 @@
 
     .card h3{
       margin:0;
-      font-size: 26px;
+      font-size: var(--type-h3);
     }
 
+    /* Labels like “Role:”, “Scope:”, “Outcome:”
+       Keep them consistent across lines. */
     .meta strong,
     .fine strong,
     .win strong{
       color: var(--text);
-      font-weight: 800;
+      font-weight: 700;
+      letter-spacing: 0;
+      font-style: normal;
     }
 
-    .meta{
-      margin:0;
-      line-height: 1.6;
+    /* Card body copy: unify sizes so the Work cards don’t feel like mixed type styles */
+    .card p{
+      margin: 0;
+      font-size: var(--type-body);
+      line-height: var(--lh-body);
     }
 
+    /* Unified meta/label line */
+    .meta-line{
+      margin: 0;
+      font-size: var(--type-meta);
+      line-height: var(--lh-body);
+      color: var(--meta-color);
+      font-weight: var(--fw-body);
+    }
+    .meta-line strong{
+      color: var(--text);
+      font-weight: var(--fw-strong);
+    }
+
+    /* .fine is used elsewhere as “small copy”, but inside cards we want body size */
     .card .fine{
-      margin:0;
-    }
-
-    .win{
-      margin:0;
+      font-size: var(--type-body);
+      line-height: var(--lh-body);
+      color: var(--text-muted);
     }
 
     .proofline{
@@ -1239,7 +1352,7 @@
       white-space: nowrap;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-variant-numeric: tabular-nums;
-      font-size: 12px;
+      font-size: 14px;
       letter-spacing: .08em;
       text-transform: uppercase;
       color: rgba(17,20,24,.78);
@@ -1251,20 +1364,21 @@
         0.6px 0 rgba(0,0,0,.10),
         -0.6px 0 rgba(0,0,0,.06);
       -webkit-font-smoothing: antialiased;
+      -webkit-user-select: none;
       user-select: none;
     }
 
     .tape-run{
       display: inline-flex;
       align-items: center;
-      gap: 18px;
-      padding-right: 18px;
+      gap: 10px;
+      padding-right: 10px;
     }
 
     .tape-item{
       display: inline-flex;
       align-items: baseline;
-      gap: 10px;
+      gap: 6px;
       padding: 0;
     }
 
@@ -1278,6 +1392,10 @@
       opacity: .55;
     }
 
+    .tape-pipe{
+      opacity: .55;
+    }
+
     .tape-val{
       font-style: italic;
       font-weight: 500;
@@ -1288,7 +1406,8 @@
 
     .tape-track .tape-key,
     .tape-track .tape-val,
-    .tape-track .tape-sep{
+    .tape-track .tape-sep,
+    .tape-track .tape-pipe{
       background-image:
         radial-gradient(circle, var(--tape-ink) var(--tape-dot-ink), transparent var(--tape-dot-clear));
       background-size: var(--tape-dot-size) var(--tape-dot-size);
@@ -1342,7 +1461,7 @@
     .ticker-btn .speed-label{
       position: absolute;
       top: 50%;
-      font-size: 11px;
+      font-size: var(--type-meta);
       letter-spacing: .08em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -1497,7 +1616,7 @@
     }
 
     .process-title{
-      font-size: 26px;
+      font-size: var(--type-h3);
       line-height: 1.18;
       letter-spacing: -.2px;
       margin: 0; /* Tight, predictable margins (no surprise whitespace) */
@@ -1566,10 +1685,38 @@
       .process-num::before{
         font-size: clamp(34px, 10vw, 52px);
       }
-
-    .process-title{
-      font-size: 22px;
     }
+
+    /* Narrow screens: number + title on first row; body spans full width below */
+    @media (max-width: var(--bp-sm)){
+      .process-step{
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 8px;
+        column-gap: 0;
+      }
+      .process-body{
+        display: contents;
+        row-gap: 0;
+      }
+      .process-num{
+        display: none;
+      }
+      .process-title{
+        margin-top: 0;
+      }
+      .process-title::before{
+        content: counter(step) " ";
+        color: var(--ink-amber);
+        font-weight: 800;
+        margin-right: 8px;
+      }
+      .process-why{
+        margin-top: 0;
+      }
+      .process-out{
+        margin-top: 0;
+      }
     }
 
     /* ============================================================
@@ -1583,7 +1730,7 @@
 
     .about-h3{
       margin:0 0 8px;
-      font-size: 18px;
+      font-size: var(--type-h3);
     }
 
     /* ============================================================
@@ -1633,10 +1780,41 @@
     }
 
     .help-item h3{
-      margin:0 0 6px;
-      font-size:26px;
+      margin:0;
+      font-size: var(--type-h3);
       line-height: 1.2;
     }
+    <!-- ==========================================================
+         Help / Services
+       ========================================================== -->
+    <section id="help">
+      <h2 class="section-title">How I Can Help</h2>
+      <p class="section-lede">
+        Whether you need a new system, a clearer workflow, or a brand that finally matches your vision, I can help you move from “we should do this” to “it’s done and people love it.”
+      </p>
+      <div class="help-list">
+        <div class="help-item">
+          <h3>UX Strategy for Complex Workflows</h3>
+          <!-- <p>I help teams map complex workflows, clarify requirements, and deliver systems people trust.</p> -->
+          <a href="#contact" class="btn ghost">Book a Call</a>
+        </div>
+        <div class="help-item">
+          <h3>Design Systems and UI Architecture</h3>
+          <!-- <p>Build scalable, consistent interfaces with robust design systems and UI architecture.</p> -->
+          <a href="#contact" class="btn ghost">Book a Call</a>
+        </div>
+        <div class="help-item">
+          <h3>Brand Strategy, Copywriting, and Visual Design</h3>
+          <!-- <p>Shape your story, visuals, and messaging so your brand is memorable and consistent everywhere.</p> -->
+          <a href="#contact" class="btn ghost">Book a Call</a>
+        </div>
+        <div class="help-item">
+          <h3>Training That Scales</h3>
+          <!-- <p>Equip your team with the tools and training to keep delivering at a high level, even as you grow.</p> -->
+          <a href="#contact" class="btn ghost">Book a Call</a>
+        </div>
+      </div>
+    </section>
 
     .help-item p{
       margin:0;
@@ -1698,8 +1876,14 @@
 
     .help-detail-head h3{
       margin:0 0 6px;
-      font-size:26px;
+      font-size: var(--type-h3);
       line-height: 1.3;
+    }
+
+    .help-detail-head .fine{
+      font-size: var(--type-small);
+      line-height: 1.6;
+      font-weight: 500;
     }
 
     .help-bullets{
@@ -1707,9 +1891,18 @@
       padding-left: 18px;
       color: var(--text-muted);
       line-height: 1.6;
+      font-size: var(--type-small);
+      font-weight: 500;
+      letter-spacing: 0;
     }
 
     .help-bullets li{ margin:8px 0; }
+
+    /* Make bullets feel consistent with the text (not heavy/oversized) */
+    .help-bullets li::marker{
+      color: rgba(var(--text-muted-rgb), 0.7);
+      font-size: 0.95em;
+    }
 
     .help-detail-cta{
       display:flex;
@@ -1882,7 +2075,7 @@
       align-items:center;
       justify-content:center;
       text-align:center;
-      font-size: 10px;
+      font-size: 10px; /* decorative: keep small so both lines fit */
       line-height: 1.2;
       color: rgba(31,24,20,.88);
       font-weight: 200;
@@ -1964,12 +2157,25 @@
       align-items: stretch;
     }
 
+    @media (min-width: calc(var(--bp-sm) + 1px)){
+      .schedule-grid{
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
+    /* Force 3-up layout on wider screens */
+    @media (min-width: 900px){
+      .schedule-grid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
     /* Use the shared surface style, but make schedule cards behave like real buttons */
     /* Make schedule cards feel like tappable tiles */
     .schedule-card{
-      appearance:none;
       -webkit-appearance:none;
-      border: 1px solid rgba(255,255,255,0.35);
+      appearance:none;
+      border: 0;
       border-radius: var(--radius);
       background:
         radial-gradient(circle at 20% -20%, rgba(var(--primary-rgb),0.14), transparent 45%),
@@ -1994,7 +2200,7 @@
       transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
     }
 
-    /* Thin brand bar like your other surfaces */
+    /* Background layer for the card */
     .schedule-card::before{
       content:"";
       position:absolute;
@@ -2006,13 +2212,30 @@
         linear-gradient(180deg, rgba(var(--surface-card-rgb),0.98), rgba(var(--surface-card-rgb),0.88));
     }
 
+    /* Thin brand bar on top (match .surface::before) */
+    .schedule-card::after{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      right:0;
+      height:4px;
+      background: linear-gradient(90deg,
+        rgba(var(--accent-warm-rgb), 0.85),
+        rgba(var(--primary-rgb), 0.75),
+        rgba(var(--accent-rare-rgb), 0.65)
+      );
+      opacity:.55;
+      z-index: 0;
+      pointer-events:none;
+    }
+
     /* Hover/press: subtle, not “game UI” */
-    /* Accessible, good-looking focus ring */
     /* Accessible, good-looking focus ring */
     .schedule-card:focus { outline: none; }
 
     .schedule-card:focus-visible{
-      outline: 3px solid color-mix(in srgb, var(--accent), white 20%);
+      outline: 3px solid var(--focus-outline-strong);
       outline-offset: 3px;
       border-radius: calc(var(--radius) + 2px);
     }
@@ -2033,184 +2256,116 @@
     }
 
         /* ============================================================
-       Pomodoro timer badge (alarm clock) + hover wiggle
-       - Alarm clock silhouette with bells + feet + subtle shadow
-       - Segmented LCD-ring fill inside the clock body
+       Schedule clock badge (fixed pomodoro icon)
        ============================================================ */
-
-    @property --pomo-fill{
-      syntax: "<number>";
-      inherits: true;
-      initial-value: 0;
-    }
-
-    .pomo-clock{
-      --pomo-size: 54px;
-      --pomo-fill-target: 0.25;
-      --pomo-fill: 0;
-
+    .schedule-clock{
       position: absolute;
       right: 16px;
       bottom: 16px;
-      width: var(--pomo-size);
-      height: var(--pomo-size);
-      pointer-events: auto;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .clock{
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 52px;
+      color: rgba(var(--text-muted-rgb), 1);
       isolation: isolate;
-      transform-origin: 50% 78%;
-      will-change: transform;
-
-      --clock-body: rgba(var(--text-rgb), 0.62);
-      --clock-body-dark: rgba(var(--text-rgb), 0.78);
-      --clock-highlight: rgba(255,255,255,0.35);
-
-      --lcd-bg: rgba(var(--surface-card-rgb), 0.90);
-      --lcd-border: rgba(var(--text-rgb), 0.14);
-      --fill-ink: rgba(var(--primary-rgb), 0.82);
-
-      --seg-count: 30;
-      --seg-gap: 6%;
-      --tick-ink: rgba(var(--text-rgb), 0.18);
-
-      --lcd-x: 50%;
-      --lcd-y: 56%;
-      --lcd-w: 58%;
-      --lcd-h: 40%;
-      --lcd-r: 12px;
     }
 
-    .pomo-clock::before{
-      content:"";
-      position:absolute;
-      left: 50%;
-      bottom: -9px;
-      width: 86%;
-      height: 12px;
-      transform: translateX(-50%);
-      border-radius: 999px;
-      background: radial-gradient(closest-side, rgba(17,20,24,.22), transparent 70%);
-      filter: blur(1.2px);
-      opacity: .55;
-      z-index: 0;
+    @media (max-width: var(--bp-sm)){
+      .clock{
+        width: 44px;
+        height: 44px;
+      }
     }
 
-    .pomo-clock::after{
-      content:"";
-      position:absolute;
-      inset: 0;
-      z-index: 3;
+    .clock svg{
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .pomodoro{
+      position: absolute;
+      inset: 11px 10px 9px 10px; /* nudged 1px downward while keeping overall size */
+      display: grid;
+      place-items: center;
+    }
+
+    .arc{
+      width: 78%;
+      height: 78%;
+      border-radius: 50%;
+      position: relative;
+      --clock-accent: var(--accent-warm, #d46a1f);
+    }
+
+    .arc::after{
+      content: "";
+      position: absolute;
+      inset: 8px;
       background:
-        radial-gradient(60% 55% at 22% 14%,
-          var(--clock-body) 0 62%,
-          transparent 63%),
-        radial-gradient(60% 55% at 78% 14%,
-          var(--clock-body) 0 62%,
-          transparent 63%),
-        radial-gradient(26% 26% at 50% 10%,
-          var(--clock-body-dark) 0 62%,
-          transparent 63%),
-        radial-gradient(34% 26% at 30% 92%,
-          var(--clock-body-dark) 0 58%,
-          transparent 59%),
-        radial-gradient(34% 26% at 70% 92%,
-          var(--clock-body-dark) 0 58%,
-          transparent 59%),
-        radial-gradient(circle at 50% 54%,
-          transparent 0 38%,
-          var(--clock-body-dark) 39% 52%,
-          transparent 53%),
-        radial-gradient(120% 90% at 30% 25%,
-          var(--clock-highlight),
-          transparent 55%);
-      filter: drop-shadow(0 10px 16px rgba(17,20,24,.14));
-      opacity: .95;
-    }
-
-    .pomo-clock{
-      z-index: 2;
-      background:
-        repeating-linear-gradient(
-          90deg,
-          rgba(0,0,0,0) 0 calc((100% / var(--seg-count)) - var(--seg-gap)),
-          var(--tick-ink) calc((100% / var(--seg-count)) - var(--seg-gap)) calc(100% / var(--seg-count))
-        ),
-        linear-gradient(
-          90deg,
-          var(--fill-ink) 0 calc(var(--pomo-fill) * 100%),
-          rgba(0,0,0,0) calc(var(--pomo-fill) * 100%) 100%
-        ),
-        radial-gradient(120% 140% at 30% 20%,
-          rgba(255,255,255,0.22),
-          rgba(255,255,255,0) 52%),
-        linear-gradient(180deg,
-          rgba(255,255,255,0.10),
-          rgba(0,0,0,0.05)),
-        linear-gradient(180deg, var(--lcd-bg), var(--lcd-bg));
-      background-repeat: no-repeat;
-      background-size:
-        var(--lcd-w) var(--lcd-h),
-        var(--lcd-w) var(--lcd-h),
-        var(--lcd-w) var(--lcd-h),
-        var(--lcd-w) var(--lcd-h),
-        var(--lcd-w) var(--lcd-h);
-      background-position:
-        var(--lcd-x) var(--lcd-y),
-        var(--lcd-x) var(--lcd-y),
-        var(--lcd-x) var(--lcd-y),
-        var(--lcd-x) var(--lcd-y),
-        var(--lcd-x) var(--lcd-y);
-      -webkit-mask-image:
         radial-gradient(
-          circle at 0 0,
-          transparent 0,
-          transparent 0
+          circle at center,
+          transparent 0 12px,
+          var(--surface-card, #f5f7f6) 20px 100%
         );
-      -webkit-mask-repeat: no-repeat;
-              mask-repeat: no-repeat;
-      clip-path: inset(
-        calc(56% - (var(--lcd-h) / 2))
-        calc(50% - (var(--lcd-w) / 2))
-        calc(44% - (var(--lcd-h) / 2))
-        calc(50% - (var(--lcd-w) / 2))
-        round var(--lcd-r)
+      border-radius: 50%;
+    }
+
+    .clock::after{
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      width: 80%;
+      height: 8px;
+      transform: translateX(-50%);
+      background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0.25) 0%,
+        rgba(0, 0, 0, 0.15) 35%,
+        rgba(0, 0, 0, 0.05) 55%,
+        transparent 40%
       );
+      pointer-events: none;
+      z-index: -1;
     }
 
-    .pomo-clock{
-      box-shadow:
-        inset 0 0 0 1px rgba(var(--text-rgb), 0.08),
-        inset 0 0 0 10px rgba(0,0,0,0);
+    /* Micro-wiggle on hover */
+    @keyframes tilt-n-move-shaking{
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(5px, 5px) rotate(5deg); }
+      50% { transform: translate(0, 0) rotate(0deg); }
+      75% { transform: translate(-5px, 5px) rotate(-5deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
     }
 
-    .pomo-15{ --pomo-fill-target: 0.25; }
-    .pomo-30{ --pomo-fill-target: 0.50; }
-    .pomo-60{ --pomo-fill-target: 1.00; }
-
-    .schedule-card:hover .pomo-clock,
-    .schedule-card:focus-visible .pomo-clock{
-      --pomo-fill: var(--pomo-fill-target);
-      transition: --pomo-fill 520ms cubic-bezier(.2,.9,.2,1);
+    @keyframes shadow-shift{
+      0% { transform: translateX(-50%); }
+      25% { transform: translateX(calc(-50% + 3px)); }
+      50% { transform: translateX(-50%); }
+      75% { transform: translateX(calc(-50% - 3px)); }
+      100% { transform: translateX(-50%); }
     }
 
-    .pomo-clock:hover{
-      animation: alarmWiggle 520ms ease-in-out infinite;
+    /* Alarm wiggle after timer completes (no hover wiggle) */
+    .clock.alarm svg,
+    .clock.alarm .pomodoro{
+      animation: tilt-n-move-shaking 520ms ease-in-out 3;
     }
-
-    @keyframes alarmWiggle{
-      0%{ transform: rotate(0deg) translateY(0); }
-      12%{ transform: rotate(-6deg) translateY(-1px); }
-      24%{ transform: rotate(6deg) translateY(0); }
-      36%{ transform: rotate(-5deg) translateY(-1px); }
-      48%{ transform: rotate(5deg) translateY(0); }
-      60%{ transform: rotate(-3deg) translateY(-1px); }
-      72%{ transform: rotate(3deg) translateY(0); }
-      100%{ transform: rotate(0deg) translateY(0); }
+    .clock.alarm::after{
+      animation: shadow-shift 520ms ease-in-out 3;
     }
 
     @media (prefers-reduced-motion: reduce){
-      .pomo-clock:hover{ animation: none; }
-      .schedule-card:hover .pomo-clock,
-      .schedule-card:focus-visible .pomo-clock{
-        transition: none;
+      .clock.alarm svg,
+      .clock.alarm .pomodoro,
+      .clock.alarm::after{
+        animation: none;
       }
     }
 
@@ -2222,6 +2377,7 @@
       margin-top: 16px;
       display:flex;
       flex-direction:column;
+      align-items: flex-start; /* prevent CTA from stretching full width */
       gap:6px;
     }
 
@@ -2230,41 +2386,31 @@
     .schedule-top{
       display:flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 0;
     }
 
-    .schedule-dot{
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      margin-top: 6px;
-      flex: 0 0 12px;
-      box-shadow: 0 0 0 8px rgba(var(--primary-rgb), 0.12);
-    }
-
-    .dot-15{ background: var(--dot-15); }
-    .dot-30{ background: var(--dot-30); }
-    .dot-60{ background: var(--dot-60); }
-
     .schedule-title{
       margin:0;
-      font-size: 22px;
+      font-size: var(--type-h3);
       line-height: 1.18;
       letter-spacing: -.2px;
     }
 
     .schedule-sub{
-      margin: 0;
+      margin: 6px 0 6px;
       color: var(--text-muted);
       font-size: 14px;
-      line-height: 1.45;
+      line-height: 1.35;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 200;
     }
 
     .schedule-desc{
       margin: 0;
       color: var(--text-muted);
-      font-size: 14px;
+      font-size: var(--type-body);
       line-height: 1.6;
       max-width: 70ch;
       flex: 1;
@@ -2277,18 +2423,66 @@
       align-items:center;
       gap: 6px;
       font-weight: 700;
-      font-size: 14px;
+      font-size: var(--type-body);
       color: var(--primary);
       text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color .22s ease;
-      padding: 0;
+      border: 1px solid rgba(var(--primary-rgb), 0.15);
+      background:
+        linear-gradient(180deg,
+          rgba(255,255,255,0.65),
+          rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      border-radius: 12px;
+      padding: 10px 14px;
       margin-top:auto;
-      padding-top:8px;
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+
+      text-transform: capitalize;
+      pointer-events: none; /* decorative; prevent hover from interrupting card/clock interactions */
+
+      opacity: 0;
+      transform: translateY(6px);
+      transition:
+        opacity .35s ease,
+        transform .35s ease,
+        color .22s ease,
+        background .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+      transition-delay: 0s;
     }
 
-    .schedule-card:hover .schedule-cta{
-      border-color: rgba(var(--primary-rgb), 0.35);
+    .schedule-card:hover .schedule-cta,
+    .schedule-card:focus-visible .schedule-cta{
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: .5s;
+      background:
+        linear-gradient(180deg,
+          rgba(255,255,255,0.65),
+          rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      border-color: rgba(var(--primary-rgb), 0.28);
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+
+    .schedule-card.is-visible .schedule-cta{
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: .5s;
+      background:
+        linear-gradient(180deg,
+          rgba(255,255,255,0.65),
+          rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      border-color: rgba(var(--primary-rgb), 0.28);
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255,255,255,0.7);
     }
 
     /* ============================================================
@@ -2328,8 +2522,8 @@
       cursor: pointer;
       overflow: hidden;
       isolation: isolate;
-      transform: translateZ(0);
       -webkit-transform: translateZ(0);
+      transform: translateZ(0);
       will-change: transform;
     }
     .theme-toggle__glow{
@@ -2429,29 +2623,43 @@
 
     /* XS: Mobile portrait */
     @media (max-width: var(--bp-xs)){
-      .wrap{ padding: var(--space-3); }
+      :root{
+        --section-gap: var(--space-6);
+        --type-h3: 22px;
+      }
+      .wrap{ padding: 0 var(--space-3); }
+
+      header,
+      .hero-actions,
+      .subhead{ text-align: left; }
 
       .subhead{
         max-width: 100%;
-        padding: 0 18px;
+        padding: 0 12px;
         margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
       }
 
       .schedule-grid{ gap: var(--space-3); }
       .schedule-card{ padding: 18px 16px 16px; }
-      .schedule-title{ font-size: 20px; }
-      .schedule-desc{ font-size: 13px; line-height: 1.55; }
 
       .fortune-wrap{ padding: 0; justify-content: center; }
     }
 
     /* SM: Mobile landscape / small */
     @media (min-width: calc(var(--bp-xs) + 1px)) and (max-width: var(--bp-sm)){
-      .wrap{ padding: var(--space-4); }
+      :root{
+        --section-gap: var(--space-6);
+        --type-h3: 24px;
+      }
+      .wrap{ padding: 0 var(--space-3); }
+
+      header,
+      .hero-actions,
+      .subhead{ text-align: left; }
 
       .subhead{
         max-width: 100%;
-        padding: 0 28px;
+        padding: 0 16px;
         margin: calc(var(--hero-title-size) / 3) 28px var(--hero-title-size);
       }
 
@@ -2474,7 +2682,6 @@
       .about-grid{ grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
       .card{ grid-column: span 4; }
 
-      .schedule-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .schedule-card{ padding: 22px 22px 20px; }
     }
 
@@ -2508,6 +2715,16 @@
       .mt-16{ margin-top:16px; }
       .mb-8{ margin-bottom:8px; }
       .m-0{ margin:0; }
+      .flow-s > * + *{ margin-top: var(--space-2); }
+      .flow-m > * + *{ margin-top: var(--space-3); }
+      .flow-l > * + *{ margin-top: var(--space-4); }
+      .section-pad{ padding: var(--space-7) 0; }
+      @media (max-width: 720px){
+        .section-pad{ padding: var(--space-6) 0; }
+      }
+      .section-pad-bottom-100{ margin-bottom:0; padding-bottom:100px; }
+      .section-pad-top-100{ margin-top:0; padding-top:100px; }
+      .section-tight-top{ margin:0 0 100px 0; padding-top:100px; }
       .sr-only{
         position:absolute;
         width:1px;
@@ -2545,7 +2762,19 @@
   <div class="nav">
     <div class="nav-inner">
       <a class="brand" href="#top" aria-label="Go to top of page">
-        <span class="dot" aria-hidden="true"></span>
+        <svg class="brand-logo" aria-hidden="true" viewBox="0 0 64 64" role="img">
+          <g fill="none" stroke="var(--primary)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="32" r="28" />
+            <circle cx="20" cy="22" r="6" />
+            <circle cx="44" cy="22" r="6" />
+            <circle cx="32" cy="30" r="5.5" />
+            <path d="M12 34c6-6 12-8 20-8s14 2 20 8" />
+            <path d="M18 42c3-6 8-8 14-8s11 2 14 8" />
+            <path d="M24 46v8h-6" />
+            <path d="M32 46v8" />
+            <path d="M40 46v8h6" />
+          </g>
+        </svg>
         <span>Mark Malcolm</span>
         <span class="brand-meta" aria-hidden="true">
           <span class="brand-sep">•</span>
@@ -2575,7 +2804,7 @@
     <!-- ==========================================================
          Hero
        ========================================================== -->
-    <header>
+    <header class="flow-l">
       <h1>Clear customer paths.<br>Consistent interfaces.<br>Brands people trust.</h1>
 
       <p class="subhead">
@@ -2622,23 +2851,25 @@
       <div class="grid">
         <article class="card surface">
           <h3>BigIron</h3>
-          <p class="meta"><strong>Role:</strong> UX Consultant</p>
-          <p class="fine"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
-          <p class="win"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
+          <p class="meta-line"><strong>Role:</strong> UX Consultant</p>
+          <p class="meta-line"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
+          <p class="meta-line"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
         </article>
 
         <article class="card surface">
           <h3>Cedar Bluff Tech</h3>
-          <p class="meta"><strong>Role:</strong> UX Consultant &amp; Designer</p>
-          <p class="fine"><strong>Scope:</strong> Built the brand system from scratch, including logo and guidelines. Shaped the story, positioning, and experience direction for the parent brand and then applied the same foundation to their flagship software.</p>
-          <p class="win"><strong>Outcome:</strong> Humanized and unified the product story across product, marketing, and investor communication, supporting pitch wins, fundraising, and pilot recruitment.</p>
+          <p class="meta-line"><strong>Role:</strong> UX Consultant &amp; Designer</p>
+          <p class="meta-line"><strong>Scope:</strong> Built the brand system from scratch, including logo and guidelines. Shaped the story, positioning, and experience direction for the parent brand and then applied the same foundation to their flagship software.</p>
+          <p class="meta-line"><strong>Outcome:</strong> Humanized and unified the product story across product, marketing, and investor communication, supporting pitch wins, fundraising, and pilot recruitment.</p>
+          <p class="meta-line"><strong>Output:</strong> Brand guidelines, product design system, marketing collateral, investor pitch deck.</p>
         </article>
 
         <article class="card surface">
           <h3>Moss Rock Ranch</h3>
-          <p class="meta"><strong>Role:</strong> Brand Strategist</p>
-          <p class="fine"><strong>Scope:</strong> Built the brand foundation and guidelines, clarified purpose and voice, defined audience segments, and created a reusable messaging system the team can apply across channels.</p>
-          <p class="win"><strong>Outcome:</strong> Clarified what made the brand distinct and gave the owners a repeatable way to express it, so every channel reinforced the same story instead of competing with itself.</p>
+          <p class="meta-line"><strong>Role:</strong> Brand Strategist</p>
+          <p class="meta-line"><strong>Scope:</strong> Built the brand foundation and guidelines, clarified purpose and voice, defined audience segments, and created a reusable messaging system the team can apply across channels.</p>
+          <p class="meta-line"><strong>Outcome:</strong> Clarified what made the brand distinct and gave the owners a repeatable way to express it, so every channel reinforced the same story instead of competing with itself.</p>
+          <p class="meta-line"><strong>Output:</strong> Messaging framework, audience personas, channel playbook, brand guidelines.</p>
         </article>
       </div>
 
@@ -2661,23 +2892,23 @@
 
             <div class="tape-track" id="tickerTrack">
               <div class="tape-run">
-                <span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep">•</span><span class="tape-val">clearer workflows</span></span>
-                <span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep">•</span><span class="tape-val">consistent UI</span></span>
-                <span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep">•</span><span class="tape-val">fewer mistakes</span></span>
-                <span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep">•</span><span class="tape-val">less ambiguity</span></span>
-                <span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep">•</span><span class="tape-val">faster delivery</span></span>
-                <span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep">•</span><span class="tape-val">cohesive output</span></span>
-                <span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep">•</span><span class="tape-val">less rework</span></span>
+                <span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep"> = </span><span class="tape-val">clearer workflows</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep"> = </span><span class="tape-val">consistent UI</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep"> = </span><span class="tape-val">fewer mistakes</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep"> = </span><span class="tape-val">less ambiguity</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep"> = </span><span class="tape-val">faster delivery</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep"> = </span><span class="tape-val">cohesive output</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep"> = </span><span class="tape-val">less rework</span></span>
               </div>
 
               <div class="tape-run" aria-hidden="true">
-                <span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep">•</span><span class="tape-val">clearer workflows</span></span>
-                <span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep">•</span><span class="tape-val">consistent UI</span></span>
-                <span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep">•</span><span class="tape-val">fewer mistakes</span></span>
-                <span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep">•</span><span class="tape-val">less ambiguity</span></span>
-                <span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep">•</span><span class="tape-val">faster delivery</span></span>
-                <span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep">•</span><span class="tape-val">cohesive output</span></span>
-                <span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep">•</span><span class="tape-val">less rework</span></span>
+                <span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep"> = </span><span class="tape-val">clearer workflows</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep"> = </span><span class="tape-val">consistent UI</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep"> = </span><span class="tape-val">fewer mistakes</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep"> = </span><span class="tape-val">less ambiguity</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep"> = </span><span class="tape-val">faster delivery</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep"> = </span><span class="tape-val">cohesive output</span></span><span class="tape-pipe"> | </span>
+                <span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep"> = </span><span class="tape-val">less rework</span></span>
               </div>
             </div>
           </div>
@@ -2713,13 +2944,13 @@
       </div>
     </section>
 
-    <section id="about" style="margin-bottom:0; padding-bottom:100px;">
+    <section id="about" class="section-pad-bottom-100">
       <h2 class="section-title">About Me</h2>
       <p class="section-lede">
         My background spans high-stakes projects in design, brand systems, and customer-facing operations. That combination taught me how to see the system, not just the interface.
       </p>
 
-      <div class="callout surface stack-tight">
+      <div class="callout surface stack-tight flow-m">
         <p class="fine">
           I’m Mark Malcolm, a <span class="hl hl-blue bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-amber bio-highlight a2">product partner, not just a screen designer</span>.
         </p>
@@ -2735,7 +2966,7 @@
       </div>
     </section>
 
-    <section id="help" style="margin-top:0; padding-top:100px;">
+    <section id="help" class="section-pad-top-100">
       <h2 class="section-title">How I Can Help</h2>
       <p class="section-lede">
         These are the ways I typically support teams when the work is complex, cross-functional, or starting to feel fragile as it grows.
@@ -2745,27 +2976,23 @@
         <div class="help-list" role="tablist" aria-label="Service areas">
           <button class="help-item is-active" role="tab" aria-selected="true" aria-controls="help-panel" data-service="ux" type="button">
             <h3>UX Strategy for Complex Workflows</h3>
-            <p>When people keep asking the same questions, the process isn’t clear enough yet. I make the next step obvious.</p>
           </button>
 
           <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="systems" type="button">
             <h3>Design Systems and UI Architecture</h3>
-            <p>If your interface depends on who designed it that week, you don’t have a system yet. I build the rules.</p>
           </button>
 
           <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="brand" type="button">
             <h3>Brand Strategy, Copywriting, and Visual Design</h3>
-            <p>If you sound different in every deck, page, and email, people can’t form a clear picture of you.</p>
           </button>
 
           <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="training" type="button">
             <h3>Training That Scales</h3>
-            <p>Growth breaks when the know-how lives with one person. We turn process into clear onboarding and playbooks.</p>
           </button>
         </div>
 
         <div id="help-panel" class="help-detail" role="tabpanel" aria-live="polite">
-          <div class="help-detail-inner">
+      <div class="help-detail-inner flow-m">
             <div class="help-detail-head">
               <h3 id="helpDetailTitle">UX Strategy for Complex Workflows</h3>
               <p id="helpDetailDesc" class="fine">
@@ -2790,7 +3017,7 @@
       </div>
 
       <div class="help-accordion" aria-label="Service details (mobile)">
-        <details open>
+        <details open class="flow-s">
           <summary>UX Strategy for Complex Workflows</summary>
           <p class="fine">When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.</p>
           <ul class="help-bullets">
@@ -2802,7 +3029,7 @@
           </ul>
         </details>
 
-        <details>
+        <details class="flow-s">
           <summary>Design Systems and UI Architecture</summary>
           <p class="fine">If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.</p>
           <ul class="help-bullets">
@@ -2814,7 +3041,7 @@
           </ul>
         </details>
 
-        <details>
+        <details class="flow-s">
           <summary>Brand Strategy, Copywriting, and Visual Design</summary>
           <p class="fine">If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.</p>
           <ul class="help-bullets">
@@ -2826,7 +3053,7 @@
           </ul>
         </details>
 
-        <details>
+        <details class="flow-s">
           <summary>Training That Scales</summary>
           <p class="fine">Growth breaks when the know-how lives with one person. We capture your process and turn it into clear onboarding, training, and playbooks so the work stays good as the team gets bigger.</p>
           <ul class="help-bullets">
@@ -2863,7 +3090,7 @@
       </div>
     </section>
 
-    <section id="approach" style="margin-bottom:0; padding-bottom:100px;">
+    <section id="approach" class="section-pad-bottom-100">
       <h2 class="section-title">
         How We’ll Tackle It
       </h2>
@@ -2881,7 +3108,7 @@
               <p class="fine process-why">
                 We agree on the real problem, the users involved, and what success looks like. This prevents solving the wrong thing elegantly.
               </p>
-              <p class="fine process-out">
+              <p class="meta-line process-out">
                 <strong>Output:</strong> a short problem statement, success criteria, and constraints.
               </p>
             </div>
@@ -2895,7 +3122,7 @@
               <p class="fine process-why">
                 We document the current workflow and handoffs, then mark where people get stuck, repeat questions, or make avoidable mistakes.
               </p>
-              <p class="fine process-out">
+              <p class="meta-line process-out">
                 <strong>Output:</strong> workflow map, friction points, and priority opportunities.
               </p>
             </div>
@@ -2909,7 +3136,7 @@
               <p class="fine process-why">
                 We propose a clearer path with roles, steps, and guardrails, then make the next action obvious at every decision point.
               </p>
-              <p class="fine process-out">
+              <p class="meta-line process-out">
                 <strong>Output:</strong> proposed flow, UI structure, content guidelines, and edge cases.
               </p>
             </div>
@@ -2923,7 +3150,7 @@
               <p class="fine process-why">
                 We test the direction early, using lightweight prototypes or structured reviews, so you don’t pay engineering costs for assumptions.
               </p>
-              <p class="fine process-out">
+              <p class="meta-line process-out">
                 <strong>Output:</strong> validated changes, notes, and final decisions.
               </p>
             </div>
@@ -2937,7 +3164,7 @@
               <p class="fine process-why">
                 Once it’s live, we watch for repeat questions, missed steps, and support load, then tighten the system so it holds up over time.
               </p>
-              <p class="fine process-out">
+              <p class="meta-line process-out">
                 <strong>Output:</strong> iteration list, updated standards, and next improvements.
               </p>
             </div>
@@ -2945,7 +3172,7 @@
         </ol>
       </div>
 
-      <div class="callout surface stack-tight">
+      <div class="callout surface stack-tight flow-m">
         <h3 class="about-h3">Why I work this way</h3>
 
         <p class="fine">
@@ -2959,7 +3186,7 @@
 
     </section>
 
-    <section id="testimonials" class="testimonials" style="margin: 0 0 100px 0; padding-top: 100px;">
+    <section id="testimonials" class="testimonials section-tight-top flow-m">
         <h3 class="section-title">What People Are Saying</h3>
         <p class="testimonials-title">
           A few things teammates and leaders have said about working with me:
@@ -2978,7 +3205,7 @@
               <div class="quote-divider" aria-hidden="true"></div>
               <div class="quote-cite">
                 <strong>Kai Mills</strong>
-                <span>UI Designer</span>
+                <h4>UI Designer</h4>
               </div>
             </figure>
           </li>
@@ -2995,7 +3222,7 @@
               <div class="quote-divider" aria-hidden="true"></div>
               <div class="quote-cite">
                 <strong>Michael McTavish</strong>
-                <span>Project Manager</span>
+                <h4>Project Manager</h4>
               </div>
             </figure>
           </li>
@@ -3012,7 +3239,7 @@
               <div class="quote-divider" aria-hidden="true"></div>
               <div class="quote-cite">
                 <strong>Alan Donth</strong>
-                <span>Product Design</span>
+                <h4>Product Design</h4>
               </div>
             </figure>
           </li>
@@ -3038,14 +3265,13 @@
           aria-label="Book a 15 minute chat"
           aria-describedby="calendlyHint"
         >
-          <div class="schedule-body">
-            <div class="schedule-top">
-              <span class="schedule-dot dot-15" aria-hidden="true"></span>
-              <div>
-                <h3 class="schedule-title">15 Min Chat</h3>
-                <p class="schedule-sub">Quick clarity and next steps</p>
+            <div class="schedule-body flow-m">
+              <div class="schedule-top">
+                <div>
+                  <h3 class="schedule-title">15 Min Chat</h3>
+                <h4 class="schedule-sub">Quick clarity and next steps</h4>
+                </div>
               </div>
-            </div>
 
             <p class="schedule-desc">
               Best for a quick intro, one focused question, or a fast direction check.
@@ -3054,9 +3280,92 @@
           </div>
 
           <div class="schedule-footer">
-            <div class="schedule-cta">Book 15 minutes →</div>
+            <div class="schedule-cta">Book 15 Minutes</div>
           </div>
-          <span class="pomo-clock pomo-15" aria-hidden="true"></span>
+          <div class="schedule-clock" aria-hidden="true">
+            <div class="clock desktop">
+              <svg
+                viewBox="0 0 256 256"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <clipPath id="bell-clip-15" clipPathUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="256" height="48" />
+                  </clipPath>
+                </defs>
+
+                <ellipse
+                  cx="76"
+                  cy="40"
+                  rx="26"
+                  ry="19"
+                  transform="rotate(-30 76 40)"
+                  fill="currentColor"
+                  clip-path="url(#bell-clip-15)"
+                />
+                <ellipse
+                  cx="180"
+                  cy="40"
+                  rx="26"
+                  ry="19"
+                  transform="rotate(30 180 40)"
+                  fill="currentColor"
+                  clip-path="url(#bell-clip-15)"
+                />
+
+                <circle
+                  cx="128"
+                  cy="30"
+                  r="6"
+                  stroke="currentColor"
+                  stroke-width="8"
+                  fill="currentColor"
+                />
+
+                <circle
+                  cx="128"
+                  cy="132"
+                  r="86"
+                  stroke="currentColor"
+                  stroke-width="20"
+                  fill="none"
+                />
+
+                <circle
+                  cx="128"
+                  cy="132"
+                  r="10"
+                  fill="currentColor"
+                />
+
+                <rect
+                  x="86"
+                  y="204"
+                  width="24"
+                  height="40"
+                  rx="12"
+                  transform="rotate(25 86 204)"
+                  fill="currentColor"
+                />
+                <rect
+                  x="146"
+                  y="212"
+                  width="24"
+                  height="40"
+                  rx="12"
+                  transform="rotate(-25 146 204)"
+                  fill="currentColor"
+                />
+              </svg>
+
+              <div class="pomodoro">
+                <div class="arc" data-segments="6" style="--clock-accent: var(--dot-15);"></div>
+              </div>
+
+            </div>
+          </div>
         </button>
 
           <button
@@ -3067,14 +3376,13 @@
           aria-label="Book a 30 minute meeting"
           aria-describedby="calendlyHint"
         >
-          <div class="schedule-body">
-            <div class="schedule-top">
-              <span class="schedule-dot dot-30" aria-hidden="true"></span>
-              <div>
-                <h3 class="schedule-title">30 Min Alignment</h3>
-                <p class="schedule-sub">Align, decide, unblock</p>
+            <div class="schedule-body flow-m">
+              <div class="schedule-top">
+                <div>
+                  <h3 class="schedule-title">30 Min Alignment</h3>
+                <h4 class="schedule-sub">Align, decide, unblock</h4>
+                </div>
               </div>
-            </div>
 
             <p class="schedule-desc">
               Great for reviewing work in progress, clarifying requirements, or mapping a workflow.
@@ -3083,9 +3391,92 @@
           </div>
 
           <div class="schedule-footer">
-            <div class="schedule-cta">Book 30 minutes →</div>
+            <div class="schedule-cta">Book 30 Minutes</div>
           </div>
-          <span class="pomo-clock pomo-30" aria-hidden="true"></span>
+          <div class="schedule-clock" aria-hidden="true">
+            <div class="clock desktop">
+              <svg
+                viewBox="0 0 256 256"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <clipPath id="bell-clip-30" clipPathUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="256" height="48" />
+                  </clipPath>
+                </defs>
+
+                <ellipse
+                  cx="76"
+                  cy="40"
+                  rx="26"
+                  ry="19"
+                  transform="rotate(-30 76 40)"
+                  fill="currentColor"
+                  clip-path="url(#bell-clip-30)"
+                />
+                <ellipse
+                  cx="180"
+                  cy="40"
+                  rx="26"
+                  ry="19"
+                  transform="rotate(30 180 40)"
+                  fill="currentColor"
+                  clip-path="url(#bell-clip-30)"
+                />
+
+                <circle
+                  cx="128"
+                  cy="30"
+                  r="6"
+                  stroke="currentColor"
+                  stroke-width="8"
+                  fill="currentColor"
+                />
+
+                <circle
+                  cx="128"
+                  cy="132"
+                  r="86"
+                  stroke="currentColor"
+                  stroke-width="20"
+                  fill="none"
+                />
+
+                <circle
+                  cx="128"
+                  cy="132"
+                  r="10"
+                  fill="currentColor"
+                />
+
+                <rect
+                  x="86"
+                  y="204"
+                  width="24"
+                  height="40"
+                  rx="12"
+                  transform="rotate(25 86 204)"
+                  fill="currentColor"
+                />
+                <rect
+                  x="146"
+                  y="212"
+                  width="24"
+                  height="40"
+                  rx="12"
+                  transform="rotate(-25 146 204)"
+                  fill="currentColor"
+                />
+              </svg>
+
+              <div class="pomodoro">
+                <div class="arc" data-segments="12" style="--clock-accent: var(--dot-30);"></div>
+              </div>
+
+            </div>
+          </div>
         </button>
 
           <button
@@ -3096,14 +3487,13 @@
           aria-label="Book a 60 minute consult"
           aria-describedby="calendlyHint"
         >
-          <div class="schedule-body">
-            <div class="schedule-top">
-              <span class="schedule-dot dot-60" aria-hidden="true"></span>
-              <div>
+            <div class="schedule-body flow-m">
+              <div class="schedule-top">
+                <div>
                 <h3 class="schedule-title">60 Min Consult</h3>
-                <p class="schedule-sub">Deep dive and a plan</p>
+                <h4 class="schedule-sub">Deep Dive and Strategize</h4>
               </div>
-            </div>
+              </div>
 
             <p class="schedule-desc">
               Ideal when the problem is messy or the stakes are high. We’ll map the situation clearly,
@@ -3112,9 +3502,92 @@
           </div>
 
           <div class="schedule-footer">
-            <div class="schedule-cta">Book 60 minutes →</div>
+            <div class="schedule-cta">Book 60 Minutes</div>
           </div>
-          <span class="pomo-clock pomo-60" aria-hidden="true"></span>
+          <div class="schedule-clock" aria-hidden="true">
+            <div class="clock desktop">
+              <svg
+                viewBox="0 0 256 256"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <clipPath id="bell-clip-60" clipPathUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="256" height="48" />
+                  </clipPath>
+                </defs>
+
+                <ellipse
+                  cx="76"
+                  cy="40"
+                  rx="26"
+                  ry="19"
+                  transform="rotate(-30 76 40)"
+                  fill="currentColor"
+                  clip-path="url(#bell-clip-60)"
+                />
+                <ellipse
+                  cx="180"
+                  cy="40"
+                  rx="26"
+                  ry="19"
+                  transform="rotate(30 180 40)"
+                  fill="currentColor"
+                  clip-path="url(#bell-clip-60)"
+                />
+
+                <circle
+                  cx="128"
+                  cy="30"
+                  r="6"
+                  stroke="currentColor"
+                  stroke-width="8"
+                  fill="currentColor"
+                />
+
+                <circle
+                  cx="128"
+                  cy="132"
+                  r="86"
+                  stroke="currentColor"
+                  stroke-width="20"
+                  fill="none"
+                />
+
+                <circle
+                  cx="128"
+                  cy="132"
+                  r="10"
+                  fill="currentColor"
+                />
+
+                <rect
+                  x="86"
+                  y="204"
+                  width="24"
+                  height="40"
+                  rx="12"
+                  transform="rotate(25 86 204)"
+                  fill="currentColor"
+                />
+                <rect
+                  x="146"
+                  y="212"
+                  width="24"
+                  height="40"
+                  rx="12"
+                  transform="rotate(-25 146 204)"
+                  fill="currentColor"
+                />
+              </svg>
+
+              <div class="pomodoro">
+                <div class="arc" data-segments="24" style="--clock-accent: var(--dot-60);"></div>
+              </div>
+
+            </div>
+          </div>
         </button>
       </div>
 
@@ -3131,7 +3604,7 @@
         </div>
       </noscript>
 
-      <div class="callout surface no-hover mt-16">
+      <div class="callout surface no-hover mt-16 flow-s">
         <p class="fine">
           <!-- Update these lines with your real contact info. -->
           Email: <a class="link-accent" href="mailto:mark@we3.design">mark@we3.design</a><br />
@@ -3164,6 +3637,227 @@
       }
       Calendly.initPopupWidget({ url: url });
     }
+
+    /* ==========================================================
+       Schedule clocks: segmented ring fill animation
+       ========================================================== */
+    (function initScheduleClocks(){
+      const arcs = Array.from(document.querySelectorAll(".schedule-card .arc"));
+      if (!arcs.length) return;
+
+      const startAngle = 0;
+      const segmentSize = 9; // fixed so 24 segments fit the full circle (9 + 6 = 15deg each)
+      const gapSize = 6;
+
+      arcs.forEach((arc, i) => {
+        const segAttr = parseInt(arc.dataset.segments, 10);
+        const segmentCount = Number.isFinite(segAttr) && segAttr > 0 ? segAttr : 6;
+        let currentSegment = segmentCount;
+
+        const computed = getComputedStyle(arc);
+        const color =
+          (computed.getPropertyValue("--clock-accent") || "#d46a1f").trim() || "#d46a1f";
+
+        function updateArc(){
+          let stops = [];
+          let angle = 0;
+
+          for (let idx = 0; idx < currentSegment; idx++){
+            const end = angle + segmentSize;
+            stops.push(
+              `${color} ${angle}deg ${end}deg`,
+              `transparent ${end}deg ${end + gapSize}deg`
+            );
+            angle += segmentSize + gapSize;
+          }
+
+          stops.push(`transparent ${angle}deg 360deg`);
+
+          arc.style.background = `conic-gradient(from ${startAngle}deg, ${stops.join(",")})`;
+        }
+
+        const clock = arc.closest(".clock");
+        const card = arc.closest(".schedule-card");
+        const intervalMs = 300;
+        const alarmDuration = 1200;
+        const wiggleDelay = 500;
+        const pauseAfterWiggle = 800;
+        const leavePause = 220;
+        const refillInterval = intervalMs * 1.5; // refill slightly slower than emptying, one segment at a time
+        const restartDelay = 2000; // wait 2s before emptying again after refill
+
+        let intervalId = null;
+        let wiggleDelayTimeout = null;
+        let alarmTimeout = null;
+        let refillTimeout = null;
+        let pauseTimeout = null;
+        let refillTimerId = null;
+        let restartTimeout = null;
+        let hover = false;
+        let isAlarming = false;
+
+        function triggerAlarm(){
+          if (!clock) return;
+          if (isAlarming) return;
+          isAlarming = true;
+          clearTimeout(wiggleDelayTimeout);
+          clearTimeout(alarmTimeout);
+          clearTimeout(refillTimeout);
+          clock.classList.add("alarm");
+          alarmTimeout = setTimeout(() => {
+            clock.classList.remove("alarm");
+            refillTimeout = setTimeout(() => {
+              startRefill();
+            }, pauseAfterWiggle);
+            isAlarming = false;
+          }, alarmDuration);
+        }
+
+        function tick(){
+          if (currentSegment <= 0){
+            stopCountdown();
+            wiggleDelayTimeout = setTimeout(triggerAlarm, wiggleDelay);
+            return;
+          }
+          currentSegment--;
+          updateArc();
+          if (currentSegment === 0){
+            stopCountdown();
+            wiggleDelayTimeout = setTimeout(triggerAlarm, wiggleDelay);
+          }
+        }
+
+        function startCountdown(){
+          if (intervalId || !hover || isAlarming || refillTimerId) return;
+          clearTimeout(pauseTimeout);
+          intervalId = setInterval(tick, intervalMs);
+        }
+
+        function stopCountdown(){
+          if (intervalId){
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+        }
+
+        function resetTimers(){
+          stopCountdown();
+          clearTimeout(wiggleDelayTimeout);
+          clearTimeout(alarmTimeout);
+          clearTimeout(refillTimeout);
+          if (refillTimerId){
+            clearInterval(refillTimerId);
+            refillTimerId = null;
+          }
+          if (restartTimeout){
+            clearTimeout(restartTimeout);
+            restartTimeout = null;
+          }
+          isAlarming = false;
+        }
+
+        function handleLeave(){
+          hover = false;
+          resetTimers();
+          pauseTimeout = setTimeout(() => {
+            clock?.classList.remove("alarm");
+            startRefill(false);
+          }, leavePause);
+        }
+
+        function handleEnter(){
+          hover = true;
+          clearTimeout(pauseTimeout);
+          clearTimeout(wiggleDelayTimeout);
+          clearTimeout(alarmTimeout);
+          clearTimeout(refillTimeout);
+          clock?.classList.remove("alarm");
+          if (refillTimerId){
+            // let the existing refill finish and restart after delay
+            return;
+          }
+          if (currentSegment >= segmentCount){
+            startCountdown();
+          } else {
+            startRefill(true);
+          }
+        }
+
+        function startRefill(autoRestart = true){
+          if (refillTimerId){
+            clearInterval(refillTimerId);
+            refillTimerId = null;
+          }
+          // if already partially filled, keep from current level upward
+          refillTimerId = setInterval(() => {
+            if (currentSegment < segmentCount){
+              currentSegment++;
+              updateArc();
+            } else {
+              clearInterval(refillTimerId);
+              refillTimerId = null;
+              const shouldRestart = autoRestart && (hover || (card && card.matches(':hover')));
+              if (shouldRestart){
+                restartTimeout = setTimeout(() => {
+                  startCountdown();
+                }, restartDelay);
+              }
+            }
+          }, refillInterval);
+        }
+
+        // Initial render full ring, no motion
+        updateArc();
+
+        // Slight stagger so any first hover starts at different offsets
+        setTimeout(() => {
+          if (card){
+            card.addEventListener("mouseenter", handleEnter);
+            card.addEventListener("focusin", handleEnter);
+            card.addEventListener("mouseleave", handleLeave);
+            card.addEventListener("focusout", handleLeave);
+          }
+        }, i * 120);
+      });
+    })();
+
+    /* ==========================================================
+       Schedule CTA: hover delay on desktop, in-view reveal on mobile
+       ========================================================== */
+    (function initScheduleCtaReveal(){
+      const cards = Array.from(document.querySelectorAll(".schedule-card"));
+      if (!cards.length) return;
+
+      const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isCoarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
+      // If reduced motion, just show them
+      if (prefersReduced){
+        cards.forEach(c => c.classList.add("is-visible"));
+        return;
+      }
+
+      // In-view reveal for touch / coarse pointers
+      if (isCoarse){
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting){
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.4 });
+        cards.forEach(card => io.observe(card));
+        return;
+      }
+
+      // For fine pointers (mouse), rely on hover/focus already handled in CSS.
+      // But ensure keyboard focus also shows:
+      cards.forEach(card => {
+        card.addEventListener("focusin", () => card.classList.add("is-visible"));
+        card.addEventListener("focusout", () => card.classList.remove("is-visible"));
+      });
+    })();
 
     /* ==========================================================
        Help: Service detail content (single source of truth)
@@ -3407,6 +4101,13 @@
       }
 
       const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const isNarrow = window.matchMedia("(max-width: 720px)");
+
+      if (isNarrow.matches){
+        highlights.forEach(el => el.classList.add("is-on"));
+        return;
+      }
+
       if (prefersReduce.matches){
         highlights.forEach(el => el.classList.add("is-on"));
         return;
