@@ -136,6 +136,9 @@
         --glass-shadow-hover: 0 22px 44px rgba(17,20,24,.18);
         --glass-shadow-press: 0 12px 24px rgba(17,20,24,.12);
         --glass-inner: inset 0 1px 0 rgba(255,255,255,.65);
+        --toggle-hit: 40px;
+        --toggle-visual: 30px;
+        --toggle-inset: calc((var(--toggle-hit) - var(--toggle-visual)) / 2);
         --hero-title-size: clamp(42px, 6vw, 68px);
         /* Type scale (keep it simple) */
         --type-body: 16px;
@@ -2491,7 +2494,7 @@
     .hero-theme-control{
       position: absolute;
       right: 0;
-      top: 12px;
+      top: var(--space-4);
       display:flex;
       align-items:center;
       gap: 10px;
@@ -2499,10 +2502,13 @@
     }
     .theme-toggle{
       position: relative;
-      width: 52px;
-      height: 52px;
+      width: var(--toggle-hit);
+      height: var(--toggle-hit);
+      padding: var(--toggle-inset);
       border-radius: 50%;
       border: 0;
+      background-clip: content-box;
+      background-origin: content-box;
       background:
         radial-gradient(circle at 32% 32%,
           rgba(255,255,255,.6) 0%,
@@ -2562,7 +2568,7 @@
     .theme-toggle::before{
       content:"";
       position:absolute;
-      inset: 10%;
+      inset: calc(var(--toggle-inset) + 1px);
       border-radius: 50%;
       background:
         radial-gradient(circle at 32% 34%,
@@ -2589,10 +2595,10 @@
     :root[data-theme="dark"] .theme-toggle::after{
       content:"";
       position:absolute;
-      inset: 0;
+      inset: var(--toggle-inset);
       border-radius: 50%;
       background: rgba(7,18,45,.88);
-      transform: translateX(calc((var(--moon-phase) - 0.5) * 96px));
+      transform: translateX(calc((var(--moon-phase) - 0.5) * 68px));
       filter: blur(0.2px);
       opacity: .9;
       pointer-events:none;
