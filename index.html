@@ -609,6 +609,25 @@
     .nav-links a:not(.btn):focus-visible::after{ transform: scaleX(1); }
 
     /* ============================================================
+       Tap highlight (iOS Safari)
+       Remove the blue flash on touch without affecting keyboard focus styles.
+       ============================================================ */
+    @media (hover: none) and (pointer: coarse){
+      /* iOS Safari: prevent the blue tap flash on interactive elements */
+      a, button, [role="button"], .schedule-card, .work-stack,
+      .work-stack *, .work-stack img{
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Also prevent the long-press callout/select highlight on the gallery stack images */
+      .work-stack,
+      .work-stack img{
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+    }
+    /* ============================================================
        5) Buttons
        ============================================================ */
     .btn{
@@ -772,7 +791,7 @@
     }
 
     .subhead{
-      max-width: 66.6%;
+      max-width: 58%;
       font-size: 18px;
       color: var(--text-muted);
       padding: 0 16px;
@@ -1017,8 +1036,8 @@
       z-index: 0;
       white-space: normal;
       line-height: 1.2;
-      box-decoration-break: clone;
       -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
     }
 
     .hl::before{
@@ -1223,17 +1242,19 @@
       border-color: rgba(var(--primary-rgb), 0.35);
     }
 
+    .card--overlay{ overflow: visible; }
+
     /* ============================================================
        9) Work Cards Grid + Pills
        ============================================================ */
     .grid{
       display:grid;
-      grid-template-columns: repeat(12, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap:var(--space-4);
     }
 
-    .card{
-      grid-column: span 12;
+    .grid .card{
+      grid-column: auto;
       padding:var(--space-4);
       display:grid;
       grid-template-rows: auto auto 1fr auto;
@@ -1261,6 +1282,425 @@
       margin: 0;
       font-size: var(--type-body);
       line-height: var(--lh-body);
+    }
+
+    .work-embed{
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+    .work-embed iframe{
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      display: block;
+    }
+    .work-embed .embed-poster{
+      display: none;
+      position: relative;
+      text-decoration: none;
+      color: inherit;
+      background: radial-gradient(120% 120% at 30% 20%, rgba(var(--primary-rgb),0.14), transparent 60%),
+                  radial-gradient(120% 120% at 70% 80%, rgba(var(--accent-warm-rgb),0.12), transparent 62%),
+                  linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      min-height: 180px;
+      align-items: center;
+      justify-content: center;
+    }
+    .work-embed .embed-poster img{
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+    .work-embed .embed-pill{
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(var(--surface-card-rgb), 0.92);
+      border: 1px solid rgba(var(--text-rgb), 0.14);
+      box-shadow: var(--shadow);
+      font-size: var(--type-meta);
+      font-weight: 700;
+      letter-spacing: 0.1px;
+      color: var(--text);
+    }
+
+    /* Stacked gallery “on the desk” look */
+    .work-stack{
+      --stack-base: min(96%, 680px);
+      position: relative;
+      height: clamp(180px, 24vw, 240px);
+      width: 100%;
+      max-width: 100%;
+      margin: 12px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      overflow: hidden;
+      z-index: 1;
+      transition: opacity .35s ease, transform .45s cubic-bezier(.4,-0.2,.2,1);
+    }
+    .work-stack-stage{
+      position: relative;
+      width: var(--stack-base);
+      height: clamp(220px, 28vw, 320px);
+      margin: 0 auto;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.10)) drop-shadow(0 2px 5px rgba(0,0,0,.05));
+    }
+    .work-stack.is-overlay{
+      --stack-base: min(78vw, 1100px);
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      overflow: visible;
+      z-index: 120;
+      background: transparent;
+    }
+    .work-stack.is-overlay img{
+      border-radius: 9px;
+      box-shadow:
+        0 16px 40px rgba(0,0,0,.18),
+        0 6px 14px rgba(0,0,0,.12);
+      filter: none;
+    }
+    .work-stack.is-collapsed{
+      opacity: 0;
+      transform: translateY(12px) scale(1);
+      pointer-events: none;
+    }
+    .work-stack img{
+      height: 100%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: auto;
+      max-width: 100%;
+      border-radius: 3px;
+      box-shadow:
+        0px 1px 2px 0px rgba(60, 64, 67, 0.30),
+        0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      border: 1px solid rgba(var(--text-rgb), 0.06);
+      background: transparent;
+      object-fit: contain;
+      transition: transform .28s ease, box-shadow .28s ease, width .28s ease;
+      transform-origin: center;
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(var(--scale, 1));
+      z-index: var(--z, 1);
+    }
+    .work-stack img.is-top{
+      --scale: 1;
+      box-shadow:
+        0px 1px 2px 0px rgba(60, 64, 67, 0.30),
+        0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+    }
+    .work-stack img:focus-visible{
+      outline: 3px solid rgba(var(--focus-ring-rgb), 0.45);
+      outline-offset: 4px;
+    }
+    @media (max-width: var(--bp-sm)){
+      .work-stack{
+        --stack-base: 100%;
+        height: auto;
+        display: grid;
+        gap: 10px;
+        width: 100%;
+        margin: 12px 0 0;
+      }
+      .work-stack img{
+        height: 100%;
+        max-width: 100%;
+        position: relative;
+        width: auto;
+        transform: none;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        box-shadow:
+          0 8px 22px rgba(0,0,0,.18),
+          0 2px 6px rgba(0,0,0,.12);
+      }
+    }
+
+    .stack-dismiss{
+      position: absolute;
+      left: calc(100% + 10px);
+      bottom: calc(100% + 10px);
+      padding: 8px 14px;
+      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(.94);
+      transition: opacity .18s ease, transform .18s ease;
+      animation: wiggle 2.6s ease-in-out infinite;
+      animation-play-state: paused;
+      z-index: 130;
+      white-space: nowrap;
+    }
+    .stack-dismiss:focus-visible{
+      outline: 3px solid rgba(var(--focus-ring-rgb),0.45);
+      outline-offset: 2px;
+    }
+    .work-stack.is-overlay .stack-dismiss{
+      left: 50%;
+      top: 50%;
+      bottom: auto;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1);
+      animation-play-state: paused;
+    }
+    .work-stack.is-overlay.is-final .stack-dismiss{
+      opacity: 1;
+      pointer-events: auto;
+      animation-play-state: running;
+    }
+
+    /* Reduce tap highlight / selection on touch devices for stacks */
+    @media (hover: none) and (pointer: coarse){
+      .shot-stack,
+      .shot-stack *,
+      .shot-stack img,
+      .work-stack,
+      .work-stack *,
+      .work-stack img{
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+    }
+
+    /* Screenshot Stack */
+    .shot-stack{
+      position: relative;
+      width: auto;
+      min-width: 220px;
+      max-width: 420px;
+      height: clamp(180px, 26vw, 280px);
+      margin: 10px auto;
+      overflow: visible;
+    }
+    .shot-card{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 100%;
+      width: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      background: transparent;
+      box-shadow:
+        0px 1px 2px 0px rgba(60, 64, 67, 0.30),
+        0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      transform-origin: 50% 90%;
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+    }
+    .shot-card img{
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      object-position: center;
+      background: transparent;
+      display: block;
+    }
+    .shot-card.is-cap{ 
+      z-index: 10; 
+      display: none;
+    }
+    .shot-card.is-cap::after{
+      z-index: 1;
+      pointer-events: none;
+      content:"";
+      position:absolute;
+      inset:0;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      /* Fade the blur itself toward the edges */
+      -webkit-mask-image: radial-gradient(circle at 50% 50%,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.7) 33.3%,
+        rgba(0,0,0,.1) 66.6%);
+      mask-image: radial-gradient(circle at 50% 50%,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.7) 33.3%,
+        rgba(0,0,0,.1) 66.6%);
+      /* Separate soft glow, independent of blur */
+      background: radial-gradient(ellipse at 50% 50%,
+        rgba(255,255,255,0.60) 0%,
+        rgba(255,255,255,0.00) 65%);
+    }
+    .shot-card.is-cap img{
+      position: relative;
+      z-index: 0;
+      transform: none;
+      filter: none;
+    }
+    .shot-hide{
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      white-space: nowrap;
+      animation: none;
+      border: none;
+      box-shadow:
+        0px 50px 100px -20px rgba(var(--accent-rare-rgb, 204, 166, 94), 0.28),
+        0px 30px 60px -30px rgba(var(--accent-rare-rgb, 204, 166, 94), 0.32),
+        0 0 0 1px rgba(var(--accent-rare-rgb, 204, 166, 94), 0.08);
+    }
+    /* keep hide button centered—override default btn hover shifts */
+    .shot-hide.btn,
+    .shot-hide.btn:hover,
+    .shot-hide.btn:focus,
+    .shot-hide.btn:active{
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .shot-hide.btn::after{
+      border: none;
+    }
+    .shot-hide.nudge{
+      animation: luxe-pulse 1.4s ease-in-out infinite;
+      animation-delay: 0s;
+    }
+    .shot-stack:not(.is-overlay) .shot-card.is-cap{ display: none; }
+    .shot-stack.is-overlay:not(.is-final) .shot-card.is-cap{ display: none; }
+    .shot-stack.is-overlay.is-final .shot-card.is-cap{ display: block; }
+    .shot-stack.is-overlay{
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: auto;
+      height: clamp(420px, 70vh, 820px);
+      max-width: 90vw;
+      max-height: 85vh;
+      aspect-ratio: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      box-sizing: border-box;
+      z-index: 140;
+      background: transparent;
+      backdrop-filter: none;
+      overflow: visible;
+    }
+    .shot-stack.is-overlay .shot-card{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      transform: translate(-50%, -52%) rotate(var(--rot, 0deg));
+      transform-origin: center;
+      border-radius: 12px;
+      box-shadow: 0 14px 32px rgba(0,0,0,0.16);
+      filter: none;
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+    .shot-stack.is-overlay .shot-card img{
+      height: 100%;
+      width: auto;
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      object-position: center;
+    }
+    .shot-stack.is-overlay .shot-card img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .shot-stack.is-overlay .shot-card.seen{ opacity: 1; }
+    .shot-stack.is-overlay .shot-card.active{ opacity: 1; }
+    .stack-card{ overflow: visible; }
+
+    @keyframes luxe-pulse{
+      0%, 100%{ transform: translate(-50%, -50%) scale(1); box-shadow: none; }
+      45%{
+        transform: translate(-50%, -50%) scale(1.05);
+        box-shadow:
+          0 0 0 8px rgba(var(--accent-rare-rgb, 204, 166, 94), 0.18),
+          0 10px 30px rgba(0,0,0,.18);
+      }
+    }
+    @keyframes wiggle{
+      0%, 90%, 100%{ transform: scale(1) rotate(0deg); }
+      94%{ transform: scale(1.02) rotate(2deg); }
+      97%{ transform: scale(1.02) rotate(-3deg); }
+    }
+
+    /* Case Studies card */
+    .case-studies-card{
+      margin: var(--space-4) 0 0;
+      padding: clamp(12px, 3vw, 32px);
+      display: grid;
+      gap: var(--space-1);
+    }
+    .case-studies-card h3{
+      margin: 0;
+      font-size: var(--type-h3);
+    }
+    .case-grid{
+      display: grid;
+      gap: var(--space-4);
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .case-item h4{
+      margin: 0 0 6px;
+      font-size: var(--type-body);
+      font-weight: 700;
+    }
+    .case-item p{
+      margin: 0;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .case-stack{
+      position: relative;
+      height: 200px;
+      margin-bottom: var(--space-3);
+    }
+    .case-stack img{
+      position: absolute;
+      width: 70%;
+      max-width: 260px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+      border-radius: 3px;
+      box-shadow:
+        0px 1px 2px 0px rgba(60, 64, 67, 0.30),
+        0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      border: 1px solid rgba(var(--text-rgb), 0.08);
+      background: #fff;
+    }
+    .case-stack img:nth-child(1){ --rot: -3deg; z-index: 1; }
+    .case-stack img:nth-child(2){ --rot: 2deg; z-index: 2; transform: translate(-52%, -52%) rotate(var(--rot)); }
+    .case-stack img:nth-child(3){ --rot: -1deg; z-index: 3; transform: translate(-48%, -49%) rotate(var(--rot)); }
+    .case-stack img:nth-child(4){ --rot: 1deg; z-index: 4; transform: translate(-50%, -51%) rotate(var(--rot)); }
+    .case-stack img:nth-child(5){ --rot: 0deg; z-index: 5; }
+    @media (max-width: var(--bp-md)){
+      .work-embed iframe{ display: none; }
+      .work-embed .embed-poster{ display: flex; }
     }
 
     /* Unified meta/label line */
@@ -1787,37 +2227,9 @@
       font-size: var(--type-h3);
       line-height: 1.2;
     }
-    <!-- ==========================================================
-         Help / Services
-       ========================================================== -->
-    <section id="help">
-      <h2 class="section-title">How I Can Help</h2>
-      <p class="section-lede">
-        Whether you need a new system, a clearer workflow, or a brand that finally matches your vision, I can help you move from “we should do this” to “it’s done and people love it.”
-      </p>
-      <div class="help-list">
-        <div class="help-item">
-          <h3>UX Strategy for Complex Workflows</h3>
-          <!-- <p>I help teams map complex workflows, clarify requirements, and deliver systems people trust.</p> -->
-          <a href="#contact" class="btn ghost">Book a Call</a>
-        </div>
-        <div class="help-item">
-          <h3>Design Systems and UI Architecture</h3>
-          <!-- <p>Build scalable, consistent interfaces with robust design systems and UI architecture.</p> -->
-          <a href="#contact" class="btn ghost">Book a Call</a>
-        </div>
-        <div class="help-item">
-          <h3>Brand Strategy, Copywriting, and Visual Design</h3>
-          <!-- <p>Shape your story, visuals, and messaging so your brand is memorable and consistent everywhere.</p> -->
-          <a href="#contact" class="btn ghost">Book a Call</a>
-        </div>
-        <div class="help-item">
-          <h3>Training That Scales</h3>
-          <!-- <p>Equip your team with the tools and training to keep delivering at a high level, even as you grow.</p> -->
-          <a href="#contact" class="btn ghost">Book a Call</a>
-        </div>
-      </div>
-    </section>
+    /* ==========================================================
+       Help / Services
+       ========================================================== */
 
     .help-item p{
       margin:0;
@@ -2494,7 +2906,7 @@
     .hero-theme-control{
       position: absolute;
       right: 0;
-      top: var(--space-4);
+      top: 0;
       display:flex;
       align-items:center;
       gap: 10px;
@@ -2639,8 +3051,13 @@
       .hero-actions,
       .subhead{ text-align: left; }
 
+      .hero-theme-control{
+        top: 0;
+        right: 0;
+      }
+
       .subhead{
-        max-width: 100%;
+        max-width: 85%;
         padding: 0 12px;
         margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
       }
@@ -2664,7 +3081,7 @@
       .subhead{ text-align: left; }
 
       .subhead{
-        max-width: 100%;
+        max-width: 75%;
         padding: 0 16px;
         margin: calc(var(--hero-title-size) / 3) 28px var(--hero-title-size);
       }
@@ -2678,7 +3095,7 @@
     @media (min-width: calc(var(--bp-sm) + 1px)) and (max-width: var(--bp-md)){
       .wrap{ padding: var(--space-5); }
 
-      .subhead{ max-width: 72ch; }
+      .subhead{ max-width: 66%; }
 
       .about-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -2686,7 +3103,8 @@
     /* LG: Desktop / laptop */
     @media (min-width: calc(var(--bp-md) + 1px)) and (max-width: var(--bp-lg)){
       .about-grid{ grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .card{ grid-column: span 4; }
+
+      .subhead{ max-width: 60%; }
 
       .schedule-card{ padding: 22px 22px 20px; }
     }
@@ -2699,7 +3117,7 @@
       header{ margin-bottom: 120px; }
 
       .section-lede{ max-width: 72ch; }
-      .subhead{ max-width: 72ch; }
+      .subhead{ max-width: 55%; }
       :root{ --section-gap: calc(var(--space-7) + 44px); }
     }
 
@@ -2713,7 +3131,7 @@
       .hl.is-on::before{ animation: none; opacity: 1; width: 100%; }
     }
 
-    } /* end @layer components */
+     /* end @layer components */
 
     @layer utilities {
       .stack-tight > .fine{ margin:0; }
@@ -2860,8 +3278,28 @@
           <p class="meta-line"><strong>Role:</strong> UX Consultant</p>
           <p class="meta-line"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
           <p class="meta-line"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
+          <div class="shot-stack" id="shotStack" data-shot-stack aria-label="Product screenshots">
+            <div class="shot-card">
+              <img src="assets/work/bigiron-stack-1.jpg" alt="Company snapshot and profile form screen" loading="lazy">
+            </div>
+            <div class="shot-card">
+              <img src="assets/work/bigiron-stack-2.jpg" alt="Individual profile edit form screen" loading="lazy">
+            </div>
+            <div class="shot-card">
+              <img src="assets/work/bigiron-stack-3.jpg" alt="Attachments upload screen" loading="lazy">
+            </div>
+            <div class="shot-card">
+              <img src="assets/work/bigiron-stack-4.jpg" alt="Items table view screen" loading="lazy">
+            </div>
+            <div class="shot-card">
+              <img src="assets/work/bigiron-stack-5.jpg" alt="Logistics locations screen" loading="lazy">
+            </div>
+            <div class="shot-card is-cap">
+              <img data-shot-cap-img src="" alt="" loading="lazy">
+              <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+            </div>
+          </div>
         </article>
-
         <article class="card surface">
           <h3>Cedar Bluff Tech</h3>
           <p class="meta-line"><strong>Role:</strong> UX Consultant &amp; Designer</p>
@@ -2878,8 +3316,84 @@
           <p class="meta-line"><strong>Output:</strong> Messaging framework, audience personas, channel playbook, brand guidelines.</p>
         </article>
       </div>
+      <div class="surface case-studies-card">
+        <div>
+          <h3>Case Studies</h3>
+          <p class="fine">Three quick snapshots from recent work—what the team needed, what we delivered, and what changed.</p>
+        </div>
+        <div class="case-grid">
+          <div class="case-item">
+            <h4>Octagon Wildlife Sanctuary Site</h4>
+            <p>Led a UX redesign of a wildlife sanctuary website, simplifying navigation and the donation flow so visitors could plan a trip and contribute with confidence.</p>
 
+            <div class="shot-stack" data-shot-stack aria-label="Case Study screenshots: Octagon Wildlife Sanctuary">
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-02.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-03.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-04.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-05.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-06.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-07.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-08.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-09.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-10.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-11.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-12.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-13.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-14.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-15.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-16.jpg" alt=""></div>
+              <div class="shot-card is-cap">
+                <img data-shot-cap-img src="" alt="" loading="lazy">
+                <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+              </div>
+            </div>
+          </div>
+          <div class="case-item">
+            <h4>Flix'n'Feast App</h4>
+            <p class="meta-line"><strong>App Comcept:</strong> A date-night concierge app concept that turns “what do you want to eat/watch?” from a 45-minute debate into a 2-minute decision.</p>
+            <p class="meta-line"><strong>Role:</strong> I led a lean UX process, ran interviews + a survey, synthesized insights into a core persona and journey map, then translated findings into a clear value proposition: collaborative decision-making with personalized movie-and-meal pairings.</p>
+            <p class="meta-line"><strong>Output:</strong> A research-backed concept with defined user flows, prioritized features, and a storyboarded end-to-end experience ready for prototyping and testing.</p>
+          <div class="shot-stack" data-shot-stack aria-label="Case Study screenshots: Flix'n'Feast App">
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-17.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-18.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-19.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-20.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-21.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-22.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-23.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-24.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-25.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-26.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-27.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-28.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-29.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-30.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-31.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-32.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-33.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-34.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-35.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-36.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-37.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-38.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-39.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-40.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-41.jpg" alt=""></div>
+            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-42.jpg" alt=""></div>
+            <div class="shot-card is-cap">
+              <img data-shot-cap-img src="" alt="" loading="lazy">
+              <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+            </div>
+          </div>
+          </div>
+          <div class="case-item">
+            <h4>Moss Rock Ranch</h4>
+            <p>Created a repeatable messaging and audience framework so every channel reinforced the same promise, not competing narratives.</p>
+          </div>
+        </div>
+      </div>
     </section>
+
 
     <section class="ticker-section" aria-label="Skills ticker">
       <!-- ==========================================================
@@ -3802,7 +4316,7 @@
             } else {
               clearInterval(refillTimerId);
               refillTimerId = null;
-              const shouldRestart = autoRestart && (hover || (card && card.matches(':hover')));
+              const shouldRestart = autoRestart && (hover || (card && card.matches(":hover")));
               if (shouldRestart){
                 restartTimeout = setTimeout(() => {
                   startCountdown();
@@ -4451,6 +4965,189 @@
       });
 
       scheduleIdle();
+    })();
+
+    (function initShotStacks(){
+      document.querySelectorAll(".shot-stack").forEach((stack) => {
+        const cards = Array.from(stack.querySelectorAll(".shot-card:not(.is-cap)"));
+        const capCard = stack.querySelector(".shot-card.is-cap");
+        const capImg = stack.querySelector("[data-shot-cap-img]");
+        const hideBtn = stack.querySelector(".shot-hide");
+        if (!cards.length || !capCard || !capImg || !hideBtn) return;
+
+        const firstImg = cards[0].querySelector("img");
+        if (firstImg){
+          capImg.src = firstImg.getAttribute("src") || "";
+        }
+
+        const placeholder = document.createElement("div");
+        let homeParent = stack.parentElement;
+        let homeNext = stack.nextSibling;
+        let isOverlay = false;
+        let currentIndex = 0;
+        const rotations = buildRotations(cards.length);
+        let nudgeTimer = null;
+        let aspectRatio = null;
+
+        function measureAspect(){
+          const img = cards[0]?.querySelector("img");
+          if (!img) return;
+          const finalize = () => {
+            if (img.naturalWidth && img.naturalHeight){
+              aspectRatio = img.naturalWidth / img.naturalHeight;
+              setStackWidthForHeight(stack.clientHeight || 240);
+            }
+          };
+          if (img.complete){
+            finalize();
+          } else {
+            img.addEventListener("load", finalize, { once: true });
+          }
+        }
+
+        function setStackWidthForHeight(targetHeight){
+          if (!aspectRatio) return;
+          const maxW = isOverlay ? Math.min(window.innerWidth * 0.9, 1100) : 420;
+          const minW = 220;
+          const width = Math.max(minW, Math.min(maxW, targetHeight * aspectRatio));
+          stack.style.width = `${width}px`;
+        }
+
+        function buildRotations(count){
+          const arr = [];
+          let prev = null;
+          for (let i = 0; i < count; i++){
+            let sign = Math.random() > 0.5 ? 1 : -1;
+            // avoid same sign twice in a row
+            if (prev !== null && Math.sign(prev) === sign){
+              sign *= -1;
+            }
+            let mag = 1 + Math.random() * 2; // 1–3 deg
+            mag = Math.round(mag * 10) / 10;
+            // avoid identical magnitude to previous
+            if (prev !== null && Math.abs(prev) === mag){
+              mag += 0.3;
+            }
+            if (mag > 3) mag = 3;
+            const value = sign * mag;
+            arr.push(value);
+            prev = value;
+          }
+          return arr;
+        }
+
+        // initial z-order for embedded stack
+        cards.forEach((card, i) => card.style.zIndex = `${cards.length - i}`);
+
+        function setActive(idx){
+          cards.forEach((card, i) => {
+            card.classList.remove("active", "seen");
+            if (isOverlay && i < idx){
+              card.classList.add("seen");
+            }
+            card.classList.toggle("active", i === idx);
+            // small view: reverse so first image sits on top; overlay keeps pile order
+            const baseZ = isOverlay ? i + 1 : cards.length - i;
+            card.style.zIndex = `${baseZ}`;
+            const rot = rotations[i] || 0;
+            card.style.setProperty("--rot", `${rot}deg`);
+          });
+          capCard.classList.remove("active");
+          capCard.style.setProperty("--rot", "0deg");
+        }
+
+        function showCap(){
+          stack.classList.add("is-final");
+          cards.forEach(card => card.classList.remove("active"));
+          capCard.classList.add("active");
+          if (nudgeTimer) clearTimeout(nudgeTimer);
+          nudgeTimer = setTimeout(() => hideBtn.classList.add("nudge"), 2000);
+        }
+
+        function expand(){
+          if (isOverlay) return;
+          setStackWidthForHeight(stack.clientHeight || 280);
+          if (homeParent){
+            const h = stack.getBoundingClientRect().height;
+            placeholder.style.height = `${h}px`;
+            homeParent.insertBefore(placeholder, stack);
+          }
+          document.body.appendChild(stack);
+          stack.classList.add("is-overlay");
+          stack.classList.remove("is-final");
+          stack.setAttribute("aria-expanded", "true");
+          isOverlay = true;
+          // resize to overlay height after layout
+          requestAnimationFrame(() => {
+            setStackWidthForHeight(stack.getBoundingClientRect().height || window.innerHeight * 0.7);
+          });
+          currentIndex = 0;
+          setActive(currentIndex);
+        }
+
+        function collapse(){
+          if (!isOverlay) return;
+          stack.classList.remove("is-overlay");
+          stack.classList.remove("is-final");
+          stack.setAttribute("aria-expanded", "false");
+          isOverlay = false;
+          currentIndex = 0;
+          setActive(currentIndex);
+          capCard.classList.remove("active");
+          cards.forEach(card => card.classList.remove("seen"));
+          setStackWidthForHeight(stack.clientHeight || 240);
+          hideBtn.classList.remove("nudge");
+          if (nudgeTimer){
+            clearTimeout(nudgeTimer);
+            nudgeTimer = null;
+          }
+          if (homeParent){
+            if (homeNext){
+              homeParent.insertBefore(stack, homeNext);
+            } else {
+              homeParent.appendChild(stack);
+            }
+          }
+          if (placeholder.parentNode){
+            placeholder.parentNode.removeChild(placeholder);
+          }
+        }
+
+        function advance(){
+          if (!isOverlay){
+            expand();
+            return;
+          }
+          if (stack.classList.contains("is-final")) return;
+          if (currentIndex < cards.length - 1){
+            currentIndex += 1;
+            setActive(currentIndex);
+          } else {
+            showCap();
+          }
+        }
+
+        stack.addEventListener("click", (event) => {
+          if (event.target.closest(".shot-hide")) return;
+          advance();
+        });
+
+        hideBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          collapse();
+        });
+
+        stack.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && isOverlay){
+            e.preventDefault();
+            collapse();
+          }
+        });
+
+        setActive(currentIndex);
+        measureAspect();
+      });
     })();
 
     (function initMobileNav(){
