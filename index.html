@@ -1814,8 +1814,8 @@ grid-auto-flow: column;
     .shot-overlay-frame,
     .brand-overlay__frame{
       position: relative;
-      width: var(--overlay-width);
-      height: var(--overlay-height);
+      width: min(var(--overlay-width), calc(100vw - 24px));
+      height: min(var(--overlay-height), calc(100vh - 24px));
       background: #ffffff;
       border-radius: var(--overlay-radius);
       display: grid;
@@ -1935,7 +1935,7 @@ grid-auto-flow: column;
     .brand-overlay__body{
       position: relative;
       z-index: 2;
-      overflow: hidden;
+      overflow: auto;
       display: grid;
       grid-template-rows: 1fr;
     }
@@ -1971,6 +1971,14 @@ grid-auto-flow: column;
     }
     .schedule-overlay__body{
       background: var(--surface-card);
+      padding: clamp(12px, 3vw, 18px);
+    }
+    #scheduleOverlayFrame{
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      max-width: 100%;
     }
     .work-see-more{
       position: absolute;
@@ -3909,6 +3917,7 @@ grid-auto-flow: column;
       .schedule-grid{ gap: var(--space-lg); }
       .schedule-card{ padding: var(--space-lg)}
       .fortune-wrap{ padding: 0; justify-content: center; }
+      .ticker-section{ margin: var(--space-xl) 0; }
     }
 
     /* SM: Mobile landscape / small */
@@ -3932,6 +3941,7 @@ grid-auto-flow: column;
       .schedule-grid{ gap: var(--space-md); }
 
       .fortune-wrap{ padding: 0; justify-content: center; }
+      .ticker-section{ margin: var(--space-xl) 0; }
     }
 
     /* MD: Tablet */
