@@ -1,8 +1,28 @@
 {
-  "extends": [
-    "development"
-  ],
+  "extends": ["development"],
   "hints": {
-    "no-inline-styles": "off"
+    "no-inline-styles": "off",
+
+    /* Useful for a public portfolio site */
+    "compat-api/css": "warning",
+    "compat-api/html": "warning",
+    "compat-api/javascript": "warning",
+
+    /* Catch common “works on my machine” issues */
+    "disown-opener": "warning",
+    "no-protocol-relative-urls": "warning",
+    "http-equiv": "warning",
+
+    /* Performance-ish guardrails that don’t get annoying */
+    "image-optimization-cloudinary": "off",
+    "highest-available-document-mode": "warning",
+    "meta-charset-utf-8": "warning",
+
+    /* Accessibility nudges (worth it for credibility) */
+    "button-type": "warning",
+    "label": "warning",
+    "axe/forms": "warning",
+    "axe/name-role-value": "warning",
+    "axe/color-contrast": "warning"
   }
 }

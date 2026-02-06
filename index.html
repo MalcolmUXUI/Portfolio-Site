@@ -352,7 +352,6 @@
         margin:0;
         padding:0;
         overflow-x: hidden;
-        overflow-x: clip;
         font: var(--type-body)/var(--lh-body) system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         font-weight: var(--fw-body);
         color: var(--text);
@@ -371,11 +370,10 @@
         color: var(--text);
         width: 100%;
         overflow-x: hidden;
-        overflow-x: clip;
       }
 
-      @supports not (overflow: clip){
-        html, body{ overflow-x: hidden; }
+      @supports (overflow: clip){
+        html, body{ overflow-x: clip; }
       }
 
       /* Global small body copy style */
@@ -1056,7 +1054,7 @@
     .quote-cite h4{
       margin: 0;
       font-size: var(--type-body);
-      font-weight: 600;
+      font-weight: inherit;
       font-style: italic;
       color: var(--text-muted);
     }
@@ -1222,6 +1220,7 @@
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         font-weight: 600;
+        animation: none;
       }
       .bio .hl::before,
       .bio .hl.is-on::before,
@@ -1234,6 +1233,63 @@
     .hl-teal{ --hl-rgb: 15, 118, 110; }
     .hl-purple{ --hl-rgb: 155, 122, 247; }
     .hl-green{ --hl-rgb: 181, 196, 68; }
+
+    /* Bio highlights: multi-line safe; animated fill on tablet/desktop */
+    .bio .hl,
+    .bio-highlight{
+      position: relative;
+      padding: 0 .08em;
+      --hl-fill: linear-gradient(180deg,
+          rgba(var(--hl-rgb, 245,158,11), .05) 0%,
+          rgba(var(--hl-rgb, 245,158,11), .45) 22%,
+          rgba(var(--hl-rgb, 245,158,11), .38) 78%,
+          rgba(var(--hl-rgb, 245,158,11), .10) 100%);
+      --hl-texture:
+        radial-gradient(16px 10px at 4% 60%,
+          rgba(var(--hl-rgb, 245,158,11), .55),
+          rgba(var(--hl-rgb, 245,158,11), 0) 70%),
+        radial-gradient(18px 12px at 96% 60%,
+          rgba(var(--hl-rgb, 245,158,11), .50),
+          rgba(var(--hl-rgb, 245,158,11), 0) 72%),
+        repeating-linear-gradient(0deg,
+          rgba(255,255,255,.14) 0px,
+          rgba(255,255,255,.14) 2px,
+          rgba(255,255,255,0) 3px,
+          rgba(255,255,255,0) 6px);
+      background:
+        var(--hl-fill),
+        var(--hl-texture);
+      background-size:
+        0% 100%,
+        100% 100%;
+      background-position: 0 58%, 0 58%;
+      background-repeat: no-repeat, repeat;
+      border-radius: 8px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      font-weight: inherit;
+      box-shadow: 0 2px 6px rgba(var(--hl-rgb, 245,158,11), 0.12);
+      animation: none;
+    }
+
+    .bio .hl.is-on,
+    .bio-highlight.is-on{
+      animation: hl-fill 1080ms cubic-bezier(.2,.9,.2,1) forwards;
+      background-size:
+        100% 100%,
+        100% 100%;
+    }
+
+    @keyframes hl-fill{
+      0%{ background-size: 0% 100%; filter: saturate(1.05); }
+      70%{ background-size: 100% 100%; }
+      100%{ background-size: 100% 100%; filter: saturate(1); }
+    }
+
+    .bio .hl::before,
+    .bio .hl.is-on::before,
+    .bio-highlight::before,
+    .bio-highlight.is-on::before{ content: none !important; }
 
     .hl.a1{ --hl-angle:-0.6deg; }
     .hl.a2{ --hl-angle:-1deg; }
@@ -1861,6 +1917,22 @@ grid-auto-flow: column;
       z-index: 1;
       pointer-events: none;
     }
+
+    /* Fallback when backdrop-filter is unsupported */
+    @supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))){
+      .overlay-backdrop,
+      .work-mosaic-overlay,
+      .brand-overlay{
+        background: rgba(0,0,0,0.48);
+      }
+
+      .overlay-frame,
+      .work-mosaic-modal,
+      .shot-overlay-frame,
+      .brand-overlay__frame{
+        background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,245,245,0.94));
+      }
+    }
     .overlay-chrome,
     .work-mosaic-modal__head,
     .shot-overlay-chrome,
@@ -2167,8 +2239,8 @@ grid-auto-flow: column;
         radial-gradient(circle at 20% 20%, rgba(255,255,255,0.16), transparent 48%),
         radial-gradient(circle at 80% 80%, rgba(255,255,255,0.10), transparent 46%),
         rgba(12, 14, 20, 0.42);
-      backdrop-filter: blur(14px) saturate(1.02);
       -webkit-backdrop-filter: blur(14px) saturate(1.02);
+      backdrop-filter: blur(14px) saturate(1.02);
       z-index: -2;
       pointer-events: none;
     }
@@ -4015,7 +4087,8 @@ grid-auto-flow: column;
       .hl.is-on::before{ animation: none; opacity: 1; width: 100%; }
     }
 
-     /* end @layer components */
+    /* end @layer components */
+    }
 
     @layer utilities {
       .stack-tight > .fine{ margin:0; }
@@ -5235,7 +5308,7 @@ grid-auto-flow: column;
             </div>
           </div>
           <div class="overlay-body schedule-overlay__body">
-            <iframe id="scheduleOverlayFrame" title="Scheduling" loading="lazy"></iframe>
+            <iframe id="scheduleOverlayFrame" title="Scheduling" loading="lazy" data-lazy></iframe>
           </div>
         </div>
       </div>
@@ -5281,7 +5354,14 @@ grid-auto-flow: column;
        ========================================================== */
     function openCalendly(url){
       if (!window.Calendly || !Calendly.initPopupWidget){
-        window.open(url, "_blank", "noopener,noreferrer");
+        // fallback to new tab on older browsers or if Calendly JS not ready
+        const frame = document.getElementById('scheduleOverlayFrame');
+        if (frame){
+          frame.dataset.src = url;
+          frame.src = url;
+        } else {
+          window.open(url, "_blank", "noopener,noreferrer");
+        }
         return;
       }
       Calendly.initPopupWidget({ url: url });
@@ -5552,6 +5632,22 @@ grid-auto-flow: column;
     })();
 
     /* ==========================================================
+       Lazy-load fallback for iframe loading support (Safari <16.4)
+       ========================================================== */
+    (function initIframeLazyFallback(){
+      const supportsLoading = 'loading' in HTMLIFrameElement.prototype;
+      if (supportsLoading) return;
+      const frames = document.querySelectorAll('iframe[data-lazy]');
+      frames.forEach(frame => {
+        // If a src was deferred elsewhere, set it here when unsupported.
+        if (!frame.src && frame.dataset.src){
+          frame.src = frame.dataset.src;
+        }
+        frame.removeAttribute('loading');
+      });
+    })();
+
+    /* ==========================================================
        Schedule CTA: hover delay on desktop, in-view reveal on mobile
        ========================================================== */
     (function initScheduleCtaReveal(){
@@ -5816,31 +5912,32 @@ grid-auto-flow: column;
     })();
 
     /* ==========================================================
-       Bio highlight reveal (staggered on view)
+       Bio highlight reveal (sequential with pause on tablet/desktop)
        ========================================================== */
     (function initBioHighlights(){
       const highlights = Array.from(document.querySelectorAll(".bio-highlight"));
       if (!highlights.length) return;
 
-      function reveal(){
-        highlights.forEach((el, i) => {
-          setTimeout(() => {
-            el.classList.add("is-on");
-          }, i * 500);
-        });
-      }
-
       const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
       const isNarrow = window.matchMedia("(max-width: 720px)");
 
-      if (isNarrow.matches){
+      // Mobile or reduced motion: show all immediately
+      if (isNarrow.matches || prefersReduce.matches){
         highlights.forEach(el => el.classList.add("is-on"));
         return;
       }
 
-      if (prefersReduce.matches){
-        highlights.forEach(el => el.classList.add("is-on"));
-        return;
+      const fillDuration = 1080; // ms (matches CSS hl-fill duration)
+      const pauseBetween = 1500; // ms between phrase starts
+
+      function revealSequential(){
+        let delay = 0;
+        highlights.forEach((el) => {
+          setTimeout(() => {
+            el.classList.add("is-on");
+          }, delay);
+          delay += pauseBetween + fillDuration;
+        });
       }
 
       let revealed = false;
@@ -5849,7 +5946,7 @@ grid-auto-flow: column;
           if (revealed) return;
           if (entry.isIntersecting){
             revealed = true;
-            reveal();
+            revealSequential();
             io.disconnect();
           }
         });
