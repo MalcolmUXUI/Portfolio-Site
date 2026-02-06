@@ -26,10 +26,39 @@
        1) Tokens (palette + semantics)
        ============================================================ */
     @layer tokens {
-      :root{
+  :root{
         /* Layout */
         --max: 1050px;
         --stack-max: 680px;
+        --gutter: clamp(16px, 4vw, 32px);
+        /* Overlay sizing */
+        --overlay-width: min(92vw, 1200px);
+        --overlay-height: min(92vh, 900px);
+        --overlay-radius: 14px;
+        --overlay-pad-x: 14px;
+        --overlay-pad-y: 12px;
+        --overlay-gap: 10px;
+        /* Shadows */
+        --shadow-card: var(--shadow);
+        --shadow-overlay: 0 28px 62px rgba(0,0,0,.24),
+          0 12px 28px rgba(0,0,0,.16),
+          0 0 0 1px rgba(0,0,0,0.06);
+        /* Gradient bars */
+        --bar-height: 6px;
+        --bar-stripe-size: 260% 100%;
+        --bar-speed-base: 24s;
+        --bar-speed-alt: 29s;
+        --bar-colors: linear-gradient(90deg,
+          rgba(var(--accent-warm-rgb), 0.65) 0%,
+          rgba(var(--primary-rgb),     0.65) 33%,
+          rgba(var(--accent-rare-rgb), 0.65) 66%,
+          rgba(var(--accent-warm-rgb), 0.65) 100%);
+        /* Case ribbons */
+        --ribbon-gap: var(--space-sm);
+        --ribbon-speed-a: 108s;
+        --ribbon-speed-b: 132s;
+        --ribbon-speed-c: 120s;
+        --case-media-max: 620px;
         /* Corner radius scale (Material 3-ish) */
         --radius-xs: 4px;
         --radius-sm: 8px;
@@ -196,6 +225,11 @@
         --accent-warm-rgb: 242, 163, 108;
         --accent-rare: #BCA8FF;
         --accent-rare-rgb: 188, 168, 255;
+        --bar-colors: linear-gradient(90deg,
+          rgba(var(--accent-warm-rgb), 0.65) 0%,
+          rgba(var(--primary-rgb),     0.65) 33%,
+          rgba(var(--accent-rare-rgb), 0.65) 66%,
+          rgba(var(--accent-warm-rgb), 0.65) 100%);
         --link: var(--primary);
         --focus-ring: var(--primary);
         --focus-ring-rgb: var(--primary-rgb);
@@ -375,7 +409,7 @@
         text-underline-offset: 3px;
       }
 
-.wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--space-lg); }
+.wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--gutter); }
 
       /* Background texture + subtle animated color drift */
       body::before{
@@ -502,7 +536,7 @@
       background: rgba(var(--surface-card-rgb), 0.96);
       -webkit-backdrop-filter: saturate(160%) blur(14px);
       backdrop-filter: saturate(160%) blur(14px);
-      padding: 72px 20px 28px;
+      padding: 72px var(--gutter) 28px;
       display: none;
       flex-direction: column;
       gap: 12px;
@@ -520,7 +554,7 @@
       color: rgba(var(--text-rgb), 0.9);
       text-shadow: none;
       text-decoration: none;
-      padding: 12px 10px;
+      padding: 12px var(--space-sm);
       border-radius: 12px;
       background: rgba(var(--surface-card-rgb), 0.65);
       border: 1px solid rgba(var(--text-rgb), 0.12);
@@ -542,7 +576,7 @@
     .brand{
       display:flex;
       align-items:center;
-      gap:10px;
+      gap: var(--space-sm);
       font-weight:700;
       letter-spacing:.2px;
       text-decoration: none;
@@ -607,7 +641,7 @@
         border-radius: 10px;
       }
       .nav{ padding: 8px 12px; }
-      .nav-inner{ gap: 10px; padding: 10px var(--space-md); }
+      .nav-inner{ gap: var(--space-sm); padding: 10px var(--space-md); }
     }
 
     @media (max-width: 880px){
@@ -808,7 +842,7 @@
 
     .kicker{
       display:inline-flex;
-      gap:10px;
+      gap: var(--space-sm);
       align-items:center;
       padding:8px 12px;
       border-radius:999px;
@@ -966,13 +1000,17 @@
       content:"";
       position:absolute;
       left:0; top:0; right:0;
-      height:4px;
-      background: linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.85),
-        rgba(var(--primary-rgb), 0.75),
-        rgba(var(--accent-rare-rgb), 0.65)
-      );
-      opacity:.55;
+      height: var(--bar-height);
+      border-radius: inherit;
+      background: var(--bar-colors, linear-gradient(90deg,
+        rgba(var(--accent-warm-rgb), 0.65) 0%,
+        rgba(var(--primary-rgb),     0.65) 33%,
+        rgba(var(--accent-rare-rgb), 0.65) 66%,
+        rgba(var(--accent-warm-rgb), 0.65) 100%));
+      background-size: var(--bar-stripe-size);
+      animation: glowBar var(--bar-speed-base) linear infinite;
+      opacity: 1;
+      pointer-events: none;
     }
 
     .quote-top{
@@ -1224,7 +1262,7 @@
       overflow:hidden;
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-card);
 
       background: linear-gradient(180deg,
         var(--card-top),
@@ -1243,31 +1281,32 @@
       content:"";
       position:absolute;
       left:0; top:0; right:0;
-      height:6px;
-      /* Seamless loop: start == end color, palette-only stops */
-      background: linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.30) 0%,
-        rgba(var(--primary-rgb),     0.30) 33%,
-        rgba(var(--accent-rare-rgb), 0.30) 66%,
-        rgba(var(--accent-warm-rgb), 0.30) 100%
+      height: var(--bar-height);
+      border-radius: inherit;
+      --bar-colors: linear-gradient(90deg,
+        rgba(var(--accent-warm-rgb), 0.65) 0%,
+        rgba(var(--primary-rgb),     0.65) 33%,
+        rgba(var(--accent-rare-rgb), 0.65) 66%,
+        rgba(var(--accent-warm-rgb), 0.65) 100%
       );
-      z-index: 2;
-      background-size: 200% 100%;
-      animation: glowBar var(--bar-speed, 18s) linear infinite;
-      box-shadow:
-        0 0 12px rgba(var(--accent-rare-rgb), 0.12),
-        0 4px 10px rgba(0,0,0,0.08);
-      filter: drop-shadow(0 0 8px rgba(var(--accent-rare-rgb), 0.12));
-      opacity: 0.72;
+      background: var(--bar-colors);
+      z-index: 4;
+      background-size: var(--bar-stripe-size);
+      animation: glowBar var(--bar-speed, var(--bar-speed-base)) linear infinite;
+      opacity: 1;
+      pointer-events: none;
+    }
+    .surface > *{
+      position: relative;
+      z-index: 1;
     }
 
     /* Slight per-card variation: direction + tempo */
     .surface:nth-of-type(even)::before{
       animation-direction: reverse;
-      --bar-speed: 20s;
     }
     .surface:nth-of-type(3n)::before{
-      --bar-speed: 22s;
+      --bar-speed: var(--bar-speed-alt);
     }
 
     /* Fine sand grain on light cards */
@@ -1286,6 +1325,15 @@
         radial-gradient(1px 1px at 24% 55%, rgba(17,20,24,.08), transparent 60%);
       background-size: 120px 120px;
       z-index: 1;
+    }
+
+    /* Keep gradient bars visually on top across all cards */
+    .surface::before,
+    .schedule-card::after,
+    .help-item::before,
+    .help-detail::before,
+    .quote-figure::before{
+      z-index: 9;
     }
 
     @keyframes glowBar{
@@ -1308,6 +1356,15 @@
     .surface:focus-visible{
       box-shadow: 0 0 0 4px rgba(var(--focus-ring-rgb), 0.35), var(--shadow);
       border-color: rgba(var(--primary-rgb), 0.35);
+    }
+
+    /* Keep brand bars above any inner content (z-index helper) */
+    .surface::before,
+    .schedule-card::after,
+    .help-item::before,
+    .help-detail::before,
+    .quote-figure::before{
+      z-index: 9;
     }
 
     .card--overlay{ overflow: visible; }
@@ -1673,7 +1730,7 @@
       display: grid;
 grid-auto-flow: column;
       grid-auto-columns: minmax(var(--mosaic-col), 1fr);
-      gap: 10px;
+      gap: var(--space-sm);
       padding: 18px;
       transform: translate3d(0,0,0);
       opacity: 1;
@@ -1714,7 +1771,7 @@ grid-auto-flow: column;
     .work-mosaic__loop{
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--space-sm);
       will-change: transform;
       transform: translateZ(0);
       animation-duration: 120s;
@@ -1730,7 +1787,9 @@ grid-auto-flow: column;
       .work-mosaic__loop{ animation: none; }
     }
     /* Spotlight overlay when a thumb is clicked */
-    .work-mosaic-overlay{
+    .overlay-backdrop,
+    .work-mosaic-overlay,
+    .brand-overlay{
       position: fixed;
       inset: 0;
       display: none;
@@ -1743,30 +1802,35 @@ grid-auto-flow: column;
       transition: opacity .22s ease;
       padding: clamp(14px, 4vw, 26px);
     }
-    .work-mosaic-overlay.is-open{
+    .overlay-backdrop.is-open,
+    .work-mosaic-overlay.is-open,
+    .brand-overlay.is-open{
       display: grid;
       opacity: 1;
     }
-    .work-mosaic-modal{
+    /* Unified overlay shell */
+    .overlay-frame,
+    .work-mosaic-modal,
+    .shot-overlay-frame,
+    .brand-overlay__frame{
       position: relative;
-      width: min(92vw, 1200px);
-      max-height: 95vh;
+      width: var(--overlay-width);
+      height: var(--overlay-height);
       background: #ffffff;
-      border-radius: 14px;
+      border-radius: var(--overlay-radius);
       display: grid;
       grid-template-rows: auto 1fr;
-      overflow: visible; /* allow nav buttons to sit at the frame edge */
+      overflow: hidden;
       isolation: isolate;
-      box-shadow:
-        0 28px 62px rgba(0,0,0,.24),
-        0 12px 28px rgba(0,0,0,.16),
-        0 0 0 1px rgba(0,0,0,0.06);
+      box-shadow: var(--shadow-overlay);
     }
-    /* animated glow border, filled rectangle (original effect) */
-    .work-mosaic-modal::before{
+    .overlay-frame::before,
+    .work-mosaic-modal::before,
+    .shot-overlay-frame::before,
+    .brand-overlay__frame::before{
       content:"";
       position:absolute;
-      inset:-8px;
+      inset:0;
       background: conic-gradient(
         from 0deg,
         rgba(var(--accent-rare-rgb,136,110,255),0.55),
@@ -1777,68 +1841,38 @@ grid-auto-flow: column;
       filter: blur(8px);
       z-index: 0;
       opacity: 0.7;
+      pointer-events: none;
     }
-    .work-mosaic-modal::after{
+    .overlay-frame::after,
+    .work-mosaic-modal::after,
+    .shot-overlay-frame::after,
+    .brand-overlay__frame::after{
       content:"";
       position:absolute;
       inset:0;
       background: #ffffff,rgba(var(--primary-rgb), 0.25);
-      border-radius: 14px;
+      border-radius: var(--overlay-radius);
       z-index: 1;
+      pointer-events: none;
     }
-    .work-mosaic-modal__head{
+    .overlay-chrome,
+    .work-mosaic-modal__head,
+    .shot-overlay-chrome,
+    .brand-overlay__head{
+      position: relative;
+      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: var(--space-xs) var(--space-sm);
-      background: 
-        rgba(var(--primary-rgb,24,92,255),0.06);
+      gap: var(--overlay-gap);
+      padding: var(--overlay-pad-y) var(--overlay-pad-x);
+      background: rgba(var(--primary-rgb,24,92,255),0.06);
       border-bottom: 1px solid rgba(0,0,0,0.06);
-      position: relative;
-      z-index: 2;
     }
-    header.work-mosaic-modal__head{ 
-      margin: 0; 
-    }
-    .work-mosaic-nav{
-      position: absolute;
-      top: 50%;
-      width: 42px;
-      height: 42px;
-      margin: 0;
-      padding: 0;
-      border: none;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.95);
-      box-shadow:
-        0 10px 24px rgba(0,0,0,0.18),
-        0 0 0 1px rgba(0,0,0,0.08);
-      display: grid;
-      place-items: center;
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-      z-index: 3;
-    }
-    .work-mosaic-nav:hover{
-      box-shadow:
-        0 14px 30px rgba(0,0,0,0.22),
-        0 0 0 1px rgba(var(--accent-rare-rgb,136,110,255),0.35);
-    }
-    .work-mosaic-nav svg{
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-      color: rgba(30,30,30,0.9);
-    }
-    .work-mosaic-nav.is-prev{
-      left: 0;
-      transform: translate(-50%, -50%);
-    }
-    .work-mosaic-nav.is-next{
-      left: 100%;
-      transform: translate(-50%, -50%);
-    }
-    .work-mosaic-title{
+    .overlay-title,
+    .work-mosaic-title,
+    .shot-overlay-title,
+    .brand-overlay__title{
       margin: 0;
       font-weight: 700;
       font-size: var(--type-h3, 22px);
@@ -1848,33 +1882,95 @@ grid-auto-flow: column;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .work-mosaic-close{
-      position: relative;
-      z-index: 2;
+    .overlay-actions,
+    .brand-overlay__actions{
+      display: inline-flex;
+      align-items: center;
+      gap: var(--overlay-gap);
     }
-    .work-mosaic-overlay__figure{
-      margin: 0;
-      position: relative;
-      display: flex;
+    .overlay-actions .btn,
+    .brand-overlay__actions .btn{
+      padding: 10px 14px;
+      min-height: 44px;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      object-fit: contain;
-      height: 100%;
-      width: 100%;
-      max-height: 100%;
-      max-width: 100%;
-      padding: var(--space-xs);
-      object-position: top center;
-      z-index: 2;
     }
-    .work-mosaic-overlay__figure img{
+    .overlay-nav,
+    .work-mosaic-nav,
+    .shot-overlay-nav{
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(0,0,0,0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .overlay-nav[disabled],
+    .work-mosaic-nav[disabled],
+    .shot-overlay-nav[disabled]{
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+    }
+    .overlay-nav svg,
+    .work-mosaic-nav svg,
+    .shot-overlay-nav svg{
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      color: rgba(30,30,30,0.9);
+    }
+    .overlay-body,
+    .work-mosaic-overlay__figure,
+    .shot-overlay-figure,
+    .brand-overlay__body{
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 1fr;
+    }
+    .gallery-viewport,
+    .work-mosaic-overlay__figure,
+    .shot-overlay-figure{
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: var(--overlay-pad-x);
+      box-sizing: border-box;
+    }
+    .gallery-viewport img,
+    .work-mosaic-overlay__figure img,
+    .shot-overlay-figure img{
       max-width: 100%;
       max-height: 100%;
       width: auto;
       height: auto;
       object-fit: contain;
-      border-radius: 12px;
+      object-position: center;
+    }
+    .overlay-body iframe{
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .schedule-overlay__frame{
+      max-width: var(--overlay-width);
+      max-height: var(--overlay-height);
+    }
+    .schedule-overlay__body{
+      background: var(--surface-card);
     }
     .work-see-more{
       position: absolute;
@@ -2339,7 +2435,7 @@ grid-auto-flow: column;
       position: relative;
       margin: -8px auto 0;
       width: 100%;
-      max-width: 620px;
+      max-width: var(--case-media-max);
       border-radius: var(--radius-md);
       background: none;
       box-shadow: none;
@@ -2365,7 +2461,7 @@ grid-auto-flow: column;
       z-index:0;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap: var(--ribbon-gap);
       opacity:0.32;
       pointer-events:none;
       transform: translateX(-30%) scale(0.65);
@@ -2373,17 +2469,17 @@ grid-auto-flow: column;
     }
     .case-ribbon-row{
       display:flex;
-      gap:10px;
+      gap: var(--ribbon-gap);
       min-height: calc(var(--cover-height, 280px) * 0.5);
       height: calc(var(--cover-height, 280px) * 0.5);
-      animation-duration: 90s;
+      animation-duration: var(--ribbon-speed-a);
       animation-timing-function: linear;
       animation-iteration-count: infinite;
       will-change: transform;
     }
-    .case-ribbon-row.row-a{ animation-name: caseRibbonLeft; }
-    .case-ribbon-row.row-b{ animation-name: caseRibbonRight; animation-duration: 110s; }
-    .case-ribbon-row.row-c{ animation-name: caseRibbonLeft; animation-duration: 100s; }
+    .case-ribbon-row.row-a{ animation-name: caseRibbonLeft; animation-duration: var(--ribbon-speed-a); }
+    .case-ribbon-row.row-b{ animation-name: caseRibbonRight; animation-duration: var(--ribbon-speed-b); }
+    .case-ribbon-row.row-c{ animation-name: caseRibbonLeft; animation-duration: var(--ribbon-speed-c); }
     .case-ribbon-row img{
       height: calc(var(--cover-height, 280px) * 0.5);
       width:auto;
@@ -2407,7 +2503,7 @@ grid-auto-flow: column;
       align-items: center;
       gap: var(--space-sm);
       flex-wrap: wrap;
-      max-width: 620px;
+      max-width: var(--case-media-max);
       width: 100%;
       margin-left: auto;
       margin-right: auto;
@@ -2593,8 +2689,8 @@ grid-auto-flow: column;
     .tape-run{
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding-right: 10px;
+      gap: var(--space-sm);
+      padding-right: var(--space-sm);
     }
 
     .tape-item{
@@ -2992,13 +3088,17 @@ grid-auto-flow: column;
       content:"";
       position:absolute;
       left:0; top:0; right:0;
-      height:4px;
-      background: linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.85),
-        rgba(var(--primary-rgb), 0.75),
-        rgba(var(--accent-rare-rgb), 0.65)
-      );
-      opacity:.55;
+      height: var(--bar-height);
+      border-radius: inherit;
+      background: var(--bar-colors, linear-gradient(90deg,
+        rgba(var(--accent-warm-rgb), 0.65) 0%,
+        rgba(var(--primary-rgb),     0.65) 33%,
+        rgba(var(--accent-rare-rgb), 0.65) 66%,
+        rgba(var(--accent-warm-rgb), 0.65) 100%));
+      background-size: var(--bar-stripe-size);
+      animation: glowBar var(--bar-speed-base) linear infinite;
+      opacity: 1;
+      pointer-events: none;
     }
 
     .help-item h3{
@@ -3057,13 +3157,17 @@ grid-auto-flow: column;
       content:"";
       position:absolute;
       left:0; top:0; right:0;
-      height:4px;
-      background: linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.85),
-        rgba(var(--primary-rgb), 0.75),
-        rgba(var(--accent-rare-rgb), 0.65)
-      );
-      opacity:.55;
+      height: var(--bar-height);
+      border-radius: inherit;
+      background: var(--bar-colors, linear-gradient(90deg,
+        rgba(var(--accent-warm-rgb), 0.65) 0%,
+        rgba(var(--primary-rgb),     0.65) 33%,
+        rgba(var(--accent-rare-rgb), 0.65) 66%,
+        rgba(var(--accent-warm-rgb), 0.65) 100%));
+      background-size: var(--bar-stripe-size);
+      animation: glowBar var(--bar-speed-base) linear infinite;
+      opacity: 1;
+      pointer-events: none;
     }
 
     .help-detail-inner{ padding:var(--space-lg); }
@@ -3371,14 +3475,7 @@ grid-auto-flow: column;
     .schedule-card{
       -webkit-appearance:none;
       appearance:none;
-      border: 0;
       border-radius: var(--radius-md);
-      background:
-        radial-gradient(circle at 20% -20%, rgba(var(--primary-rgb),0.14), transparent 45%),
-        linear-gradient(180deg, rgba(var(--surface-card-rgb),0.95), rgba(var(--surface-card-rgb),0.9));
-      box-shadow:
-        0 16px 30px rgba(15,26,36,0.12),
-        0 4px 12px rgba(255,255,255,0.42) inset;
       padding: 28px 26px;
       text-align:left;
       width:100%;
@@ -3396,36 +3493,6 @@ grid-auto-flow: column;
       transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
     }
 
-    /* Background layer for the card */
-    .schedule-card::before{
-      content:"";
-      position:absolute;
-      inset: 0;
-      z-index:-1;
-      border-radius: inherit;
-      background:
-        radial-gradient(circle at 80% 0, rgba(255,255,255,0.2), transparent 50%),
-        linear-gradient(180deg, rgba(var(--surface-card-rgb),0.98), rgba(var(--surface-card-rgb),0.88));
-    }
-
-    /* Thin brand bar on top (match .surface::before) */
-    .schedule-card::after{
-      content:"";
-      position:absolute;
-      left:0;
-      top:0;
-      right:0;
-      height:4px;
-      background: linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.85),
-        rgba(var(--primary-rgb), 0.75),
-        rgba(var(--accent-rare-rgb), 0.65)
-      );
-      opacity:.55;
-      z-index: 0;
-      pointer-events:none;
-    }
-
     /* Hover/press: subtle, not “game UI” */
     /* Accessible, good-looking focus ring */
     .schedule-card:focus { outline: none; }
@@ -3436,19 +3503,15 @@ grid-auto-flow: column;
       border-radius: calc(var(--radius-md) + 2px);
     }
 
-    /* Nice micro-interaction for mouse users */
+    /* Match surface hover/active shadows */
     .schedule-card:hover{
-      transform: translateY(-4px);
-      box-shadow:
-        0 22px 40px rgba(15,26,36,0.24),
-        0 6px 20px rgba(255,255,255,0.3) inset;
+      transform: none;
+      box-shadow: var(--shadow-card);
     }
 
     .schedule-card:active{
-      transform: translateY(0px);
-      box-shadow:
-        0 14px 32px rgba(17,20,24,.12),
-        inset 0 0 0 rgba(255,255,255,0);
+      transform: none;
+      box-shadow: var(--shadow-card);
     }
 
         /* ============================================================
@@ -3582,7 +3645,7 @@ grid-auto-flow: column;
     .schedule-top{
       display:flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: var(--space-sm);
       margin-bottom: 0;
     }
 
@@ -3690,7 +3753,7 @@ grid-auto-flow: column;
       top: 0;
       display:flex;
       align-items:center;
-      gap: 10px;
+      gap: var(--space-sm);
       overflow: visible;
     }
     .theme-toggle{
@@ -3931,117 +3994,6 @@ grid-auto-flow: column;
           0 0 0 1px rgba(0,0,0,0.06);
         overflow: hidden;
       }
-      /* Brand overlay */
-      .brand-overlay{
-        position: fixed;
-        inset: 0;
-        display: none;
-        place-items: center;
-        z-index: 180;
-        background: rgba(12,14,20,0.42);
-        -webkit-backdrop-filter: blur(14px) saturate(1.02);
-        backdrop-filter: blur(14px) saturate(1.02);
-        padding: clamp(12px, 4vw, 32px);
-      }
-      .brand-overlay.is-open{ display: grid; }
-      .brand-overlay__frame{
-        position: relative;
-        width: min(92vw, 1200px);
-        height: min(92vh, 900px);
-        background: #ffffff;
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow:
-          0 28px 62px rgba(0,0,0,.24),
-          0 12px 28px rgba(0,0,0,.16),
-          0 0 0 1px rgba(0,0,0,0.06);
-        display: grid;
-        grid-template-rows: auto 1fr;
-        isolation: isolate;
-      }
-      .brand-overlay__frame::before{
-        content:"";
-        position:absolute;
-        inset:-8px;
-        background: conic-gradient(
-          from 0deg,
-          rgba(var(--accent-rare-rgb,136,110,255),0.55),
-          rgba(var(--primary-rgb,24,92,255),0.35),
-          rgba(255,255,255,0.35),
-          rgba(var(--accent-rare-rgb,136,110,255),0.55)
-        );
-        filter: blur(8px);
-        z-index: 0;
-        opacity: 0.7;
-        pointer-events: none;
-      }
-      .brand-overlay__frame::after{
-        content:"";
-        position:absolute;
-        inset:0;
-        background: #ffffff;
-        border-radius: inherit;
-        z-index: 1;
-        pointer-events: none;
-      }
-      .brand-overlay__head{
-        position: relative;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--space-sm);
-        padding: 12px 16px;
-        background: rgba(var(--primary-rgb,24,92,255),0.06);
-        border-bottom: 1px solid rgba(0,0,0,0.06);
-      }
-      .brand-overlay__title{
-        margin: 0;
-        font-size: var(--type-h3, 22px);
-        font-weight: 800;
-      }
-      .brand-overlay__actions{
-        display: inline-flex;
-        align-items: center;
-        gap: var(--space-xs);
-      }
-      .brand-overlay__actions .btn{
-        padding: 10px 14px;
-        min-height: 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .brand-overlay__close{
-        z-index: 2;
-        min-height: 44px;
-        padding: 10px 14px;
-        box-shadow:
-          0 10px 22px rgba(0,0,0,0.16),
-          0 0 0 1px rgba(0,0,0,0.06);
-        background: rgba(255,255,255,0.96);
-      }
-      .brand-overlay__body{
-        position: relative;
-        z-index: 2;
-        display: grid;
-        grid-template-rows: 1fr auto;
-      }
-      .brand-overlay__iframe{
-        width: 100%;
-        height: 100%;
-        border: 0;
-      }
-      .brand-overlay__fallback{
-        padding: 10px 14px;
-        background: rgba(var(--primary-rgb,24,92,255),0.06);
-        border-top: 1px solid rgba(0,0,0,0.06);
-        display: flex;
-        align-items: center;
-        gap: var(--space-sm);
-        font-size: 14px;
-        color: var(--text, #1e1e1e);
-      }
       .flow-l > * + *{ margin-top: var(--space-lg); }
       .section-pad{ padding: var(--space-3xl) 0; }
       @media (max-width: 720px){
@@ -4278,22 +4230,6 @@ grid-auto-flow: column;
           </p>
         </div>
       </article>
-      </div>
-
-      <!-- Brand overlay -->
-      <div class="brand-overlay" id="brandOverlay" aria-hidden="true">
-        <div class="brand-overlay__frame" role="dialog" aria-modal="true" aria-labelledby="brandOverlayTitle">
-          <div class="brand-overlay__head">
-            <h3 class="brand-overlay__title" id="brandOverlayTitle">Brand Guidelines</h3>
-            <div class="brand-overlay__actions">
-              <a class="btn ghost" id="brandOverlayDirect" target="_blank" rel="noreferrer">Open in New Tab</a>
-              <button class="brand-overlay__close btn" type="button" id="brandOverlayClose">Close</button>
-            </div>
-          </div>
-          <div class="brand-overlay__body">
-            <iframe class="brand-overlay__iframe" id="brandOverlayFrame" title="Brand Guidelines" loading="lazy"></iframe>
-          </div>
-        </div>
       </div>
 
       <div class="surface case-studies-card">
@@ -4911,7 +4847,8 @@ grid-auto-flow: column;
           <button
           class="schedule-card surface"
           type="button"
-          onclick="openCalendly('https://calendly.com/mark-w3m/15-min-chat')"
+          data-sched-url="https://calendly.com/mark-w3m/15-min-chat"
+          data-sched-title="15 Min Chat"
           aria-haspopup="dialog"
           aria-label="Book a 15 minute chat"
           aria-describedby="calendlyHint"
@@ -5022,7 +4959,8 @@ grid-auto-flow: column;
           <button
           class="schedule-card surface"
           type="button"
-          onclick="openCalendly('https://calendly.com/mark-w3m/30-min-alignment')"
+          data-sched-url="https://calendly.com/mark-w3m/30-min-alignment"
+          data-sched-title="30 Min Alignment"
           aria-haspopup="dialog"
           aria-label="Book a 30 minute meeting"
           aria-describedby="calendlyHint"
@@ -5133,7 +5071,8 @@ grid-auto-flow: column;
           <button
           class="schedule-card surface"
           type="button"
-          onclick="openCalendly('https://calendly.com/mark-w3m/60-min-consult')"
+          data-sched-url="https://calendly.com/mark-w3m/60-min-consult"
+          data-sched-title="60 Min Consult"
           aria-haspopup="dialog"
           aria-label="Book a 60 minute consult"
           aria-describedby="calendlyHint"
@@ -5242,6 +5181,21 @@ grid-auto-flow: column;
         </button>
       </div>
 
+      <!-- Overlay for Calendly embed -->
+      <div class="overlay-backdrop schedule-overlay" id="scheduleOverlay" role="dialog" aria-modal="true" aria-labelledby="scheduleOverlayTitle" aria-hidden="true">
+        <div class="overlay-frame schedule-overlay__frame">
+          <div class="overlay-chrome">
+            <h3 class="overlay-title" id="scheduleOverlayTitle">Book a time</h3>
+            <div class="overlay-actions">
+              <button class="btn ghost" type="button" id="scheduleOverlayClose">Close</button>
+            </div>
+          </div>
+          <div class="overlay-body schedule-overlay__body">
+            <iframe id="scheduleOverlayFrame" title="Scheduling" loading="lazy"></iframe>
+          </div>
+        </div>
+      </div>
+
       <noscript>
         <div class="callout surface mt-16">
           <p class="fine mb-8">
@@ -5288,6 +5242,87 @@ grid-auto-flow: column;
       }
       Calendly.initPopupWidget({ url: url });
     }
+
+    /* ==========================================================
+       Schedule overlay: embed Calendly inline inside overlay
+       ========================================================== */
+    (function initScheduleOverlay(){
+      const overlay = document.getElementById("scheduleOverlay");
+      const iframe = document.getElementById("scheduleOverlayFrame");
+      const titleEl = document.getElementById("scheduleOverlayTitle");
+      const closeBtn = document.getElementById("scheduleOverlayClose");
+      const schedButtons = Array.from(document.querySelectorAll("[data-sched-url]"));
+      if (!overlay || !iframe || !titleEl || !closeBtn || !schedButtons.length) return;
+
+      const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), textarea, input, select, details summary, [tabindex]:not([tabindex="-1"])';
+      let lastTrigger = null;
+
+      function open(url, title){
+        const safeUrl = (url || "").trim();
+        if (!safeUrl) return;
+        const sep = safeUrl.includes("?") ? "&" : "?";
+        const embedUrl = `${safeUrl}${sep}embed_domain=${location.hostname}&embed_type=Inline`;
+        iframe.src = embedUrl;
+        titleEl.textContent = title || "Schedule";
+        overlay.classList.add("is-open");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.classList.add("nav-open");
+        trapFocus();
+      }
+
+      function close(){
+        overlay.classList.remove("is-open");
+        overlay.setAttribute("aria-hidden", "true");
+        iframe.src = "";
+        document.body.classList.remove("nav-open");
+        if (lastTrigger) lastTrigger.focus({ preventScroll: true });
+      }
+
+      function trapFocus(){
+        const focusables = Array.from(overlay.querySelectorAll(FOCUSABLE_SELECTOR)).filter(el => el.offsetParent !== null);
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (first) first.focus({ preventScroll: true });
+
+        function handleTrap(e){
+          if (e.key !== "Tab") return;
+          if (!focusables.length) return;
+          if (e.shiftKey){
+            if (document.activeElement === first){
+              e.preventDefault();
+              last.focus();
+            }
+          } else {
+            if (document.activeElement === last){
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        }
+        overlay.addEventListener("keydown", handleTrap);
+        const cleanup = () => overlay.removeEventListener("keydown", handleTrap);
+        closeBtn.addEventListener("click", cleanup, { once: true });
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) cleanup();
+        }, { once: true });
+      }
+
+      schedButtons.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          lastTrigger = btn;
+          open(btn.dataset.schedUrl, btn.dataset.schedTitle);
+        });
+      });
+
+      closeBtn.addEventListener("click", close);
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) close();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
+      });
+    })();
 
     /* ==========================================================
        Schedule clocks: segmented ring fill animation
@@ -6098,20 +6133,167 @@ grid-auto-flow: column;
       scheduleIdle();
     })();
 
+    /* Unified overlay controller: shared shell for work, case, and brand */
+    const overlayController = (() => {
+      const overlay = document.createElement("div");
+      overlay.className = "overlay-backdrop";
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.innerHTML = `
+        <div class="overlay-frame" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+          <header class="overlay-chrome">
+            <h3 class="overlay-title" id="overlayTitle">Preview</h3>
+            <div class="overlay-actions">
+              <button type="button" class="overlay-nav is-prev" aria-label="Previous" disabled>
+                <svg viewBox="0 0 24 24"><path d="M15.6 4.8 9.4 12l6.2 7.2-1.4 1.2L7 12l7.2-8.4z"/></svg>
+              </button>
+              <button type="button" class="overlay-nav is-next" aria-label="Next" disabled>
+                <svg viewBox="0 0 24 24"><path d="M8.4 19.2 14.6 12 8.4 4.8l1.4-1.2L17 12l-7.2 8.4z"/></svg>
+              </button>
+              <a class="btn ghost overlay-open-tab" target="_blank" rel="noreferrer">Open in New Tab</a>
+              <button type="button" class="overlay-close btn ghost" aria-label="Close overlay">Close</button>
+            </div>
+          </header>
+          <div class="overlay-body">
+            <div class="gallery-viewport"></div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      const titleEl = overlay.querySelector(".overlay-title");
+      const viewport = overlay.querySelector(".gallery-viewport");
+      const prevBtn = overlay.querySelector(".overlay-nav.is-prev");
+      const nextBtn = overlay.querySelector(".overlay-nav.is-next");
+      const closeBtn = overlay.querySelector(".overlay-close");
+      const openTabBtn = overlay.querySelector(".overlay-open-tab");
+
+      let items = [];
+      let currentIndex = 0;
+      let onClose = null;
+      let restoreFocus = null;
+
+      function render(){
+        if (!items.length) return;
+        const item = items[currentIndex];
+        titleEl.textContent = item.title || item.alt || "Preview";
+
+        prevBtn.style.display = items.length > 1 ? "inline-flex" : "none";
+        nextBtn.style.display = items.length > 1 ? "inline-flex" : "none";
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === items.length - 1;
+
+        if (item.href){
+          openTabBtn.style.display = "inline-flex";
+          openTabBtn.href = item.href;
+        } else {
+          openTabBtn.style.display = "none";
+          openTabBtn.removeAttribute("href");
+        }
+
+        viewport.innerHTML = "";
+        if (item.type === "iframe"){
+          const iframe = document.createElement("iframe");
+          iframe.src = item.src;
+          iframe.title = item.title || "Document";
+          iframe.loading = "lazy";
+          iframe.setAttribute("allowfullscreen", "");
+          viewport.appendChild(iframe);
+        } else {
+          const img = document.createElement("img");
+          img.src = item.src;
+          img.alt = item.alt || item.title || "Preview";
+          img.loading = "lazy";
+          img.decoding = "async";
+          viewport.appendChild(img);
+        }
+      }
+
+      function open(list, startIndex = 0, opts = {}){
+        items = list;
+        currentIndex = Math.max(0, Math.min(startIndex, items.length - 1));
+        onClose = opts.onClose || null;
+        restoreFocus = opts.trigger || null;
+        overlay.classList.add("is-open");
+        overlay.style.display = "grid";
+        overlay.setAttribute("aria-hidden", "false");
+        render();
+      }
+
+      function close(){
+        overlay.classList.remove("is-open");
+        overlay.style.display = "none";
+        overlay.setAttribute("aria-hidden", "true");
+        viewport.innerHTML = "";
+        if (onClose) onClose();
+        if (restoreFocus && typeof restoreFocus.focus === "function"){
+          restoreFocus.focus({ preventScroll: true });
+        }
+        onClose = null;
+        restoreFocus = null;
+      }
+
+      prevBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentIndex > 0){
+          currentIndex -= 1;
+          render();
+        }
+      });
+      nextBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentIndex < items.length - 1){
+          currentIndex += 1;
+          render();
+        }
+      });
+      closeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        close();
+      });
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) close();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (!overlay.classList.contains("is-open")) return;
+        if (e.key === "Escape"){
+          e.preventDefault();
+          close();
+        }
+        if (e.key === "ArrowRight"){
+          e.preventDefault();
+          nextBtn.click();
+        }
+        if (e.key === "ArrowLeft"){
+          e.preventDefault();
+          prevBtn.click();
+        }
+      });
+
+      return {
+        openGallery({ title, items, startIndex = 0, trigger, onClose }){
+          const list = items.map((item) => ({
+            type: "image",
+            src: item.src,
+            alt: item.alt || item.title || title || "Preview",
+            title: title || item.title || item.alt
+          }));
+          open(list, startIndex, { trigger, onClose });
+        },
+        openDocument({ title, src, href, trigger }){
+          open([{
+            type: "iframe",
+            src,
+            href: href || src,
+            title: title || "Document"
+          }], 0, { trigger });
+        },
+        close
+      };
+    })();
+
     /* See More -> open shot stack overlay */
     (function initSeeMoreButtons(){
-      const buttons = Array.from(document.querySelectorAll("[data-open-stack]"));
-      buttons.forEach(btn => {
-        const targetSel = btn.getAttribute("data-open-stack");
-        const target = document.querySelector(targetSel);
-        if (!target) return;
-        btn.addEventListener("click", (e) => {
-          e.preventDefault();
-          target.dispatchEvent(new Event("click", { bubbles: true }));
-          // if stack is hidden (for mosaic mode), show it before triggering
-          target.style.display = "";
-        });
-      });
+      return; // unified overlay handles openings directly
     })();
 
     /* Mosaic preview: JS parallax disabled (CSS handles the infinite drift) */
@@ -6122,115 +6304,41 @@ grid-auto-flow: column;
 
     /* Mosaic spotlight: click a thumb to pause its column and view it large */
     (function initMosaicSpotlight(){
-      const overlay = document.createElement("div");
-      overlay.className = "work-mosaic-overlay";
-      overlay.innerHTML = `
-        <div class="work-mosaic-modal" role="dialog" aria-modal="true">
-          <header class="work-mosaic-modal__head">
-            <p class="work-mosaic-title"></p>
-            <button type="button" class="work-mosaic-close btn ghost" aria-label="Close image">Close</button>
-          </header>
-          <figure class="work-mosaic-overlay__figure">
-            <img alt="">
-          </figure>
-          <button type="button" class="work-mosaic-nav is-prev" aria-label="Previous image">
-            <svg viewBox="0 0 24 24"><path d="M15.6 4.8 9.4 12l6.2 7.2-1.4 1.2L7 12l7.2-8.4z"/></svg>
-          </button>
-          <button type="button" class="work-mosaic-nav is-next" aria-label="Next image">
-            <svg viewBox="0 0 24 24"><path d="M8.4 19.2 14.6 12 8.4 4.8l1.4-1.2L17 12l-7.2 8.4z"/></svg>
-          </button>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-
-      const overlayImg = overlay.querySelector("img");
-      const overlayTitle = overlay.querySelector(".work-mosaic-title");
-      const closeBtn = overlay.querySelector(".work-mosaic-close");
-      const prevBtn = overlay.querySelector(".work-mosaic-nav.is-prev");
-      const nextBtn = overlay.querySelector(".work-mosaic-nav.is-next");
-
-      let pausedLoop = null;
-      let gallery = [];
-      let currentIndex = 0;
-
-      const closeOverlay = () => {
-        overlay.classList.remove("is-open");
-        overlay.style.display = "none";
-        if (pausedLoop){
-          pausedLoop.style.animationPlayState = "";
-          pausedLoop = null;
-        }
-      };
-
-      closeBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        closeOverlay();
-      });
-      overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeOverlay();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && overlay.classList.contains("is-open")){
-          closeOverlay();
-        }
-        if (e.key === "ArrowRight" && overlay.classList.contains("is-open")){
-          nextBtn.click();
-        }
-        if (e.key === "ArrowLeft" && overlay.classList.contains("is-open")){
-          prevBtn.click();
-        }
-      });
-
-      function showImage(index){
-        if (!gallery.length) return;
-        currentIndex = Math.max(0, Math.min(index, gallery.length - 1));
-        const item = gallery[currentIndex];
-        overlayTitle.textContent = item.label;
-        overlayImg.src = item.src;
-        overlayImg.alt = item.label;
-        prevBtn.style.display = currentIndex === 0 ? "none" : "grid";
-        nextBtn.style.display = currentIndex === gallery.length - 1 ? "none" : "grid";
-      }
-
-      prevBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        showImage(currentIndex - 1);
-      });
-
-      nextBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        showImage(currentIndex + 1);
-      });
-
       document.querySelectorAll(".work-mosaic").forEach(mosaic => {
-        mosaic.querySelectorAll(".work-mosaic__loop img").forEach(img => {
+        const allImgs = Array.from(mosaic.querySelectorAll(".work-mosaic__loop img"));
+        if (!allImgs.length) return;
+        const unique = [];
+        const seen = new Set();
+        allImgs.forEach(img => {
+          const src = img.currentSrc || img.src;
+          if (seen.has(src)) return;
+          seen.add(src);
+          unique.push({
+            src,
+            alt: img.getAttribute("aria-label") || img.alt || "Preview",
+            title: img.getAttribute("aria-label") || img.alt || "Preview"
+          });
+        });
+
+        allImgs.forEach(img => {
           img.addEventListener("click", (e) => {
             e.preventDefault();
             const loop = img.closest(".work-mosaic__loop");
             if (loop){
-              if (pausedLoop && pausedLoop !== loop){
-                pausedLoop.style.animationPlayState = "";
-              }
-              pausedLoop = loop;
               loop.style.animationPlayState = "paused";
             }
-            const label = img.getAttribute("aria-label") || img.alt || "Preview";
-            const allImgs = Array.from(mosaic.querySelectorAll(".work-mosaic__loop img"));
-            const seen = new Set();
-            gallery = allImgs.filter(el => {
-              const key = el.currentSrc || el.src;
-              if (seen.has(key)) return false;
-              seen.add(key);
-              return true;
-            }).map(el => ({
-              src: el.currentSrc || el.src,
-              label: el.getAttribute("aria-label") || el.alt || "Preview"
-            }));
-            currentIndex = gallery.findIndex(item => item.src === (img.currentSrc || img.src));
-            if (currentIndex === -1) currentIndex = 0;
-            showImage(currentIndex);
-            overlay.style.display = "grid";
-            requestAnimationFrame(() => overlay.classList.add("is-open"));
+            const startIdx = unique.findIndex(item => item.src === (img.currentSrc || img.src));
+            overlayController.openGallery({
+              title: img.getAttribute("aria-label") || img.alt || "Preview",
+              items: unique,
+              startIndex: startIdx >= 0 ? startIdx : 0,
+              trigger: img,
+              onClose: () => {
+                if (loop){
+                  loop.style.animationPlayState = "";
+                }
+              }
+            });
           });
         });
       });
@@ -6318,414 +6426,67 @@ grid-auto-flow: column;
 
     /* Case media click should reuse the shot-stack (work) overlay */
     (function initCaseStageToStack(){
-      document.querySelectorAll("[data-open-stack]").forEach(stage => {
-        stage.addEventListener("click", (e) => {
-          // ignore clicks on buttons inside the stage (already handled)
-          if (e.target.closest("button") || e.target.closest("a")) return;
-          const targetSel = stage.getAttribute("data-open-stack");
-          const target = document.querySelector(targetSel);
-          if (!target) return;
-          // ensure the stack is visible long enough to receive the event
-          target.style.display = "";
-          target.dispatchEvent(new Event("click", { bubbles: true }));
-        });
-      });
+      return; // handled by unified overlay hooks
     })();
 
 
     (function initShotStacks(){
-      document.querySelectorAll(".shot-stack").forEach((stack) => {
-        const cards = Array.from(stack.querySelectorAll(".shot-card:not(.is-cap)"));
-        let capCard = stack.querySelector(".shot-card.is-cap");
-        let capImg = stack.querySelector("[data-shot-cap-img]");
-        let hideBtn = stack.querySelector(".shot-hide");
-        if (!cards.length) return;
+      const stacks = Array.from(document.querySelectorAll(".shot-stack"));
+      stacks.forEach((stack) => {
+        const imgs = Array.from(stack.querySelectorAll(".shot-card img")).filter(img => !img.closest(".is-cap"));
+        if (!imgs.length) return;
 
-        // Ensure every stack has a cap + hide button
-        if (!capCard){
-          capCard = document.createElement("div");
-          capCard.className = "shot-card is-cap";
-          capImg = document.createElement("img");
-          capImg.setAttribute("data-shot-cap-img", "");
-          capImg.loading = "lazy";
-          hideBtn = document.createElement("button");
-          hideBtn.className = "shot-hide btn ghost";
-          hideBtn.type = "button";
-          hideBtn.setAttribute("aria-label", "Hide this stack");
-          hideBtn.textContent = "Hide Stack";
-          capCard.appendChild(capImg);
-          capCard.appendChild(hideBtn);
-          stack.appendChild(capCard);
-        }
-        if (!capImg){
-          capImg = capCard.querySelector("[data-shot-cap-img]") || document.createElement("img");
-        }
-        if (!hideBtn){
-          hideBtn = capCard.querySelector(".shot-hide");
-        }
+        const title =
+          stack.getAttribute("data-overlay-title") ||
+          stack.closest(".case-item")?.querySelector("h4")?.textContent ||
+          "Case Study";
 
-        const firstImg = cards[0].querySelector("img");
-        if (firstImg){
-          capImg.src = firstImg.getAttribute("src") || "";
-        }
-
-        const placeholder = document.createElement("div");
-        let overlayFrame = stack.querySelector(".shot-overlay-frame");
-        let overlayChrome = stack.querySelector(".shot-overlay-chrome");
-        let overlayClose = stack.querySelector(".shot-overlay-close");
-        let overlayTitle = stack.querySelector(".shot-overlay-title");
-        let overlayFigure = stack.querySelector(".shot-overlay-figure");
-        let overlayImg = overlayFigure?.querySelector("img");
-        let overlayPrev = stack.querySelector(".shot-overlay-nav.is-prev");
-        let overlayNext = stack.querySelector(".shot-overlay-nav.is-next");
-        let homeParent = stack.parentElement;
-        let homeNext = stack.nextSibling;
-        let isOverlay = false;
-        let currentIndex = 0;
-        const rotations = buildRotations(cards.length);
-        let nudgeTimer = null;
-        let aspectRatio = null;
-
-        function measureAspect(){
-          const img = cards[0]?.querySelector("img");
-          if (!img) return;
-          const finalize = () => {
-            if (img.naturalWidth && img.naturalHeight){
-              aspectRatio = img.naturalWidth / img.naturalHeight;
-              setStackWidthForHeight(stack.clientHeight || 240);
-            }
-          };
-          if (img.complete){
-            finalize();
-          } else {
-            img.addEventListener("load", finalize, { once: true });
-          }
-        }
-
-        function setStackWidthForHeight(targetHeight){
-          if (!aspectRatio) return;
-          const headerH = 72;
-          const maxW = isOverlay ? Math.min(window.innerWidth * 0.9, 1200) : 420;
-          const minW = 220;
-          let width = Math.max(minW, Math.min(maxW, targetHeight * aspectRatio));
-          let height = width / aspectRatio;
-          // keep height inside viewport when overlay
-          const maxH = isOverlay ? Math.min(Math.max(window.innerHeight * 0.86 - headerH, 320), 900) : Number.POSITIVE_INFINITY;
-          if (height > maxH){
-            height = maxH;
-            width = height * aspectRatio;
-          }
-          stack.style.width = `${width}px`;
-          if (isOverlay){
-            const overlayH = height + headerH;
-            stack.style.height = `${overlayH}px`;
-            stack.style.setProperty("--overlay-width", `${width}px`);
-            stack.style.setProperty("--overlay-height", `${overlayH}px`);
-            stack.style.setProperty("--overlay-ratio", `${aspectRatio}`);
-            stack.style.setProperty("--overlay-header", `${headerH}px`);
-          } else {
-            stack.style.height = "";
-            stack.style.removeProperty("--overlay-width");
-            stack.style.removeProperty("--overlay-height");
-            stack.style.removeProperty("--overlay-header");
-          }
-        }
-
-        function buildRotations(count){
-          const arr = [];
-          let prev = null;
-          for (let i = 0; i < count; i++){
-            let sign = Math.random() > 0.5 ? 1 : -1;
-            // avoid same sign twice in a row
-            if (prev !== null && Math.sign(prev) === sign){
-              sign *= -1;
-            }
-            let mag = 1 + Math.random() * 2; // 1–3 deg
-            mag = Math.round(mag * 10) / 10;
-            // avoid identical magnitude to previous
-            if (prev !== null && Math.abs(prev) === mag){
-              mag += 0.3;
-            }
-            if (mag > 3) mag = 3;
-            const value = sign * mag;
-            arr.push(value);
-            prev = value;
-          }
-          return arr;
-        }
-
-        // initial z-order for embedded stack
-        cards.forEach((card, i) => card.style.zIndex = `${cards.length - i}`);
-
-        function setActive(idx){
-          cards.forEach((card, i) => {
-            card.classList.remove("active", "seen");
-            if (isOverlay && i < idx){
-              card.classList.add("seen");
-            }
-            card.classList.toggle("active", i === idx);
-            // small view: reverse so first image sits on top; overlay keeps pile order
-            const baseZ = isOverlay ? i + 1 : cards.length - i;
-            card.style.zIndex = `${baseZ}`;
-            const rot = rotations[i] || 0;
-            card.style.setProperty("--rot", `${rot}deg`);
+        function open(startIndex = 0, trigger = null){
+          overlayController.openGallery({
+            title,
+            items: imgs.map(img => ({
+              src: img.getAttribute("src") || img.currentSrc || "",
+              alt: img.alt || title,
+              title
+            })),
+            startIndex,
+            trigger
           });
-          capCard.classList.remove("active");
-          capCard.style.setProperty("--rot", "0deg");
-          if (isOverlay){
-            if (overlayPrev) overlayPrev.style.display = idx > 0 ? "grid" : "none";
-            if (overlayNext) overlayNext.style.display = idx < cards.length - 1 ? "grid" : "none";
-            if (overlayImg){
-              const imgEl = cards[idx]?.querySelector("img");
-              const src = imgEl?.getAttribute("src") || "";
-              overlayImg.src = src;
-              overlayImg.alt = imgEl?.alt || overlayTitle?.textContent || "Preview";
-            }
-          }
-        }
-
-        function showCap(){
-          stack.classList.add("is-final");
-          cards.forEach(card => card.classList.remove("active"));
-          capCard.classList.add("active");
-          if (nudgeTimer) clearTimeout(nudgeTimer);
-          nudgeTimer = setTimeout(() => hideBtn.classList.add("nudge"), 2000);
-        }
-
-        function ensureOverlayChrome(){
-          // create title + close if missing
-          if (!overlayFrame){
-            overlayFrame = document.createElement("div");
-            overlayFrame.className = "shot-overlay-frame";
-
-            overlayChrome = document.createElement("div");
-            overlayChrome.className = "shot-overlay-chrome";
-            overlayTitle = document.createElement("h3");
-            overlayTitle.className = "shot-overlay-title";
-            const name =
-              stack.getAttribute("data-overlay-title") ||
-              stack.closest(".case-item")?.querySelector("h4")?.textContent ||
-              "Preview";
-            overlayTitle.textContent = name.trim();
-            overlayTitle.setAttribute("role", "heading");
-            overlayTitle.setAttribute("aria-level", "3");
-            overlayClose = document.createElement("button");
-            overlayClose.type = "button";
-            overlayClose.className = "shot-overlay-close btn";
-            overlayClose.textContent = "Close";
-            overlayClose.setAttribute("aria-label", "Close case study preview");
-            overlayChrome.appendChild(overlayTitle);
-            overlayChrome.appendChild(overlayClose);
-
-            overlayFigure = document.createElement("figure");
-            overlayFigure.className = "shot-overlay-figure";
-            overlayImg = document.createElement("img");
-            overlayImg.alt = "";
-            overlayFigure.appendChild(overlayImg);
-
-            overlayFrame.appendChild(overlayChrome);
-            overlayFrame.appendChild(overlayFigure);
-            stack.appendChild(overlayFrame);
-          }
-          if (!overlayPrev){
-            overlayPrev = document.createElement("button");
-            overlayPrev.type = "button";
-            overlayPrev.className = "shot-overlay-nav is-prev";
-            overlayPrev.innerHTML = `<svg viewBox="0 0 24 24"><path d="M15.6 4.8 9.4 12l6.2 7.2-1.4 1.2L7 12l7.2-8.4z"/></svg>`;
-            stack.appendChild(overlayPrev);
-          }
-          if (!overlayNext){
-            overlayNext = document.createElement("button");
-            overlayNext.type = "button";
-            overlayNext.className = "shot-overlay-nav is-next";
-            overlayNext.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8.4 19.2 14.6 12 8.4 4.8l1.4-1.2L17 12l-7.2 8.4z"/></svg>`;
-            stack.appendChild(overlayNext);
-          }
-          // attach listeners once
-          overlayClose?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            collapse();
-          });
-          overlayPrev?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            retreat();
-          });
-          overlayNext?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            advance(true);
-          });
-        }
-
-        function expand(){
-          if (isOverlay) return;
-          ensureOverlayChrome();
-          setStackWidthForHeight(stack.clientHeight || 280);
-          if (homeParent){
-            const h = stack.getBoundingClientRect().height;
-            placeholder.style.height = `${h}px`;
-            homeParent.insertBefore(placeholder, stack);
-          }
-          document.body.appendChild(stack);
-          stack.classList.add("is-overlay");
-          stack.classList.remove("is-final");
-          stack.setAttribute("aria-expanded", "true");
-          stack.setAttribute("tabindex", "-1");
-          isOverlay = true;
-          stack.focus({ preventScroll: true });
-          // resize to overlay height after layout
-          requestAnimationFrame(() => {
-            setStackWidthForHeight(stack.getBoundingClientRect().height || window.innerHeight * 0.7);
-            // center overlay frame
-            if (overlayFrame){
-              overlayFrame.style.left = "50%";
-              overlayFrame.style.top = "50%";
-              overlayFrame.style.transform = "translate(-50%, -50%)";
-            }
-          });
-          currentIndex = 0;
-          setActive(currentIndex);
-        }
-
-        function collapse(){
-          if (!isOverlay) return;
-          stack.classList.remove("is-overlay");
-          stack.classList.remove("is-final");
-          stack.setAttribute("aria-expanded", "false");
-          stack.removeAttribute("tabindex");
-          isOverlay = false;
-          currentIndex = 0;
-          setActive(currentIndex);
-          capCard.classList.remove("active");
-          cards.forEach(card => card.classList.remove("seen"));
-          setStackWidthForHeight(stack.clientHeight || 240);
-          hideBtn.classList.remove("nudge");
-          if (nudgeTimer){
-            clearTimeout(nudgeTimer);
-            nudgeTimer = null;
-          }
-          if (homeParent){
-            if (homeNext){
-              homeParent.insertBefore(stack, homeNext);
-            } else {
-              homeParent.appendChild(stack);
-            }
-          }
-          if (placeholder.parentNode){
-            placeholder.parentNode.removeChild(placeholder);
-          }
-          // keep stack hidden in-card until opened again
-          stack.style.display = "none";
-        }
-
-        function advance(){
-          if (!isOverlay){
-            expand();
-            return;
-          }
-          if (currentIndex < cards.length - 1){
-            currentIndex += 1;
-            setActive(currentIndex);
-          }
-        }
-        function retreat(){
-          if (!isOverlay){
-            expand();
-            return;
-          }
-          if (currentIndex > 0){
-            currentIndex -= 1;
-            setActive(currentIndex);
-          }
         }
 
         stack.addEventListener("click", (event) => {
-          if (event.target.closest(".shot-hide") || event.target.closest(".shot-overlay-close")) return;
-          if (event.target === stack && isOverlay){
-            collapse();
-            return;
-          }
-          if (event.target.closest(".shot-overlay-nav")) return;
-          if (event.target.closest(".shot-overlay-frame")) return;
-          advance();
+          event.preventDefault();
+          const targetImg = event.target.tagName === "IMG" ? event.target : null;
+          const idx = targetImg ? imgs.indexOf(targetImg) : 0;
+          open(Math.max(0, idx), stack);
         });
 
-        hideBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          collapse();
-        });
-
-        stack.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && isOverlay){
-            e.preventDefault();
-            collapse();
-          }
-          if (e.key === "ArrowRight" && isOverlay){
-            e.preventDefault();
-            advance();
-          }
-          if (e.key === "ArrowLeft" && isOverlay){
-            e.preventDefault();
-            retreat();
-          }
-        });
-
-        setActive(currentIndex);
-        measureAspect();
+        if (stack.id){
+          document.querySelectorAll(`[data-open-stack="#${stack.id}"]`).forEach(triggerEl => {
+            triggerEl.addEventListener("click", (e) => {
+              e.preventDefault();
+              open(0, triggerEl);
+            });
+          });
+        }
       });
     })();
 
     /* Brand guideline overlay */
     (function initBrandOverlay(){
-      const overlay = document.getElementById("brandOverlay");
-      const frame = document.getElementById("brandOverlayFrame");
-      const titleEl = document.getElementById("brandOverlayTitle");
-      const closeBtn = document.getElementById("brandOverlayClose");
-      const directBtn = document.getElementById("brandOverlayDirect");
-      if (!overlay || !frame || !titleEl || !closeBtn) return;
-
-      function openOverlay(src, title){
-        frame.src = src;
-        titleEl.textContent = title || "Brand Guidelines";
-        if (directBtn) directBtn.href = src;
-        overlay.classList.add("is-open");
-        overlay.setAttribute("aria-hidden", "false");
-      }
-      function closeOverlay(){
-        overlay.classList.remove("is-open");
-        overlay.setAttribute("aria-hidden", "true");
-        frame.src = "";
-      }
-
       document.querySelectorAll("[data-brand-link]").forEach(link => {
         link.addEventListener("click", (e) => {
           e.preventDefault();
           const src = link.getAttribute("href");
-          const title = link.getAttribute("data-title") || link.textContent.trim();
-          if (src){
-            openOverlay(src, title);
-          }
+          const title = link.getAttribute("data-title") || link.textContent.trim() || "Brand Guidelines";
+          if (!src) return;
+          overlayController.openDocument({
+            title,
+            src,
+            href: src,
+            trigger: link
+          });
         });
-      });
-
-      closeBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        closeOverlay();
-      });
-
-      overlay.addEventListener("click", (e) => {
-        if (e.target === overlay){
-          closeOverlay();
-        }
-      });
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && overlay.classList.contains("is-open")){
-          closeOverlay();
-        }
       });
     })();
 
