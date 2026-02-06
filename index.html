@@ -865,7 +865,7 @@
     }
 
     .subhead{
-      max-width: 58%;
+      max-width: min(72ch, 90%);
       font-size: 18px;
       color: var(--text-muted);
       padding: 0 16px;
@@ -942,8 +942,9 @@
     .section-lede{
       margin:0 0 16px;
       color: var(--text-muted);
-      max-width: 66.6ch;
+      max-width: min(72ch, 92%);
       line-height: 1.65;
+      text-align: left;
     }
 
     /* ============================================================
@@ -1211,31 +1212,21 @@
 
     /* Mobile: simplify bio highlights to static multi-line style */
     @media (max-width: var(--bp-sm)){
-      .bio .hl{
+      .bio .hl,
+      .bio-highlight{
         padding: 0 .06em;
         white-space: normal;
-        background:
-          radial-gradient(16px 10px at 4% 60%,
-            rgba(var(--hl-rgb, 245,158,11), .55),
-            rgba(var(--hl-rgb, 245,158,11), 0) 70%),
-          radial-gradient(18px 12px at 96% 60%,
-            rgba(var(--hl-rgb, 245,158,11), .50),
-            rgba(var(--hl-rgb, 245,158,11), 0) 72%),
-          repeating-linear-gradient(0deg,
-            rgba(255,255,255,.14) 0px,
-            rgba(255,255,255,.14) 2px,
-            rgba(255,255,255,0) 3px,
-            rgba(255,255,255,0) 6px),
-          linear-gradient(180deg,
-            rgba(var(--hl-rgb, 245,158,11), .05) 0%,
-            rgba(var(--hl-rgb, 245,158,11), .45) 22%,
-            rgba(var(--hl-rgb, 245,158,11), .38) 78%,
-            rgba(var(--hl-rgb, 245,158,11), .10) 100%);
+        background: rgba(var(--hl-rgb, 245,158,11), 0.32);
+        box-shadow: none;
+        border-radius: 8px;
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
+        font-weight: 600;
       }
-      .bio .hl::before{ content:none; }
-      .bio .hl.is-on::before{ content:none; }
+      .bio .hl::before,
+      .bio .hl.is-on::before,
+      .bio-highlight::before,
+      .bio-highlight.is-on::before{ content:none; }
     }
 
     .hl-amber{ --hl-rgb: 245, 158, 11; }
@@ -1436,7 +1427,7 @@
       }
       #work .grid .card .card-copy{
         padding: var(--space-lg);
-        min-width: var(--space-4xl);
+        min-width: auto;
       }
       #work .grid .card .card-media{
         margin-top: 6px;
@@ -1736,6 +1727,10 @@ grid-auto-flow: column;
       opacity: 1;
       z-index: 1;
     }
+    .card .work-mosaic{
+      position: static;
+      width: 100%;
+    }
     .work-mosaic__tiles::after{
       content:"";
       position:absolute;
@@ -1785,6 +1780,17 @@ grid-auto-flow: column;
     .work-mosaic__col.col-c .work-mosaic__loop{ animation-name: driftUp; animation-duration: 165s; animation-delay: -60s; }
     @media (prefers-reduced-motion: reduce){
       .work-mosaic__loop{ animation: none; }
+    }
+    /* Hide mosaic on small screens to avoid overflow and dead space */
+    @media (max-width: 640px){
+      .work-mosaic{ display: none; }
+      #work .grid .card{
+        grid-template-columns: 1fr;
+        grid-template-areas: "copy";
+      }
+      #work .grid .card .card-media{ display: none; }
+      .work-see-more{ margin-top: var(--space-sm); }
+      .work-see-more--copy{ display: inline-flex; }
     }
     /* Spotlight overlay when a thumb is clicked */
     .overlay-backdrop,
@@ -1981,14 +1987,12 @@ grid-auto-flow: column;
       max-width: 100%;
     }
     .work-see-more{
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      z-index: 2;
+      position: static;
+      display: inline-flex;
       pointer-events: auto;
       transition: none;
+      margin-top: var(--space-sm);
     }
-    .work-see-more{ display: none !important; }
     .stack-dismiss{
       position: absolute;
       left: calc(100% + 10px);
@@ -2463,6 +2467,10 @@ grid-auto-flow: column;
     .case-media:hover{
       transform: translateY(-2px);
     }
+    @media (max-width: var(--bp-sm)){
+      .case-media{ display: none; }
+      .case-cta .btn{ padding: 10px 12px; }
+    }
     .case-ribbons{
       position:absolute;
       inset: 50% var(--space-sm) var(--space-sm);
@@ -2474,6 +2482,16 @@ grid-auto-flow: column;
       pointer-events:none;
       transform: translateX(-30%) scale(0.65);
       transform-origin: center left;
+    }
+    @media (max-width: var(--bp-md)){
+      .case-ribbons{
+        max-height: 220px;
+        overflow: hidden;
+      }
+      .case-ribbon-row{
+        height: 160px;
+        min-height: 160px;
+      }
     }
     .case-ribbon-row{
       display:flex;
@@ -2503,10 +2521,13 @@ grid-auto-flow: column;
       from{ transform: translateX(-75%); }
       to{ transform: translateX(-25%); }
     }
+    @media (max-width: 900px){
+      .case-ribbons{ display: none !important; }
+    }
     .case-cta{
       margin-top: auto;
-      padding-top: var(--space-4xl, 64px);
-      margin-bottom: var(--space-4xl, 64px);
+      padding-top: var(--space-md);
+      margin-bottom: var(--space-md);
       display: flex;
       align-items: center;
       gap: var(--space-sm);
@@ -3898,6 +3919,7 @@ grid-auto-flow: column;
         --type-h3: 22px;
       }
       .wrap{ padding: 0 var(--space-md); }
+      header{ padding-left: var(--space-md); padding-right: var(--space-md); }
 
       header,
       .hero-actions,
@@ -3909,14 +3931,23 @@ grid-auto-flow: column;
       }
 
       .subhead{
-        max-width: 85%;
-        padding: 0 12px;
+        max-width: 96%;
+        padding: 0 var(--space-1);
         margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
+        font-size: clamp(var(--type-body), 3.8vw, 18px);
+        line-height: var(--lh-body);
+        text-align: center;
+      }
+      .section-lede{
+        max-width: 96%;
+        text-align: center;
       }
 
       .schedule-grid{ gap: var(--space-lg); }
       .schedule-card{ padding: var(--space-lg)}
       .fortune-wrap{ padding: 0; justify-content: center; }
+      .tape-track{ font-size: 12.5px; gap: 12px; }
+      .tape-run{ gap: var(--space-xs); padding-right: var(--space-xs); }
       .ticker-section{ margin: var(--space-xl) 0; }
     }
 
@@ -3927,15 +3958,15 @@ grid-auto-flow: column;
         --type-h3: 24px;
       }
       .wrap{ padding: 0 var(--space-md); }
+      header{ padding-left: var(--space-md); padding-right: var(--space-md); }
 
       header,
       .hero-actions,
       .subhead{ text-align: left; }
 
-      .subhead{
-        max-width: 75%;
-        padding: 0 16px;
-        margin: calc(var(--hero-title-size) / 3) 28px var(--hero-title-size);
+      .section-lede{
+        max-width: 94%;
+        text-align: center;
       }
 
       .schedule-grid{ gap: var(--space-md); }
@@ -4142,6 +4173,9 @@ grid-auto-flow: column;
             <p class="meta-line"><strong>Role:</strong> UX Consultant</p>
             <p class="meta-line"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
             <p class="meta-line"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
+            <p class="mt-16">
+              <button class="btn ghost work-see-more work-see-more--copy" type="button" data-open-stack="#shotStack">See Sample Pages</button>
+            </p>
           </div>
           <div class="card-media">
             <button class="btn ghost work-see-more" type="button" data-open-stack="#shotStack">See More</button>
