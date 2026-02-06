@@ -28,7 +28,16 @@
     @layer tokens {
       :root{
         /* Layout */
-        --max: 1100px;
+        --max: 1050px;
+        --stack-max: 680px;
+        /* Corner radius scale (Material 3-ish) */
+        --radius-xs: 4px;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --radius-pill: 999px;
+        /* Legacy default radius (kept for existing rules) */
         --radius: 18px;
         --shadow: 0 14px 40px rgba(17,20,24,.10);
         --space-1: 8px;
@@ -39,6 +48,24 @@
         --space-6: 40px;
         --space-7: 56px;
         --space-8: 72px;
+        /* Spacing scale (semantic aliases) */
+        --space-xs: var(--space-1);
+        --space-sm: var(--space-2);
+        --space-md: var(--space-3);
+        --space-lg: var(--space-4);
+        --space-xl: var(--space-5);
+        --space-2xl: var(--space-6);
+        --space-3xl: var(--space-7);
+        --space-4xl: var(--space-8);
+
+        /* Color (DTCG-ish aliases, hyphenated for CSS) */
+        --color-surface-base: var(--surface-base);
+        --color-surface-card: var(--surface-card);
+        --color-text-primary: var(--text);
+        --color-text-muted: var(--text-muted);
+        --color-brand-primary: var(--primary);
+        --color-brand-accent: var(--accent-warm);
+        --color-brand-rare: var(--accent-rare);
         /* Breakpoints (Webflow-ish defaults + large desktop) */
         --bp-xs: 480px;
         --bp-sm: 720px;
@@ -289,6 +316,8 @@
         min-height: 100vh;
         width: 100%;
         margin:0;
+        padding:0;
+        overflow-x: clip;
         font: var(--type-body)/var(--lh-body) system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         font-weight: var(--fw-body);
         color: var(--text);
@@ -302,7 +331,16 @@
       }
 
       /* Keep html solid for overscroll; let body keep the layered washes */
-      html{ background: var(--surface-base); color: var(--text); width: 100%; }
+      html{
+        background: var(--surface-base);
+        color: var(--text);
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      @supports not (overflow: clip){
+        html, body{ overflow-x: hidden; }
+      }
 
       /* Global small body copy style */
     .fine{
@@ -326,7 +364,7 @@
       :focus-visible{
         outline: 3px solid var(--focus-outline);
         outline-offset: 3px;
-        border-radius: calc(var(--radius) + 2px);
+        border-radius: calc(var(--radius-md) + 2px);
       }
 
       /* For links specifically (so focus isn’t lost on inline text) */
@@ -335,7 +373,7 @@
         text-underline-offset: 3px;
       }
 
-  .wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--space-4); }
+.wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--space-lg); }
 
       /* Background texture + subtle animated color drift */
       body::before{
@@ -413,6 +451,7 @@
     .nav{
       position: sticky;
       top: 0;
+      margin-top: 0;
       z-index: 50;
       width: 100%;
       background: rgba(var(--surface-card-rgb), 0.82);
@@ -430,7 +469,7 @@
       max-width: var(--max);
       width: 100%;
       margin: 0 auto;
-      padding: 14px var(--space-4);
+      padding: 14px var(--space-lg);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -566,7 +605,7 @@
         border-radius: 10px;
       }
       .nav{ padding: 8px 12px; }
-      .nav-inner{ gap: 10px; padding: 10px var(--space-3); }
+      .nav-inner{ gap: 10px; padding: 10px var(--space-md); }
     }
 
     @media (max-width: 880px){
@@ -681,7 +720,6 @@
       border-radius: inherit;
       border:1px solid rgba(255,255,255,0.6);
       opacity: .75;
-      pointer-events:none;
     }
 
     .btn:hover{
@@ -897,7 +935,7 @@
       margin:0;
       padding:0;
       display:grid;
-      gap:var(--space-3);
+      gap:var(--space-lg);
     }
 
     .testimonial-card{
@@ -912,11 +950,11 @@
       grid-template-rows: 1fr auto auto;
       row-gap: 0;
       align-items: stretch;
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       border: 1px solid var(--border);
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
       box-shadow: var(--shadow);
-      padding: var(--space-4);
+      padding: var(--space-lg);
       position: relative;
       overflow: hidden;
       height: 100%;
@@ -1007,7 +1045,7 @@
     .quote-purple .quote-mark{ color: var(--ink-lavender); }
 
     @media (max-width: 520px){
-      .quote-figure{ padding: var(--space-3); }
+      .quote-figure{ padding: var(--space-md); }
       .quote-top{ grid-template-columns: 32px 1fr 32px; }
       .quote-mark{
         font-size: 36px;
@@ -1182,7 +1220,7 @@
     .surface{
       position:relative;
       overflow:hidden;
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
 
@@ -1194,18 +1232,40 @@
         border-color .2s ease,
         background .2s ease;
     }
+    /* Some cards (like the Work screenshot stack) need to let rotated images hang outside the card. */
+    .surface.stack-card{
+      overflow: hidden;
+    }
 
     .surface::before{
       content:"";
       position:absolute;
       left:0; top:0; right:0;
-      height:4px;
+      height:6px;
+      /* Seamless loop: start == end color, palette-only stops */
       background: linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.85),
-        rgba(var(--primary-rgb), 0.75),
-        rgba(var(--accent-rare-rgb), 0.65)
+        rgba(var(--accent-warm-rgb), 0.30) 0%,
+        rgba(var(--primary-rgb),     0.30) 33%,
+        rgba(var(--accent-rare-rgb), 0.30) 66%,
+        rgba(var(--accent-warm-rgb), 0.30) 100%
       );
-      opacity:.55;
+      z-index: 2;
+      background-size: 200% 100%;
+      animation: glowBar var(--bar-speed, 18s) linear infinite;
+      box-shadow:
+        0 0 12px rgba(var(--accent-rare-rgb), 0.12),
+        0 4px 10px rgba(0,0,0,0.08);
+      filter: drop-shadow(0 0 8px rgba(var(--accent-rare-rgb), 0.12));
+      opacity: 0.72;
+    }
+
+    /* Slight per-card variation: direction + tempo */
+    .surface:nth-of-type(even)::before{
+      animation-direction: reverse;
+      --bar-speed: 20s;
+    }
+    .surface:nth-of-type(3n)::before{
+      --bar-speed: 22s;
     }
 
     /* Fine sand grain on light cards */
@@ -1223,6 +1283,12 @@
         radial-gradient(1px 1px at 86% 64%, rgba(17,20,24,.06), transparent 60%),
         radial-gradient(1px 1px at 24% 55%, rgba(17,20,24,.08), transparent 60%);
       background-size: 120px 120px;
+      z-index: 1;
+    }
+
+    @keyframes glowBar{
+      0%{ background-position:   0% 50%; }
+      100%{ background-position: 200% 50%; }
     }
 
     /* Disable hover lift for specific surfaces (e.g., email card). */
@@ -1247,18 +1313,109 @@
     /* ============================================================
        9) Work Cards Grid + Pills
        ============================================================ */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap:var(--space-4);
+    /* Work grid scoped so other grids remain unchanged */
+    #work .grid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
     }
 
-    .grid .card{
-      grid-column: auto;
-      padding:var(--space-4);
-      display:grid;
-      grid-template-rows: auto auto 1fr auto;
-      row-gap: 12px;
+    /* Two-column inside each work card: 1/3 copy, 2/3 media */
+    #work .grid .card{
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      grid-template-areas: "copy media";
+      align-items: center;
+      overflow: hidden;
+      gap: var(--space-lg);
+    }
+
+    #work .grid .card .card-copy{
+      grid-area: copy;
+      min-width: 0;
+      padding: var(--space-sm);
+    }
+    #work .grid .card .card-media{
+      grid-area: media;
+      width: auto;
+      height: 100%;
+      display: grid;
+      align-items: right;
+      position: relative;
+      overflow: visible;
+      min-height: 260px;
+      padding: 6px var(--space-lg) 0 var(--space-lg);
+    }
+
+    /* Stack fills its lane */
+    #work .grid .card .work-stack{
+      width: 100%;
+      margin: 0;
+    }
+
+    /* Alternate sides on even cards */
+    #work .grid .card:nth-child(even){
+      grid-template-columns: 2fr 1fr;
+      grid-template-areas: "media copy";
+    }
+
+    /* Switch to two-row layout at the medium breakpoint */
+    @media (max-width: var(--bp-md)){
+      #work .grid .card{
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "copy"
+          "media";
+        align-items: start;
+      }
+      #work .grid .card:nth-child(even){
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "copy"
+          "media";
+      }
+      #work .grid .card .card-copy{
+        padding: var(--space-lg);
+        min-width: var(--space-4xl);
+      }
+      #work .grid .card .card-media{
+        margin-top: 6px;
+        padding: 0;
+      }
+    }
+
+    /* Cards without media revert to single column */
+    #work .grid .card:not(:has(.card-media)){
+      grid-template-columns: 1fr;
+      grid-template-areas: "copy";
+    }
+
+    /* Mobile: stack copy over media */
+    @media (max-width: var(--bp-sm)){
+      #work .grid .card{
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "copy"
+          "media";
+        align-items: start;
+      }
+
+      #work .grid .card:nth-child(even){
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "copy"
+          "media";
+      }
+
+      #work .grid .card .card-media{
+        margin-top: 6px;
+      }
+
+      #work .grid .card:not(:has(.card-media)){
+        grid-template-columns: 1fr;
+        grid-template-areas: "copy";
+      }
     }
 
     .card h3{
@@ -1286,7 +1443,7 @@
 
     .work-embed{
       position: relative;
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       overflow: hidden;
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
@@ -1333,43 +1490,97 @@
 
     /* Stacked gallery “on the desk” look */
     .work-stack{
-      --stack-base: min(96%, 680px);
+      /*
+        Responsive sizing rules:
+        - In-card: fill the card width, but never exceed --stack-max.
+        - Stack sizing is controlled by the stage element, not by the viewport.
+      */
       position: relative;
-      height: clamp(180px, 24vw, 240px);
-      width: 100%;
-      max-width: 100%;
-      margin: 12px 0 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: min(100%, var(--stack-max));
+      margin: 12px auto 0;
+      display: grid;
+      place-items: center;
       cursor: pointer;
       outline: none;
-      overflow: hidden;
+      overflow: visible;
       z-index: 1;
+
       transition: opacity .35s ease, transform .45s cubic-bezier(.4,-0.2,.2,1);
+
+      /* Stage ratio token (default): 16" MacBook Pro screenshot ratio (3456×2234 = 1728×1117) */
+      --stack-ratio: 1728 / 1117;
+
+      /* Overlay sizing tokens (safe defaults; can be overridden per-stack) */
+      --stack-overlay-max: 1100px;
+      --stack-overlay-gutter: clamp(14px, 4vw, 28px);
+    }
+
+    /* Modifier: make a stack never exceed its container/card width */
+    .work-stack--fit{
+      --stack-max: 100%;
     }
     .work-stack-stage{
       position: relative;
-      width: var(--stack-base);
-      height: clamp(220px, 28vw, 320px);
-      margin: 0 auto;
+
+      /*
+        Establish a real, stable box for the absolutely-positioned images.
+        This prevents “mystery” sizing at iPad landscape widths and reduces
+        Safari orientation/layout jitter.
+      */
+      width: 100%;
+      aspect-ratio: var(--stack-ratio, 1728 / 1117);
+      min-height: 0;
+
+      /* Allow rotated screenshots to extend past the stage box (keeps the “stack” look). */
+      overflow: visible;
+
+      /* Stage rounding is only for visual reference; images have their own rounding */
+      border-radius: 10px;
+
+      /* Shadow belongs to the stage so it stays consistent across images */
       filter: drop-shadow(0 6px 14px rgba(0,0,0,.10)) drop-shadow(0 2px 5px rgba(0,0,0,.05));
     }
     .work-stack.is-overlay{
-      --stack-base: min(78vw, 1100px);
+      /* Overlay mode: the wrapper fills the viewport; the stage gets the size */
       position: fixed;
       inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
       width: 100vw;
       height: 100vh;
+      max-width: none;
       margin: 0;
       overflow: visible;
       z-index: 120;
       background: transparent;
     }
-    .work-stack.is-overlay img{
+    @supports (height: 100dvh){
+      .work-stack.is-overlay{
+        width: 100dvw;
+        height: 100dvh;
+      }
+    }
+    .work-stack.is-overlay .work-stack-stage{
+      /*
+        Overlay mode: size the stage to the viewport minus a gutter.
+        This avoids hard caps like 92vw that can behave oddly on small screens.
+      */
+      width: min(calc(100vw - (2 * var(--stack-overlay-gutter))), var(--stack-overlay-max));
+      aspect-ratio: var(--stack-ratio, 1728 / 1117);
+      min-height: min(640px, calc(100vh - (2 * var(--stack-overlay-gutter))));
+    }
+    @supports (width: 100dvw){
+      .work-stack.is-overlay .work-stack-stage{
+        width: min(calc(100dvw - (2 * var(--stack-overlay-gutter))), var(--stack-overlay-max));
+      }
+    }
+
+    @supports (height: 100dvh){
+      .work-stack.is-overlay .work-stack-stage{
+        min-height: min(640px, calc(100dvh - (2 * var(--stack-overlay-gutter))));
+      }
+    }
+    .work-stack.is-overlay .work-stack-stage img{
       border-radius: 9px;
       box-shadow:
         0 16px 40px rgba(0,0,0,.18),
@@ -1381,60 +1592,297 @@
       transform: translateY(12px) scale(1);
       pointer-events: none;
     }
-    .work-stack img{
-      height: 100%;
+    .work-stack-stage img{
       position: absolute;
-      left: 50%;
-      top: 50%;
-      width: auto;
-      max-width: 100%;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       border-radius: 3px;
       box-shadow:
         0px 1px 2px 0px rgba(60, 64, 67, 0.30),
         0px 1px 3px 1px rgba(60, 64, 67, 0.15);
       border: 1px solid rgba(var(--text-rgb), 0.06);
       background: transparent;
-      object-fit: contain;
-      transition: transform .28s ease, box-shadow .28s ease, width .28s ease;
+      object-fit: contain !important;
+      transition: transform .28s ease, box-shadow .28s ease;
       transform-origin: center;
-      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(var(--scale, 1));
+      transform: rotate(var(--rot, 0deg)) scale(var(--scale, 1));
       z-index: var(--z, 1);
     }
-    .work-stack img.is-top{
+    .work-stack-stage img.is-top{
       --scale: 1;
       box-shadow:
         0px 1px 2px 0px rgba(60, 64, 67, 0.30),
         0px 1px 3px 1px rgba(60, 64, 67, 0.15);
     }
-    .work-stack img:focus-visible{
+    .work-stack-stage img:focus-visible{
       outline: 3px solid rgba(var(--focus-ring-rgb), 0.45);
       outline-offset: 4px;
     }
     @media (max-width: var(--bp-sm)){
       .work-stack{
-        --stack-base: 100%;
-        height: auto;
-        display: grid;
-        gap: 10px;
-        width: 100%;
-        margin: 12px 0 0;
+        /* Mobile: same sizing logic (fill available width), just relax margins */
+        width:100%;
+      max-width: var(--stack-max) !important;
+      margin: 12px auto 0;
+      display: grid;
+      place-items: center;
+      object-fit: contain !important;
+    }
+      .work-stack-stage{
+        min-height: 240px;
       }
-      .work-stack img{
-        height: 100%;
-        max-width: 100%;
-        position: relative;
-        width: auto;
-        transform: none;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
+    .work-stack-stage img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain !important;
+        position: absolute;
+        inset: 0;
+        transform: rotate(var(--rot, 0deg)) scale(var(--scale, 1));
+        transform-origin: center;
         box-shadow:
           0 8px 22px rgba(0,0,0,.18),
           0 2px 6px rgba(0,0,0,.12);
       }
+      /* Overlay stack on mobile: keep the stage comfortably inside the viewport */
+      .work-stack.is-overlay .work-stack-stage{
+        width: min(calc(100vw - (2 * var(--stack-overlay-gutter))), var(--stack-overlay-max));
+      }
     }
 
+    /* Mosaic preview for work cards */
+    .work-mosaic{
+      position: absolute;
+      inset: 0;
+      overflow: visible;
+      pointer-events: auto; /* allow clicking thumbs for spotlight */
+      border-radius: 12px;
+      isolation: isolate;
+      touch-action: manipulation;
+    }
+    .work-mosaic__tiles{
+      position: absolute;
+      overflow: visible;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      /* column width scales with the card width but stays within sensible bounds */
+      --mosaic-col: clamp(90px, 12vw, 150px);
+      display: grid;
+grid-auto-flow: column;
+      grid-auto-columns: minmax(var(--mosaic-col), 1fr);
+      gap: 10px;
+      padding: 18px;
+      transform: translate3d(0,0,0);
+      opacity: 1;
+      z-index: 1;
+    }
+    .work-mosaic__tiles::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,.15));
+      pointer-events:none;
+      z-index: 2;
+    }
+    .work-mosaic__tiles img{
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      border-radius: 5px;
+      border: 2px; solid rgba(var(--text-rgb), 0.08);
+      cursor: pointer;
+      transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,.12);
+    }
+    .work-mosaic__tiles img:hover{
+      transform: scale(1.05);
+      box-shadow:
+        0 14px 32px rgba(var(--accent-rare-rgb, 136, 110, 255), 0.26),
+        0 4px 12px rgba(0,0,0,.16);
+      filter: saturate(1.04);
+      overflow:visible
+    }
+    .work-mosaic__col{
+      position: relative;
+      overflow: visible; /* let per-image glows breathe across the gaps */
+      z-index: 1;
+    }
+    .work-mosaic__loop{
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      will-change: transform;
+      transform: translateZ(0);
+      animation-duration: 120s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    @keyframes driftUp{ from{transform:translateY(0);} to{transform:translateY(-50%);} }
+    @keyframes driftDown{ from{transform:translateY(-50%);} to{transform:translateY(0);} }
+    .work-mosaic__col.col-a .work-mosaic__loop{ animation-name: driftUp; animation-duration: 120s; animation-delay: -30s; }
+    .work-mosaic__col.col-b .work-mosaic__loop{ animation-name: driftDown; animation-duration: 360s; animation-delay: -90s; }
+    .work-mosaic__col.col-c .work-mosaic__loop{ animation-name: driftUp; animation-duration: 165s; animation-delay: -60s; }
+    @media (prefers-reduced-motion: reduce){
+      .work-mosaic__loop{ animation: none; }
+    }
+    /* Spotlight overlay when a thumb is clicked */
+    .work-mosaic-overlay{
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      z-index: 160;
+      background: rgba(0,0,0,0.24);
+      backdrop-filter: blur(10px) saturate(1.02);
+      -webkit-backdrop-filter: blur(10px) saturate(1.02);
+      opacity: 0;
+      transition: opacity .22s ease;
+      padding: clamp(14px, 4vw, 26px);
+    }
+    .work-mosaic-overlay.is-open{
+      display: grid;
+      opacity: 1;
+    }
+    .work-mosaic-modal{
+      position: relative;
+      width: min(92vw, 1200px);
+      max-height: 95vh;
+      background: #ffffff;
+      border-radius: 14px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: visible; /* allow nav buttons to sit at the frame edge */
+      isolation: isolate;
+      box-shadow:
+        0 28px 62px rgba(0,0,0,.24),
+        0 12px 28px rgba(0,0,0,.16),
+        0 0 0 1px rgba(0,0,0,0.06);
+    }
+    /* animated glow border, filled rectangle (inspired by referenced effect) */
+    .work-mosaic-modal::before{
+      content:"";
+      position:absolute;
+      inset:-8px;
+      background: conic-gradient(
+        from 0deg,
+        rgba(var(--accent-rare-rgb,136,110,255),0.55),
+        rgba(var(--primary-rgb,24,92,255),0.35),
+        rgba(255,255,255,0.35),
+        rgba(var(--accent-rare-rgb,136,110,255),0.55)
+      );
+      filter: blur(8px);
+      z-index: 0;
+      opacity: 0.7;
+    }
+    .work-mosaic-modal::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: #ffffff,rgba(var(--primary-rgb), 0.25);
+      border-radius: 14px;
+      z-index: 1;
+    }
+    .work-mosaic-modal__head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-xs) var(--space-sm);
+      background: 
+        rgba(var(--primary-rgb,24,92,255),0.06);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+      z-index: 2;
+    }
+    header.work-mosaic-modal__head{ 
+      margin: 0; 
+    }
+    .work-mosaic-nav{
+      position: absolute;
+      top: 50%;
+      width: 42px;
+      height: 42px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(0,0,0,0.08);
+      display: grid;
+      place-items: center;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      z-index: 3;
+    }
+    .work-mosaic-nav:hover{
+      box-shadow:
+        0 14px 30px rgba(0,0,0,0.22),
+        0 0 0 1px rgba(var(--accent-rare-rgb,136,110,255),0.35);
+    }
+    .work-mosaic-nav svg{
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      color: rgba(30,30,30,0.9);
+    }
+    .work-mosaic-nav.is-prev{
+      left: 0;
+      transform: translate(-50%, -50%);
+    }
+    .work-mosaic-nav.is-next{
+      left: 100%;
+      transform: translate(-50%, -50%);
+    }
+    .work-mosaic-title{
+      margin: 0;
+      font-weight: 700;
+      font-size: var(--type-h3, 22px);
+      line-height: 1.2;
+      color: var(--text, #1e1e1e);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .work-mosaic-close{
+      position: relative;
+      z-index: 2;
+    }
+    .work-mosaic-overlay__figure{
+      margin: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      object-fit: contain;
+      height: 100%;
+      width: 100%;
+      max-height: 100%;
+      max-width: 100%;
+      padding: var(--space-xs);
+      object-position: top center;
+      z-index: 2;
+    }
+    .work-mosaic-overlay__figure img{
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+    .work-see-more{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 2;
+      pointer-events: auto;
+      transition: none;
+    }
+    .work-see-more{ display: none !important; }
     .stack-dismiss{
       position: absolute;
       left: calc(100% + 10px);
@@ -1650,10 +2098,10 @@
 
     /* Case Studies card */
     .case-studies-card{
-      margin: var(--space-4) 0 0;
+      margin: var(--space-lg) 0 0;
       padding: clamp(12px, 3vw, 32px);
       display: grid;
-      gap: var(--space-1);
+      gap: var(--space-xs);
     }
     .case-studies-card h3{
       margin: 0;
@@ -1661,23 +2109,234 @@
     }
     .case-grid{
       display: grid;
-      gap: var(--space-4);
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-xl);
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .case-item{
+      background: linear-gradient(180deg,
+        rgba(var(--surface-card-rgb), 1),
+        rgba(var(--surface-card-rgb), 0.94));
+      border-radius: 14px;
+      border: 1px solid rgba(var(--border, #DAD5CE), 0.6);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.08);
+      padding: var(--space-md);
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      gap: var(--space-sm);
+      align-content: start;
     }
     .case-item h4{
-      margin: 0 0 6px;
-      font-size: var(--type-body);
+      margin: 0;
+      font-size: var(--type-h4, 20px);
       font-weight: 700;
     }
-    .case-item p{
+    .case-type{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(var(--text-rgb),0.06);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.08px;
+      margin-left: var(--space-xs);
+    }
+    .case-one{
+      margin: 4px 0;
+      font-size: var(--type-body, 16px);
+      line-height: 1.4;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .case-meta{
       margin: 0;
       color: var(--text-muted);
-      line-height: 1.6;
+      font-size: 14px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .case-chips{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .case-chips li{
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(var(--text-rgb),0.05);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .case-outcome{
+      margin: 0;
+      color: var(--text);
+      line-height: 1.45;
+      font-weight: 600;
+    }
+    /* Case stage (Variation A: pinned cover + ambient ribbon) */
+    .case-stage{
+      position: relative;
+      margin-top: var(--space-md);
+      border-radius: var(--radius-lg);
+      background: radial-gradient(120% 140% at 20% 10%, rgba(255,255,255,0.9), rgba(255,255,255,0.85)),
+        linear-gradient(145deg, rgba(0,0,0,0.04), rgba(0,0,0,0.02));
+      box-shadow: 0 18px 44px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+      overflow: hidden;
+      isolation: isolate;
+      padding: var(--space-md);
+      transition: transform .24s ease, box-shadow .24s ease;
+      cursor: pointer;
+    }
+    .case-stage__mat{
+      position: relative;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.88));
+      overflow: hidden;
+      min-height: 260px;
+      padding: var(--space-sm);
+      perspective: 1200px;
+    }
+    .case-ribbons{
+      position:absolute;
+      inset: var(--space-sm);
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      opacity:0.32;
+      pointer-events:none;
+    }
+    .case-ribbon-row{
+      display:flex;
+      gap:10px;
+      min-height: calc(var(--cover-height, 280px) * 0.5);
+      height: calc(var(--cover-height, 280px) * 0.5);
+      animation-duration: 90s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      will-change: transform;
+    }
+    .case-ribbon-row.row-a{ animation-name: caseRibbonLeft; }
+    .case-ribbon-row.row-b{ animation-name: caseRibbonRight; animation-duration: 110s; }
+    .case-ribbon-row.row-c{ animation-name: caseRibbonLeft; animation-duration: 100s; }
+    .case-ribbon-row img{
+      height: calc(var(--cover-height, 280px) * 0.5);
+      width:auto;
+      border-radius: var(--radius-sm);
+      object-fit: contain;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
+    @keyframes caseRibbonLeft{
+      from{ transform: translateX(0); }
+      to{ transform: translateX(-50%); }
+    }
+    @keyframes caseRibbonRight{
+      from{ transform: translateX(-50%); }
+      to{ transform: translateX(0); }
+    }
+    .case-cover{
+      position: relative;
+      z-index: 2;
+      width: min(92%, 560px);
+      margin: 0 auto;
+      border-radius: var(--radius-md);
+      box-shadow:
+        0 16px 36px rgba(0,0,0,0.14),
+        0 6px 14px rgba(0,0,0,0.10),
+        0 0 0 1px rgba(0,0,0,0.04);
+      overflow: hidden;
+      background: #fff;
+      transform: translateZ(0);
+      transform-style: preserve-3d;
+      --tiltX: 0deg;
+      --tiltY: 0deg;
+      --panX: 0px;
+      --panY: 0px;
+      transition: transform .18s ease, box-shadow .18s ease;
+      /* Provide a reference height for ribbon rows (50%) */
+      --cover-height: 0px;
+    }
+    .case-cover img{
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      /* actual rendered height captured via JS to drive ribbon sizing */
+      max-height: min(320px, 60vh);
+    }
+    .case-cover__label{
+      position: absolute;
+      left: var(--space-sm);
+      top: var(--space-sm);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(var(--primary-rgb), 0.12);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12px;
+      backdrop-filter: blur(6px);
+    }
+    .case-cta{
+      margin-top: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .case-cta .fine{
+      margin: 0;
+      color: var(--text-muted);
+    }
+    .case-tags{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: var(--space-sm) 0 0;
+    }
+    .case-tag{
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(var(--text-rgb), 0.06);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .case-stage:hover{
+      transform: translateY(-4px);
+      box-shadow:
+        0 26px 60px rgba(0,0,0,0.16),
+        0 10px 24px rgba(0,0,0,0.08),
+        0 0 0 1px rgba(0,0,0,0.06);
+    }
+    @media (max-width: var(--bp-sm)){
+      .case-ribbon__track{
+        grid-auto-columns: 120px;
+        padding: 14px;
+        animation-duration: 160s;
+      }
+      .case-cover{
+        width: 100%;
+      }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .case-ribbon-row{
+        animation: none;
+      }
     }
     .case-stack{
       position: relative;
       height: 200px;
-      margin-bottom: var(--space-3);
+      margin-bottom: var(--space-lg);
     }
     .case-stack img{
       position: absolute;
@@ -1991,7 +2650,7 @@
     /* ============================================================
        10) Callouts (shared spacing)
        ============================================================ */
-    .callout{ padding:var(--space-4); }
+    .callout{ padding:var(--space-lg); }
     .callout > h3{ margin:0 0 8px; }
     .callout > p{ margin:0; }
 
@@ -2168,7 +2827,7 @@
     .about-grid{
       display:grid;
       grid-template-columns: 1fr;
-      gap:var(--space-4);
+      gap:var(--space-lg);
     }
 
     .about-h3{
@@ -2182,25 +2841,25 @@
     .help-split{
       display:none;
       grid-template-columns: 1fr;
-      gap:var(--space-4);
+      gap:var(--space-lg);
       align-items:start;
     }
 
     .help-list{
       display:grid;
-      gap:var(--space-3);
+      gap:var(--space-md);
     }
 
     .help-item{
       text-align:left;
       width:100%;
       border:1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       background: linear-gradient(180deg,
         var(--card-top),
         var(--card-bottom));
       box-shadow: var(--shadow);
-      padding:var(--space-4);
+      padding:var(--space-lg);
       cursor:pointer;
       transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease, opacity .2s ease, background .2s ease;
       position:relative;
@@ -2265,7 +2924,7 @@
 
     .help-detail{
       border:1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       background: linear-gradient(180deg,
         var(--card-top),
         var(--card-bottom));
@@ -2287,7 +2946,7 @@
       opacity:.55;
     }
 
-    .help-detail-inner{ padding:var(--space-4); }
+    .help-detail-inner{ padding:var(--space-lg); }
 
     .help-detail-head h3{
       margin:0 0 6px;
@@ -2330,12 +2989,12 @@
 
     .help-accordion details{
       border:1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       background: linear-gradient(180deg,
         var(--card-top),
         var(--card-bottom));
       box-shadow: var(--shadow);
-      padding:var(--space-3) var(--space-4);
+      padding:var(--space-md) var(--space-lg);
       margin-bottom:12px;
       overflow:hidden;
     }
@@ -2381,7 +3040,7 @@
       padding: 0;
       border: 0;
       background: transparent;
-      cursor: pointer;
+      cursor: default;
       outline: none;
       overflow: visible;
       --split: 0px;
@@ -2470,6 +3129,7 @@
       border-radius: 0;
       opacity: var(--paper-opacity);
       pointer-events:none;
+      cursor: default;
       transition: opacity .4s ease, transform .55s ease;
       filter: drop-shadow(0 6px 10px rgba(17,20,24,.12));
       z-index: 1;
@@ -2496,6 +3156,7 @@
       font-weight: 200;
       letter-spacing: .1px;
       text-shadow: 0 1px 0 rgba(255,255,255,.35);
+      cursor: default;
     }
 
     .crumbs{
@@ -2567,7 +3228,7 @@
 
     .schedule-grid{
       display:grid;
-      gap: var(--space-4);
+      gap: var(--space-lg);
       grid-template-columns: 1fr;
       align-items: stretch;
     }
@@ -2591,7 +3252,7 @@
       -webkit-appearance:none;
       appearance:none;
       border: 0;
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       background:
         radial-gradient(circle at 20% -20%, rgba(var(--primary-rgb),0.14), transparent 45%),
         linear-gradient(180deg, rgba(var(--surface-card-rgb),0.95), rgba(var(--surface-card-rgb),0.9));
@@ -2652,7 +3313,7 @@
     .schedule-card:focus-visible{
       outline: 3px solid var(--focus-outline-strong);
       outline-offset: 3px;
-      border-radius: calc(var(--radius) + 2px);
+      border-radius: calc(var(--radius-md) + 2px);
     }
 
     /* Nice micro-interaction for mouse users */
@@ -3042,10 +3703,10 @@
     /* XS: Mobile portrait */
     @media (max-width: var(--bp-xs)){
       :root{
-        --section-gap: var(--space-6);
+        --section-gap: var(--space-2xl);
         --type-h3: 22px;
       }
-      .wrap{ padding: 0 var(--space-3); }
+      .wrap{ padding: 0 var(--space-md); }
 
       header,
       .hero-actions,
@@ -3062,19 +3723,18 @@
         margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
       }
 
-      .schedule-grid{ gap: var(--space-3); }
-      .schedule-card{ padding: 18px 16px 16px; }
-
+      .schedule-grid{ gap: var(--space-lg); }
+      .schedule-card{ padding: var(--space-lg)}
       .fortune-wrap{ padding: 0; justify-content: center; }
     }
 
     /* SM: Mobile landscape / small */
     @media (min-width: calc(var(--bp-xs) + 1px)) and (max-width: var(--bp-sm)){
       :root{
-        --section-gap: var(--space-6);
+        --section-gap: var(--space-2xl);
         --type-h3: 24px;
       }
-      .wrap{ padding: 0 var(--space-3); }
+      .wrap{ padding: 0 var(--space-md); }
 
       header,
       .hero-actions,
@@ -3086,14 +3746,14 @@
         margin: calc(var(--hero-title-size) / 3) 28px var(--hero-title-size);
       }
 
-      .schedule-grid{ gap: var(--space-3); }
+      .schedule-grid{ gap: var(--space-md); }
 
       .fortune-wrap{ padding: 0; justify-content: center; }
     }
 
     /* MD: Tablet */
     @media (min-width: calc(var(--bp-sm) + 1px)) and (max-width: var(--bp-md)){
-      .wrap{ padding: var(--space-5); }
+      .wrap{ padding: var(--space-xl); }
 
       .subhead{ max-width: 66%; }
 
@@ -3118,7 +3778,7 @@
 
       .section-lede{ max-width: 72ch; }
       .subhead{ max-width: 55%; }
-      :root{ --section-gap: calc(var(--space-7) + 44px); }
+    :root{ --section-gap: calc(var(--space-3xl) + 44px); }
     }
 
     /* ============================================================
@@ -3139,12 +3799,12 @@
       .mt-16{ margin-top:16px; }
       .mb-8{ margin-bottom:8px; }
       .m-0{ margin:0; }
-      .flow-s > * + *{ margin-top: var(--space-2); }
-      .flow-m > * + *{ margin-top: var(--space-3); }
-      .flow-l > * + *{ margin-top: var(--space-4); }
-      .section-pad{ padding: var(--space-7) 0; }
+      .flow-s > * + *{ margin-top: var(--space-sm); }
+      .flow-m > * + *{ margin-top: var(--space-md); }
+      .flow-l > * + *{ margin-top: var(--space-lg); }
+      .section-pad{ padding: var(--space-3xl) 0; }
       @media (max-width: 720px){
-        .section-pad{ padding: var(--space-6) 0; }
+        .section-pad{ padding: var(--space-2xl) 0; }
       }
       .section-pad-bottom-100{ margin-bottom:0; padding-bottom:100px; }
       .section-pad-top-100{ margin-top:0; padding-top:100px; }
@@ -3273,47 +3933,103 @@
       </p>
 
       <div class="grid">
-        <article class="card surface">
-          <h3>BigIron</h3>
-          <p class="meta-line"><strong>Role:</strong> UX Consultant</p>
-          <p class="meta-line"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
-          <p class="meta-line"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
-          <div class="shot-stack" id="shotStack" data-shot-stack aria-label="Product screenshots">
-            <div class="shot-card">
-              <img src="assets/work/bigiron-stack-1.jpg" alt="Company snapshot and profile form screen" loading="lazy">
+        <article class="card surface stack-card">
+          <div class="card-copy">
+            <h3>BigIron</h3>
+            <p class="meta-line"><strong>Role:</strong> UX Consultant</p>
+            <p class="meta-line"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
+            <p class="meta-line"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
+          </div>
+          <div class="card-media">
+            <button class="btn ghost work-see-more" type="button" data-open-stack="#shotStack">See More</button>
+            <div class="work-mosaic" aria-hidden="true">
+              <div class="work-mosaic__tiles">
+                <div class="work-mosaic__col col-a">
+                  <div class="work-mosaic__loop">
+                    <img src="assets/work/bigiron-stack-1.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-2.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-3.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-4.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-5.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-1.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-2.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-3.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-4.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-5.jpg" alt="">
+                  </div>
+                </div>
+                <div class="work-mosaic__col col-b">
+                  <div class="work-mosaic__loop">
+                    <img src="assets/work/bigiron-stack-3.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-5.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-1.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-4.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-2.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-3.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-5.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-1.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-4.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-2.jpg" alt="">
+                  </div>
+                </div>
+                <div class="work-mosaic__col col-c">
+                  <div class="work-mosaic__loop">
+                    <img src="assets/work/bigiron-stack-2.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-4.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-1.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-5.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-3.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-2.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-4.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-1.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-5.jpg" alt="">
+                    <img src="assets/work/bigiron-stack-3.jpg" alt="">
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="shot-card">
-              <img src="assets/work/bigiron-stack-2.jpg" alt="Individual profile edit form screen" loading="lazy">
-            </div>
-            <div class="shot-card">
-              <img src="assets/work/bigiron-stack-3.jpg" alt="Attachments upload screen" loading="lazy">
-            </div>
-            <div class="shot-card">
-              <img src="assets/work/bigiron-stack-4.jpg" alt="Items table view screen" loading="lazy">
-            </div>
-            <div class="shot-card">
-              <img src="assets/work/bigiron-stack-5.jpg" alt="Logistics locations screen" loading="lazy">
-            </div>
-            <div class="shot-card is-cap">
-              <img data-shot-cap-img src="" alt="" loading="lazy">
-              <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+            
+        <div class="shot-stack" id="shotStack" data-shot-stack aria-label="Product screenshots" style="display:none;">
+          <div class="shot-card">
+            <img src="assets/work/bigiron-stack-1.jpg" alt="Company snapshot and profile form screen" loading="lazy">
+              </div>
+              <div class="shot-card">
+                <img src="assets/work/bigiron-stack-2.jpg" alt="Individual profile edit form screen" loading="lazy">
+              </div>
+              <div class="shot-card">
+                <img src="assets/work/bigiron-stack-3.jpg" alt="Attachments upload screen" loading="lazy">
+              </div>
+              <div class="shot-card">
+                <img src="assets/work/bigiron-stack-4.jpg" alt="Items table view screen" loading="lazy">
+              </div>
+              <div class="shot-card">
+                <img src="assets/work/bigiron-stack-5.jpg" alt="Logistics locations screen" loading="lazy">
+              </div>
+              <div class="shot-card is-cap">
+                <img data-shot-cap-img src="" alt="" loading="lazy">
+                <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+              </div>
             </div>
           </div>
         </article>
         <article class="card surface">
-          <h3>Cedar Bluff Tech</h3>
-          <p class="meta-line"><strong>Role:</strong> UX Consultant &amp; Designer</p>
-          <p class="meta-line"><strong>Scope:</strong> Built the brand system from scratch, including logo and guidelines. Shaped the story, positioning, and experience direction for the parent brand and then applied the same foundation to their flagship software.</p>
-          <p class="meta-line"><strong>Outcome:</strong> Humanized and unified the product story across product, marketing, and investor communication, supporting pitch wins, fundraising, and pilot recruitment.</p>
-          <p class="meta-line"><strong>Output:</strong> Brand guidelines, product design system, marketing collateral, investor pitch deck.</p>
+          <div class="card-copy">
+            <h3>Cedar Bluff Tech</h3>
+            <p class="meta-line"><strong>Role:</strong> UX Consultant &amp; Designer</p>
+            <p class="meta-line"><strong>Scope:</strong> Built the brand system from scratch, including logo and guidelines. Shaped the story, positioning, and experience direction for the parent brand and then applied the same foundation to their flagship software.</p>
+            <p class="meta-line"><strong>Outcome:</strong> Humanized and unified the product story across product, marketing, and investor communication, supporting pitch wins, fundraising, and pilot recruitment.</p>
+            <p class="meta-line"><strong>Output:</strong> Brand guidelines, product design system, marketing collateral, investor pitch deck.</p>
+          </div>
         </article>
 
         <article class="card surface">
-          <h3>Moss Rock Ranch</h3>
-          <p class="meta-line"><strong>Role:</strong> Brand Strategist</p>
-          <p class="meta-line"><strong>Scope:</strong> Built the brand foundation and guidelines, clarified purpose and voice, defined audience segments, and created a reusable messaging system the team can apply across channels.</p>
-          <p class="meta-line"><strong>Outcome:</strong> Clarified what made the brand distinct and gave the owners a repeatable way to express it, so every channel reinforced the same story instead of competing with itself.</p>
-          <p class="meta-line"><strong>Output:</strong> Messaging framework, audience personas, channel playbook, brand guidelines.</p>
+          <div class="card-copy">
+            <h3>Moss Rock Ranch</h3>
+            <p class="meta-line"><strong>Role:</strong> Brand Strategist</p>
+            <p class="meta-line"><strong>Scope:</strong> Built the brand foundation and guidelines, clarified purpose and voice, defined audience segments, and created a reusable messaging system the team can apply across channels.</p>
+            <p class="meta-line"><strong>Outcome:</strong> Clarified what made the brand distinct and gave the owners a repeatable way to express it, so every channel reinforced the same story instead of competing with itself.</p>
+            <p class="meta-line"><strong>Output:</strong> Messaging framework, audience personas, channel playbook, brand guidelines.</p>
+          </div>
         </article>
       </div>
       <div class="surface case-studies-card">
@@ -3322,11 +4038,64 @@
           <p class="fine">Three quick snapshots from recent work—what the team needed, what we delivered, and what changed.</p>
         </div>
         <div class="case-grid">
-          <div class="case-item">
-            <h4>Octagon Wildlife Sanctuary Site</h4>
-            <p>Led a UX redesign of a wildlife sanctuary website, simplifying navigation and the donation flow so visitors could plan a trip and contribute with confidence.</p>
+          <div class="case-item" data-case-card>
+            <header class="case-head">
+              <h4>Octagon Wildlife Sanctuary</h4>
+              <span class="case-type">Web Redesign</span>
+            </header>
+            <p class="case-outcome"><strong>Outcome:</strong> Rebuilt a trust-first booking path that drives tours, donations, and fewer support questions.</p>
 
-            <div class="shot-stack" data-shot-stack aria-label="Case Study screenshots: Octagon Wildlife Sanctuary">
+            <div class="case-stage" data-open-stack="#wildlifeStack" aria-label="Open Octagon Wildlife case study slides">
+              <div class="case-stage__mat">
+                <div class="case-ribbons" aria-hidden="true">
+                  <div class="case-ribbon-row row-a">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-03.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-04.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-05.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-06.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-07.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-08.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-09.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-10.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-11.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-12.jpg" alt="" loading="lazy">
+                  </div>
+                  <div class="case-ribbon-row row-b">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-13.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-14.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-15.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-16.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-03.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-04.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-05.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-06.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-07.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-08.jpg" alt="" loading="lazy">
+                  </div>
+                  <div class="case-ribbon-row row-c">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-09.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-10.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-11.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-12.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-13.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-14.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-15.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-16.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-03.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/wildlife/wildlife-stack-04.jpg" alt="" loading="lazy">
+                  </div>
+                </div>
+                <div class="case-cover">
+                  <img src="assets/case_studies/wildlife/wildlife-stack-02.jpg" alt="Slide 1 cover – Octagon Wildlife Sanctuary deck" loading="lazy">
+                  <span class="case-cover__label">UX redesign · Web + Mobile</span>
+                </div>
+              </div>
+              <div class="case-cta">
+                <button class="btn" type="button" data-open-stack="#wildlifeStack">Open case study</button>
+              </div>
+            </div>
+            <!-- Hidden stack for overlay viewer reuse -->
+            <div class="shot-stack" id="wildlifeStack" data-shot-stack aria-label="Case Study screenshots: Octagon Wildlife Sanctuary" style="display:none;">
               <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-02.jpg" alt=""></div>
               <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-03.jpg" alt=""></div>
               <div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-04.jpg" alt=""></div>
@@ -3348,47 +4117,151 @@
               </div>
             </div>
           </div>
-          <div class="case-item">
-            <h4>Flix'n'Feast App</h4>
-            <p class="meta-line"><strong>App Comcept:</strong> A date-night concierge app concept that turns “what do you want to eat/watch?” from a 45-minute debate into a 2-minute decision.</p>
-            <p class="meta-line"><strong>Role:</strong> I led a lean UX process, ran interviews + a survey, synthesized insights into a core persona and journey map, then translated findings into a clear value proposition: collaborative decision-making with personalized movie-and-meal pairings.</p>
-            <p class="meta-line"><strong>Output:</strong> A research-backed concept with defined user flows, prioritized features, and a storyboarded end-to-end experience ready for prototyping and testing.</p>
-          <div class="shot-stack" data-shot-stack aria-label="Case Study screenshots: Flix'n'Feast App">
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-17.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-18.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-19.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-20.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-21.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-22.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-23.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-24.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-25.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-26.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-27.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-28.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-29.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-30.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-31.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-32.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-33.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-34.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-35.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-36.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-37.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-38.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-39.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-40.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-41.jpg" alt=""></div>
-            <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-42.jpg" alt=""></div>
-            <div class="shot-card is-cap">
-              <img data-shot-cap-img src="" alt="" loading="lazy">
-              <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+          <div class="case-item" data-case-card>
+            <header class="case-head">
+              <h4>Flix &amp; Feast</h4>
+              <span class="case-type">Concept</span>
+            </header>
+            <p class="case-outcome"><strong>Outcome:</strong> Clarified the wedge as “alignment,” not recommendations, with a tight lock-in flow.</p>
+            <div class="case-stage" data-open-stack="#flixStack" aria-label="Open Flix'n'Feast case study slides">
+              <div class="case-stage__mat">
+                <div class="case-ribbons" aria-hidden="true">
+                  <div class="case-ribbon-row row-a">
+                    <img src="assets/case_studies/flix/flix-stack-18.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-19.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-20.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-21.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-22.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-23.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-24.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-25.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-26.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-27.jpg" alt="" loading="lazy">
+                  </div>
+                  <div class="case-ribbon-row row-b">
+                    <img src="assets/case_studies/flix/flix-stack-28.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-29.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-30.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-31.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-32.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-33.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-34.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-35.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-36.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-37.jpg" alt="" loading="lazy">
+                  </div>
+                  <div class="case-ribbon-row row-c">
+                    <img src="assets/case_studies/flix/flix-stack-38.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-39.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-40.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-41.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-42.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-18.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-19.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-20.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-21.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flix/flix-stack-22.jpg" alt="" loading="lazy">
+                  </div>
+                </div>
+                <div class="case-cover">
+                  <img src="assets/case_studies/flix/flix-stack-17.jpg" alt="Slide 1 cover – Flix'n'Feast deck" loading="lazy">
+                  <span class="case-cover__label">Product concept · Web + Mobile</span>
+                </div>
+              </div>
+              <div class="case-cta">
+                <button class="btn" type="button" data-open-stack="#flixStack">Open case study</button>
+              </div>
+            </div>
+            <!-- Hidden stack for overlay viewer reuse -->
+            <div class="shot-stack" id="flixStack" data-shot-stack aria-label="Case Study screenshots: Flix'n'Feast App" style="display:none;">
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-17.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-18.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-19.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-20.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-21.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-22.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-23.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-24.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-25.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-26.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-27.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-28.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-29.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-30.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-31.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-32.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-33.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-34.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-35.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-36.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-37.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-38.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-39.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-40.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-41.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flix/flix-stack-42.jpg" alt=""></div>
+              <div class="shot-card is-cap">
+                <img data-shot-cap-img src="" alt="" loading="lazy">
+                <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+              </div>
             </div>
           </div>
+          <div class="case-item" data-case-card>
+            <header class="case-head">
+              <h4>FL Urban Agriculture</h4>
+              <span class="case-type">Brand + Web</span>
+            </header>
+            <p class="case-one">Codified an early brand foundation and shaped an initial web presence strategy.</p>
+            <p class="case-meta">UX Strategist + Brand/Content • 3-person team • 2 weeks</p>
+            <ul class="case-chips" aria-label="What I did">
+              <li>Brand system</li><li>Messaging</li><li>Web structure</li>
+            </ul>
+            <p class="case-outcome"><strong>Outcome:</strong> A more cohesive identity and clearer “what we do + how to help” story.</p>
+
+            <div class="case-stage" data-open-stack="#flagrStack" aria-label="Open Flagr case study slides">
+              <div class="case-stage__mat">
+                <div class="case-ribbons" aria-hidden="true">
+                  <div class="case-ribbon-row row-a">
+                    <img src="assets/case_studies/flagr/flagr-stack-44.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-45.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-46.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-47.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-48.jpg" alt="" loading="lazy">
+                  </div>
+                  <div class="case-ribbon-row row-b">
+                    <img src="assets/case_studies/flagr/flagr-stack-49.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-50.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-51.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-52.jpg" alt="" loading="lazy">
+                    <img src="assets/case_studies/flagr/flagr-stack-44.jpg" alt="" loading="lazy">
+                  </div>
+                </div>
+              <div class="case-cover">
+                <img src="assets/case_studies/flagr/flagr-stack-43.jpg" alt="Slide 1 cover – Flagr case study deck" loading="lazy">
+                <span class="case-cover__label">Analytics rollout · Web</span>
+              </div>
+            </div>
+            <div class="case-cta">
+              <button class="btn" type="button" data-open-stack="#flagrStack">Open case study</button>
+            </div>
           </div>
-          <div class="case-item">
-            <h4>Moss Rock Ranch</h4>
-            <p>Created a repeatable messaging and audience framework so every channel reinforced the same promise, not competing narratives.</p>
+            <!-- Hidden stack for overlay viewer reuse -->
+            <div class="shot-stack" id="flagrStack" data-shot-stack aria-label="Case Study screenshots: Flagr" style="display:none;">
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-43.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-44.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-45.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-46.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-47.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-48.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-49.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-50.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-51.jpg" alt=""></div>
+              <div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-52.jpg" alt=""></div>
+              <div class="shot-card is-cap">
+                <img data-shot-cap-img src="" alt="" loading="lazy">
+                <button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -4967,13 +5840,271 @@
       scheduleIdle();
     })();
 
+    /* See More -> open shot stack overlay */
+    (function initSeeMoreButtons(){
+      const buttons = Array.from(document.querySelectorAll("[data-open-stack]"));
+      buttons.forEach(btn => {
+        const targetSel = btn.getAttribute("data-open-stack");
+        const target = document.querySelector(targetSel);
+        if (!target) return;
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          target.dispatchEvent(new Event("click", { bubbles: true }));
+          // if stack is hidden (for mosaic mode), show it before triggering
+          target.style.display = "";
+        });
+      });
+    })();
+
+    /* Mosaic preview: JS parallax disabled (CSS handles the infinite drift) */
+    (function initMosaicParallax(){
+      // The new looping columns are pure-CSS; keep JS out to avoid hover jitter.
+      return;
+    })();
+
+    /* Mosaic spotlight: click a thumb to pause its column and view it large */
+    (function initMosaicSpotlight(){
+      const overlay = document.createElement("div");
+      overlay.className = "work-mosaic-overlay";
+      overlay.innerHTML = `
+        <div class="work-mosaic-modal" role="dialog" aria-modal="true">
+          <header class="work-mosaic-modal__head">
+            <p class="work-mosaic-title"></p>
+            <button type="button" class="work-mosaic-close btn ghost" aria-label="Close image">Close</button>
+          </header>
+          <figure class="work-mosaic-overlay__figure">
+            <img alt="">
+          </figure>
+          <button type="button" class="work-mosaic-nav is-prev" aria-label="Previous image">
+            <svg viewBox="0 0 24 24"><path d="M15.6 4.8 9.4 12l6.2 7.2-1.4 1.2L7 12l7.2-8.4z"/></svg>
+          </button>
+          <button type="button" class="work-mosaic-nav is-next" aria-label="Next image">
+            <svg viewBox="0 0 24 24"><path d="M8.4 19.2 14.6 12 8.4 4.8l1.4-1.2L17 12l-7.2 8.4z"/></svg>
+          </button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      const overlayImg = overlay.querySelector("img");
+      const overlayTitle = overlay.querySelector(".work-mosaic-title");
+      const closeBtn = overlay.querySelector(".work-mosaic-close");
+      const prevBtn = overlay.querySelector(".work-mosaic-nav.is-prev");
+      const nextBtn = overlay.querySelector(".work-mosaic-nav.is-next");
+
+      let pausedLoop = null;
+      let gallery = [];
+      let currentIndex = 0;
+
+      const closeOverlay = () => {
+        overlay.classList.remove("is-open");
+        overlay.style.display = "none";
+        if (pausedLoop){
+          pausedLoop.style.animationPlayState = "";
+          pausedLoop = null;
+        }
+      };
+
+      closeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeOverlay();
+      });
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closeOverlay();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && overlay.classList.contains("is-open")){
+          closeOverlay();
+        }
+        if (e.key === "ArrowRight" && overlay.classList.contains("is-open")){
+          nextBtn.click();
+        }
+        if (e.key === "ArrowLeft" && overlay.classList.contains("is-open")){
+          prevBtn.click();
+        }
+      });
+
+      function showImage(index){
+        if (!gallery.length) return;
+        currentIndex = Math.max(0, Math.min(index, gallery.length - 1));
+        const item = gallery[currentIndex];
+        overlayTitle.textContent = item.label;
+        overlayImg.src = item.src;
+        overlayImg.alt = item.label;
+        prevBtn.style.display = currentIndex === 0 ? "none" : "grid";
+        nextBtn.style.display = currentIndex === gallery.length - 1 ? "none" : "grid";
+      }
+
+      prevBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        showImage(currentIndex - 1);
+      });
+
+      nextBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        showImage(currentIndex + 1);
+      });
+
+      document.querySelectorAll(".work-mosaic").forEach(mosaic => {
+        mosaic.querySelectorAll(".work-mosaic__loop img").forEach(img => {
+          img.addEventListener("click", (e) => {
+            e.preventDefault();
+            const loop = img.closest(".work-mosaic__loop");
+            if (loop){
+              if (pausedLoop && pausedLoop !== loop){
+                pausedLoop.style.animationPlayState = "";
+              }
+              pausedLoop = loop;
+              loop.style.animationPlayState = "paused";
+            }
+            const label = img.getAttribute("aria-label") || img.alt || "Preview";
+            const allImgs = Array.from(mosaic.querySelectorAll(".work-mosaic__loop img"));
+            const seen = new Set();
+            gallery = allImgs.filter(el => {
+              const key = el.currentSrc || el.src;
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            }).map(el => ({
+              src: el.currentSrc || el.src,
+              label: el.getAttribute("aria-label") || el.alt || "Preview"
+            }));
+            currentIndex = gallery.findIndex(item => item.src === (img.currentSrc || img.src));
+            if (currentIndex === -1) currentIndex = 0;
+            showImage(currentIndex);
+            overlay.style.display = "grid";
+            requestAnimationFrame(() => overlay.classList.add("is-open"));
+          });
+        });
+      });
+    })();
+
+    /* Mosaic hover: ease columns to a pause, then resume on exit */
+    (function initMosaicHoverPause(){
+      const loops = Array.from(document.querySelectorAll(".work-mosaic__loop"));
+      loops.forEach(loop => {
+        loop.addEventListener("mouseenter", () => {
+          // Pause immediately to keep the hovered image under the cursor
+          const current = getComputedStyle(loop).transform;
+          loop.style.animationPlayState = "paused";
+          // lock the current transform so pausing doesn't jump
+          loop.style.transform = current !== "none" ? current : "translateY(0)";
+        });
+
+        loop.addEventListener("mouseleave", () => {
+          loop.style.animationPlayState = "running";
+          loop.style.transform = "";
+        });
+      });
+    })();
+
+    /* Parallax tilt for case study cover */
+    (function initCaseParallax(){
+      const stages = document.querySelectorAll(".case-stage__mat");
+      stages.forEach(stage => {
+        const cover = stage.querySelector(".case-cover");
+        if (!cover) return;
+        let rafId = null;
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+
+        function animate(){
+          currentX += (targetX - currentX) * 0.12;
+          currentY += (targetY - currentY) * 0.12;
+          cover.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotateX(${(-currentY/14)}deg) rotateY(${(currentX/14)}deg)`;
+          rafId = requestAnimationFrame(animate);
+        }
+
+        function handleMove(e){
+          const rect = stage.getBoundingClientRect();
+          const nx = (e.clientX - rect.left) / rect.width - 0.5;
+          const ny = (e.clientY - rect.top) / rect.height - 0.5;
+          targetX = nx * 14;
+          targetY = ny * 14;
+          if (!rafId) rafId = requestAnimationFrame(animate);
+        }
+
+        function reset(){
+          targetX = 0; targetY = 0;
+        }
+
+        stage.addEventListener("mousemove", handleMove);
+        stage.addEventListener("mouseleave", reset);
+        stage.addEventListener("mouseenter", () => { if (!rafId) rafId = requestAnimationFrame(animate); });
+      });
+    })();
+
+    /* Sync ribbon row height to half of rendered cover height */
+    (function syncCaseCoverHeights(){
+      function updateHeight(stage){
+        const coverImg = stage.querySelector(".case-cover img");
+        if (!coverImg) return;
+        const h = coverImg.getBoundingClientRect().height;
+        if (h > 0){
+          stage.style.setProperty("--cover-height", `${h}px`);
+        }
+      }
+      const stages = document.querySelectorAll(".case-stage__mat");
+      stages.forEach(stage => {
+        const img = stage.querySelector(".case-cover img");
+        if (!img) return;
+        if (img.complete){
+          updateHeight(stage);
+        } else {
+          img.addEventListener("load", () => updateHeight(stage), { once:true });
+        }
+      });
+      window.addEventListener("resize", () => {
+        stages.forEach(stage => updateHeight(stage));
+      }, { passive:true });
+    })();
+
+    /* Case stage click should reuse the shot-stack (work) overlay */
+    (function initCaseStageToStack(){
+      document.querySelectorAll(".case-stage[data-open-stack]").forEach(stage => {
+        stage.addEventListener("click", (e) => {
+          // ignore clicks on buttons inside the stage (already handled)
+          if (e.target.closest("button") || e.target.closest("a")) return;
+          const targetSel = stage.getAttribute("data-open-stack");
+          const target = document.querySelector(targetSel);
+          if (!target) return;
+          // ensure the stack is visible long enough to receive the event
+          target.style.display = "";
+          target.dispatchEvent(new Event("click", { bubbles: true }));
+        });
+      });
+    })();
+
+
     (function initShotStacks(){
       document.querySelectorAll(".shot-stack").forEach((stack) => {
         const cards = Array.from(stack.querySelectorAll(".shot-card:not(.is-cap)"));
-        const capCard = stack.querySelector(".shot-card.is-cap");
-        const capImg = stack.querySelector("[data-shot-cap-img]");
-        const hideBtn = stack.querySelector(".shot-hide");
-        if (!cards.length || !capCard || !capImg || !hideBtn) return;
+        let capCard = stack.querySelector(".shot-card.is-cap");
+        let capImg = stack.querySelector("[data-shot-cap-img]");
+        let hideBtn = stack.querySelector(".shot-hide");
+        if (!cards.length) return;
+
+        // Ensure every stack has a cap + hide button
+        if (!capCard){
+          capCard = document.createElement("div");
+          capCard.className = "shot-card is-cap";
+          capImg = document.createElement("img");
+          capImg.setAttribute("data-shot-cap-img", "");
+          capImg.loading = "lazy";
+          hideBtn = document.createElement("button");
+          hideBtn.className = "shot-hide btn ghost";
+          hideBtn.type = "button";
+          hideBtn.setAttribute("aria-label", "Hide this stack");
+          hideBtn.textContent = "Hide Stack";
+          capCard.appendChild(capImg);
+          capCard.appendChild(hideBtn);
+          stack.appendChild(capCard);
+        }
+        if (!capImg){
+          capImg = capCard.querySelector("[data-shot-cap-img]") || document.createElement("img");
+        }
+        if (!hideBtn){
+          hideBtn = capCard.querySelector(".shot-hide");
+        }
 
         const firstImg = cards[0].querySelector("img");
         if (firstImg){
