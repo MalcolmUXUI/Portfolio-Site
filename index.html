@@ -6483,7 +6483,7 @@ grid-auto-flow: column;
       if (!toggle || !hero) return;
 
       const idleThreshold = 8000;
-      const phaseDuration = 32000;
+      const phaseDuration = 32000; // 30s sweep + ~2s pause baked in
       let idleTimer = null;
       let animationFrame = null;
       let animationStart = null;
@@ -6497,7 +6497,8 @@ grid-auto-flow: column;
       function step(timestamp){
         if (!animationStart) animationStart = timestamp;
         const progress = ((timestamp - animationStart) % phaseDuration) / phaseDuration;
-        setPhase(progress);
+        const eased = Math.min(progress / 0.9375, 1); // allocate ~93.75% of cycle to motion, remainder pause
+        setPhase(eased);
         animationFrame = requestAnimationFrame(step);
       }
 
