@@ -198,7 +198,7 @@
         --moon-phase: 0;
         --sun-core: #ffd55e;
         --sun-glow: rgba(255, 213, 94, 0.7);
-        --moon-core: #ced4e1;
+        --moon-texture: url('assets/moon/moon-texture.png');
         --surface-card-soft-96: #FFFCF6;
         --surface-card-soft-86: #FFFCF7;
         --wash1: rgba(var(--accent-warm-rgb), 0.24);
@@ -218,7 +218,8 @@
         --glass-shadow-press: 0 12px 24px rgba(17,20,24,.12);
         --glass-inner: inset 0 1px 0 rgba(255,255,255,.65);
         --toggle-hit: 40px;
-        --toggle-visual: 30px;
+        --toggle-hit: 44px;
+        --toggle-visual: calc(var(--toggle-hit) * 0.7);
         --toggle-inset: calc((var(--toggle-hit) - var(--toggle-visual)) / 2);
         --hero-title-size: clamp(42px, 6vw, 68px);
         /* Type scale (keep it simple) */
@@ -349,8 +350,6 @@
           --ink-teal: #26827A;
           --ink-cyan: #6FADF8;
           --ink-lavender: #A486F6;
-
-          --moon-core: #1F273A;
         }
       }
     }
@@ -4013,12 +4012,8 @@ grid-auto-flow: column;
       background-clip: content-box;
       background-origin: content-box;
       background:
-        radial-gradient(circle at 32% 32%,
-          rgba(255,255,255,.6) 0%,
-          rgba(255,244,215,.35) 20%,
-          rgba(255,214,128,.2) 48%,
-          rgba(255,180,90,.1) 70%,
-          transparent 90%),
+        var(--moon-texture) center/cover no-repeat,
+
         radial-gradient(circle at 50% 60%,
           #ffe7a2 0%,
           #f0b45c 45%,
@@ -4038,15 +4033,15 @@ grid-auto-flow: column;
     .theme-toggle__glow{
       position:absolute;
       inset: 0;
-      border-radius: 50%;
+      border-radius: 70%;
       background:
         radial-gradient(circle at 30% 25%,
           rgba(255,245,204,.45) 0%,
           rgba(255,213,128,.28) 35%,
           rgba(255,184,90,0) 70%);
       box-shadow:
-        0 0 10px rgba(255, 190, 140, 0.35),
-        0 0 22px rgba(255, 140, 50, 0.2);
+        -10px -5px 28px rgba(255, 190, 140, 0.35),
+        0 0 26px 6px rgba(255, 140, 50, 0.2);
       z-index: -2;
       animation: glowPulse 6s ease-in-out infinite;
       pointer-events:none;
@@ -4060,7 +4055,7 @@ grid-auto-flow: column;
           rgba(145, 163, 195, 0.28) 0%,
           rgba(95, 114, 144, 0) 70%);
       box-shadow:
-        0 0 14px rgba(170, 190, 220, 0.24),
+        -10px -5px 24px rgba(170, 190, 220, 0.24),
         0 0 26px rgba(90, 115, 150, 0.18);
     }
     @keyframes glowPulse{
@@ -4072,18 +4067,13 @@ grid-auto-flow: column;
       content:"";
       position:absolute;
       inset: calc(var(--toggle-inset) + 1px);
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 32% 34%,
-          rgba(255,255,255,.40) 0%,
-          rgba(255,255,255,.18) 22%,
-          rgba(255,255,255,0) 52%);
-      opacity: .9;
+     
       pointer-events:none;
       z-index: 1;
     }
     :root[data-theme="dark"] .theme-toggle{
       background:
+        var(--moon-texture) center/cover no-repeat,
         radial-gradient(circle at 30% 30%,
           rgba(255,255,255,.35) 0%,
           rgba(255,255,255,0) 45%),
@@ -4095,18 +4085,43 @@ grid-auto-flow: column;
         0 0 14px rgba(255,255,255,.30),
         inset 0 0 3px rgba(255,255,255,.2);
     }
-    :root[data-theme="dark"] .theme-toggle::after{
-      content:"";
-      position:absolute;
-      inset: var(--toggle-inset);
-      border-radius: 50%;
-      background: rgba(7,18,45,.88);
-      transform: translateX(calc((var(--moon-phase) - 0.5) * 68px));
-      filter: blur(0.2px);
-      opacity: .9;
-      pointer-events:none;
-      z-index: 0;
-    }
+:root[data-theme="dark"] .theme-toggle::after{
+  content:"";
+  position:absolute;
+  inset: var(--toggle-inset);
+  border-radius: 50%;
+  background: rgba(7,18,45,.88);
+  transform:
+    translate(-10px, -5px)
+    translateX(calc((var(--moon-phase) - 0.5) * var(--toggle-hit) * 1.8))
+    scale(2);
+  filter: blur(1.75px);
+  opacity: .9;
+  pointer-events:none;
+  z-index: 0;
+  transform-origin: center;
+}
+
+@media (max-width: 720px){
+  .theme-toggle__glow{
+    animation: none;
+  }
+  .theme-toggle{
+    background:
+      var(--moon-texture) center/cover no-repeat,
+      radial-gradient(circle at 30% 45%,
+        rgba(255,255,255,0.85) 0%,
+        rgba(255,255,255,0) 55%),
+      radial-gradient(circle at 65% 50%,
+        #0b1c2a 0%,
+        #0b1c2a 65%,
+        transparent 75%);
+    box-shadow:
+      -10px -5px 20px rgba(0,0,0,0.28),
+      inset 0 0 0 1px rgba(255,255,255,0.35);
+    transform: translateY(-1px);
+  }
+}
 
 
     /* ============================================================
@@ -6468,7 +6483,7 @@ grid-auto-flow: column;
       if (!toggle || !hero) return;
 
       const idleThreshold = 8000;
-      const phaseDuration = 30000;
+      const phaseDuration = 32000;
       let idleTimer = null;
       let animationFrame = null;
       let animationStart = null;
