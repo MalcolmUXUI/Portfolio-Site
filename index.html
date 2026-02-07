@@ -77,6 +77,8 @@
         --space-6: 40px;
         --space-7: 56px;
         --space-8: 72px;
+        --space-9: 96px;
+        --space-10: 128px;
         /* Tabs */
         --tabs-gap: var(--space-sm);
         --tabs-pad-y: 10px;
@@ -88,6 +90,18 @@
         --tabs-shadow: var(--shadow);
         --tabs-text: var(--text);
         --tabs-text-muted: var(--text-muted);
+        /* About header */
+        --aboutHeaderGap: 18px;
+        --aboutHeaderPadX: 18px;
+        --aboutHeaderPadY: 16px;
+        --avatarSize: var(--space-10);
+        --avatarSizeSm: var(--space-9);
+        --avatarSizeXs: var(--space-8);
+        --avatarFocusY: 42%;
+        --avatarShadow: 0 18px 40px rgba(0,0,0,.18);
+        --avatarRing: 6px;
+        --avatarPopScale: 1.12;
+        --avatarPopY: -4px;
         /* Spacing scale (semantic aliases) */
         --space-xs: var(--space-1);
         --space-sm: var(--space-2);
@@ -3169,6 +3183,89 @@ grid-auto-flow: column;
       font-size: var(--type-h3);
     }
 
+    /* About card with avatar */
+    .aboutCard{
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+      overflow: hidden;
+    }
+
+    .aboutCard__header{
+      display: grid;
+      grid-template-columns: var(--avatarSize) 1fr;
+      gap: var(--aboutHeaderGap);
+      padding: var(--aboutHeaderPadY) var(--aboutHeaderPadX);
+      align-items: center;
+    }
+
+    .aboutCard__avatar{
+      width: var(--avatarSize);
+      height: var(--avatarSize);
+      border-radius: 999px;
+      box-shadow: var(--avatarShadow);
+      display: block;
+      object-fit: contain;
+      object-position: 50% var(--avatarFocusY);
+      overflow: visible !important;
+
+      border: 0;
+    }
+
+    .aboutCard__title{ margin: 0; }
+    .aboutCard__lede{ margin: 6px 0 0; }
+
+    .aboutCard__body{
+      padding: 0 var(--aboutHeaderPadX) var(--aboutHeaderPadY);
+    }
+
+    /* Popout avatar (two-layer) */
+    .heroAvatar{
+      position: relative;
+      width: var(--avatarSize);
+      height: var(--avatarSize);
+      overflow: visible;
+    }
+
+    .heroAvatar__base{
+      display: none;
+    }
+
+    .heroAvatar__pop{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100%;
+      height: auto;
+      transform:
+        translate(-50%, -50%)
+        translateY(var(--avatarPopY))
+        scale(var(--avatarPopScale));
+      transform-origin: center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @media (max-width: 980px){
+      :root{ --avatarSize: var(--avatarSizeSm); }
+      .aboutCard__header{
+        grid-template-columns: var(--avatarSize) 1fr;
+      }
+    }
+
+    @media (max-width: 640px){
+      :root{ --avatarSize: var(--avatarSizeXs); }
+      .aboutCard__header{
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+      .aboutCard__body{
+        padding: 0 0 var(--aboutHeaderPadY);
+      }
+      .aboutCard__headerText{ width: 100%; }
+    }
+
     /* ============================================================
        12) Help: Master-detail layout (desktop) + accordion (mobile)
        ============================================================ */
@@ -3233,16 +3330,17 @@ grid-auto-flow: column;
       position: relative;
       overflow: visible;
       z-index: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .help-tab .hl{
+    .help-tab .tab-highlight{
       display: inline-block;
-    }
-
-    /* Keep tab highlights clean (no stray dots/halos) */
-    .help-tabs .tab-highlight .hl::before,
-    .help-tabs .tab-highlight .hl.is-on::before{
-      display: none !important;
+      padding: 0 0.12em;
+      border-radius: 8px;
+      line-height: 1.1;
+      transition: color 140ms ease, opacity 200ms ease;
     }
 
     .help-tab.is-active{
@@ -3267,11 +3365,11 @@ grid-auto-flow: column;
     }
 
     @media (max-width: 720px){
-      .help-tabs{
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: var(--space-sm);
-        padding: 0;
+    .help-tabs{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+      padding: 0;
         overflow: visible;
       }
       .help-tab{
@@ -4702,20 +4800,41 @@ grid-auto-flow: column;
         My background spans high-stakes projects in design, brand systems, and customer-facing operations. That combination taught me how to see the system, not just the interface.
       </p>
 
-      <div class="callout surface stack-tight flow-m">
-        <p class="fine">
-          I’m Mark Malcolm, a <span class="hl hl-blue bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-amber bio-highlight a2">product partner, not just a screen designer</span>.
-        </p>
-        <p class="fine">
-          My work sits at the intersection of UX strategy, brand systems, and real-world delivery. I’ve spent my career inside environments where <span class="hl hl-teal bio-highlight a3">clarity matters</span>: strict brand guidelines, multi-role workflows, high-stakes operations, and teams trying to move fast without breaking things. That background trained me to look beyond individual screens and focus on how decisions ripple across people, tools, and process.
-        </p>
-        <p class="fine">
-          I’m especially effective when problems feel messy or undefined. I <span class="hl hl-purple bio-highlight a4">turn complex workflows into clear, buildable systems</span>, helping teams surface what’s really happening, align stakeholders around shared goals, and translate ambiguity into clear structure. That often means guiding conversations, tightening requirements, and designing systems that scale, not just interfaces that look good.
-        </p>
-        <p class="fine">
-          I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-green bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
-        </p>
-      </div>
+      <section class="aboutCard surface stack-tight">
+        <header class="aboutCard__header">
+          <div class="heroAvatar">
+            <div class="heroAvatar__base">
+            </div>
+            <img
+              class="heroAvatar__pop"
+              src="assets/headshot/popout-headshot.png"
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              loading="eager"
+            />
+          </div>
+          <div class="aboutCard__headerText">
+            <h3 class="aboutCard__title">Mark Malcolm</h3>
+            <p class="aboutCard__lede fine">UX Consultant · Senior Designer</p>
+          </div>
+        </header>
+
+        <div class="aboutCard__body flow-m">
+          <p class="fine">
+            I’m Mark Malcolm, a <span class="hl hl-blue bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-amber bio-highlight a2">product partner, not just a screen designer</span>.
+          </p>
+          <p class="fine">
+            My work sits at the intersection of UX strategy, brand systems, and real-world delivery. I’ve spent my career inside environments where <span class="hl hl-teal bio-highlight a3">clarity matters</span>: strict brand guidelines, multi-role workflows, high-stakes operations, and teams trying to move fast without breaking things. That background trained me to look beyond individual screens and focus on how decisions ripple across people, tools, and process.
+          </p>
+          <p class="fine">
+            I’m especially effective when problems feel messy or undefined. I <span class="hl hl-purple bio-highlight a4">turn complex workflows into clear, buildable systems</span>, helping teams surface what’s really happening, align stakeholders around shared goals, and translate ambiguity into clear structure. That often means guiding conversations, tightening requirements, and designing systems that scale, not just interfaces that look good.
+          </p>
+          <p class="fine">
+            I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-green bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
+          </p>
+        </div>
+      </section>
     </section>
 
     <section id="help" class="section-pad-top-100">
