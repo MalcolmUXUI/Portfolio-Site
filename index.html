@@ -196,8 +196,9 @@
         --card-top: #FFFCF6;
         --card-bottom: #FFFCF7;
         --moon-phase: 0;
-        --sun-core: #ffd55e;
-        --sun-glow: rgba(255, 213, 94, 0.7);
+        --sun-core: #ffd55e,.4;
+        --sun-glow: rgba(255, 213, 94, 0.4);
+        --sun-texture: url('assets/sun/sun-texture.png');
         --moon-texture: url('assets/moon/moon-texture.png');
         --surface-card-soft-96: #FFFCF6;
         --surface-card-soft-86: #FFFCF7;
@@ -4012,13 +4013,13 @@ grid-auto-flow: column;
       background-clip: content-box;
       background-origin: content-box;
       background:
-        var(--moon-texture) center/cover no-repeat,
+        var(--sun-texture) center/cover no-repeat,
 
         radial-gradient(circle at 50% 60%,
           #ffe7a2 0%,
           #f0b45c 45%,
           #e78c2a 75%,
-          #d25d06 100%);
+          #d25d06 90%);
       box-shadow:
         0 0 12px rgba(255, 190, 120, 0.45),
         0 0 28px rgba(255, 140, 30, 0.25);
@@ -4359,9 +4360,7 @@ grid-auto-flow: column;
     <header class="flow-l">
       <h1>Clear customer paths.<br>Consistent interfaces.<br>Brands people trust.</h1>
 
-      <p class="subhead">
-        I help teams turn messy workflows into clear, buildable systems, so people move faster, make fewer mistakes, and trust what they’re looking at. I work across product strategy, visual direction, and branding systems when the work is complex and the stakes are real.
-      </p>
+      <p class="subhead">Research-first UX and design systems for complex products, built to ship.</p>
 
     <div class="hero-actions">
       <a class="btn" href="#work">See Case Studies</a>
@@ -4403,10 +4402,13 @@ grid-auto-flow: column;
       <div class="grid">
         <article class="card surface stack-card">
           <div class="card-copy">
-            <h3>BigIron</h3>
-            <p class="meta-line"><strong>Role:</strong> UX Consultant</p>
-            <p class="meta-line"><strong>Scope:</strong> Worked with product to map intake workflows, define role-based views, document edge cases, write PRDs, and build annotated clickable prototypes for dev handoff.</p>
-            <p class="meta-line"><strong>Outcome:</strong> Gave engineering and stakeholders a shared understanding of complex workflows, and secured buy-in before build.</p>
+            <h3>BigIron Auctions Platform Modernization</h3>
+            <p class="meta-line"><strong>Role:</strong> UX Strategy Lead | UX/UI Consultant<em>(platform, systems, & handoff)</em></p>
+            <p class="meta-line"><strong>Responsibilities:</strong> Defined workflows, mapped happy and error paths, documented edge cases, and created developer-ready specs for responsive behavior and accessibility.</p>
+            <p class="meta-line"><strong>Collaboration:</strong> Worked closely with product and engineering within React and Tailwind constraints, aligning designs to real delivery workflows and Jira traceability.</p>
+            <p class="meta-line"><strong>Scope:</strong> Worked as a UX consultant alongside product and engineering to map complex intake and bidding workflows, define role-based views across customer and internal tools, document edge cases and error states, and produce annotated, clickable prototypes for developer handoff.</p>
+            <p class="meta-line"><strong>Outcome:</strong> Reduced rework and ambiguity during implementation by surfacing edge cases, states, and constraints early, allowing teams to build with confidence.</p>
+            <p class="meta-line"><strong>Output:</strong>User flows (happy and negative paths), role-based UX definitions, PRDs, annotated prototypes, accessibility-aware component guidance.</p>
             <p class="mt-16">
               <button class="btn ghost work-see-more work-see-more--copy" type="button" data-open-stack="#shotStack">See Sample Pages</button>
             </p>
@@ -4486,10 +4488,12 @@ grid-auto-flow: column;
         <article class="card surface">
           <div class="card-copy">
           <h3>Cedar Bluff Tech</h3>
-          <p class="meta-line"><strong>Role:</strong> UX Consultant &amp; Designer</p>
-          <p class="meta-line"><strong>Scope:</strong> Built the brand system from scratch, including logo and guidelines. Shaped the story, positioning, and experience direction for the parent brand and then applied the same foundation to their flagship software.</p>
-          <p class="meta-line"><strong>Outcome:</strong> Humanized and unified the product story across product, marketing, and investor communication, supporting pitch wins, fundraising, and pilot recruitment.</p>
-          <p class="meta-line"><strong>Output:</strong> Brand guidelines, product design system, marketing collateral, investor pitch deck.</p>
+          <p class="meta-line"><strong>Role:</strong> Brand Strategy | UX Consultant<em>(positioning, systems, & product narrative)</em></p>
+          <p class="meta-line"><strong>Responsibilities:</strong> Created developer- and designer-usable guidelines (tokens, typography, layout rules) to reduce inconsistency and rework.</p>
+          <p class="meta-line"><strong>Collaboration:</strong> Defined the brand's voice and messaging framework, aligning it with product and customer-facing experiences.</p>
+          <p class="meta-line"><strong>Scope:</strong> Partnered with the founder to shape brand strategy and product direction from the ground up, designing the visual identity, clarifying positioning and voice, and defining how the brand and product experience should work together across touchpoints.</p>
+          <p class="meta-line"><strong>Outcome:</strong> Created a cohesive foundation that aligned product, marketing, and investor-facing communication, supporting pitch wins, fundraising momentum, and early pilot recruitment.</p>
+          <p class="meta-line"><strong>Output:</strong> Brand strategy and positioning, visual identity and logo system, messaging framework, experience guidelines for product and customer-facing materials.</p>
           <p class="mt-16">
             <a class="btn ghost" href="https://marble-lettuce-c67.notion.site/ebd//142129297c60806ab2bbebdcc41c32e5" data-brand-link data-title="Cedar Bluff Tech – Brand Guidelines">View Brand Guidelines</a>
           </p>
@@ -4499,10 +4503,11 @@ grid-auto-flow: column;
       <article class="card surface">
         <div class="card-copy">
           <h3>Moss Rock Ranch</h3>
-          <p class="meta-line"><strong>Role:</strong> Brand Strategist</p>
-          <p class="meta-line"><strong>Scope:</strong> Built the brand foundation and guidelines, clarified purpose and voice, defined audience segments, and created a reusable messaging system the team can apply across channels.</p>
-          <p class="meta-line"><strong>Outcome:</strong> Clarified what made the brand distinct and gave the owners a repeatable way to express it, so every channel reinforced the same story instead of competing with itself.</p>
-          <p class="meta-line"><strong>Output:</strong> Messaging framework, audience personas, channel playbook, brand guidelines.</p>
+          <p class="meta-line"><strong>Role:</strong> Brand Strategy Consultant<em>(founders, voice, & touchpoints)</em></p>
+          <p class="meta-line"><strong>Responsibilities:</strong> Developed practical guidelines and collateral direction, with specific attention to apparel and customer-facing experiences.</p>
+          <p class="meta-line"><strong>Collaboration:</strong> Worked founder-direct, helping turn early instincts into clear decisions and usable direction.</p>
+          <p class="meta-line"><strong>Scope:</strong> Partnered directly with founders Cody and Erin Holst as a branding consultant, clarifying the brand strategy and voice, building practical guidelines and collateral direction, and advising how the Moss Rock Ranch identity should translate across touchpoints, especially apparel and customer-facing experiences.</p>
+          <p class="meta-line"><strong>Outcome:</strong> Reduced back-and-forth on brand decisions by aligning strategy, voice, and usage rules, so the team can execute faster without drifting.</p>          <p class="meta-line"><strong>Output:</strong> Brand strategy + voice direction, practical brand guidelines, apparel and collateral direction, touchpoint recommendations.</p>
           <p class="mt-16">
             <a class="btn ghost" href="https://marble-lettuce-c67.notion.site/ebd//159129297c608030a9cdd6ef8ca51a3d" data-brand-link data-title="Moss Rock Ranch – Brand Guidelines">View Brand Guidelines</a>
           </p>
@@ -6483,10 +6488,12 @@ grid-auto-flow: column;
       if (!toggle || !hero) return;
 
       const idleThreshold = 8000;
-      const phaseDuration = 32000; // 30s sweep + ~2s pause baked in
+      const phaseDuration = 30000;  // motion portion
+      const phasePause = 2000;      // dwell between sweeps
       let idleTimer = null;
       let animationFrame = null;
       let animationStart = null;
+      let pauseTimeout = null;
       let heroVisible = false;
       let manualInteraction = false;
 
@@ -6496,19 +6503,36 @@ grid-auto-flow: column;
 
       function step(timestamp){
         if (!animationStart) animationStart = timestamp;
-        const progress = ((timestamp - animationStart) % phaseDuration) / phaseDuration;
-        const eased = Math.min(progress / 0.9375, 1); // allocate ~93.75% of cycle to motion, remainder pause
+        const progress = (timestamp - animationStart) / phaseDuration;
+
+        if (progress >= 1){
+          // Finish the sweep, pause, then restart.
+          setPhase(1);
+          animationFrame = null;
+          pauseTimeout = setTimeout(() => {
+            pauseTimeout = null;
+            animationStart = null;
+            animationFrame = requestAnimationFrame(step);
+          }, phasePause);
+          return;
+        }
+
+        const eased = Math.min(progress / 0.9375, 1); // leave a little breathing room near the end
         setPhase(eased);
         animationFrame = requestAnimationFrame(step);
       }
 
       function startPhaseAnimation(){
-        if (animationFrame) return;
+        if (animationFrame || pauseTimeout) return;
         animationStart = null;
         animationFrame = requestAnimationFrame(step);
       }
 
       function stopPhaseAnimation(){
+        if (pauseTimeout){
+          clearTimeout(pauseTimeout);
+          pauseTimeout = null;
+        }
         if (animationFrame){
           cancelAnimationFrame(animationFrame);
           animationFrame = null;
