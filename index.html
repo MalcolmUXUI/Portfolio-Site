@@ -77,6 +77,17 @@
         --space-6: 40px;
         --space-7: 56px;
         --space-8: 72px;
+        /* Tabs */
+        --tabs-gap: var(--space-sm);
+        --tabs-pad-y: 10px;
+        --tabs-pad-x: 14px;
+        --tabs-radius: var(--radius-pill);
+        --tabs-border: rgba(var(--text-rgb), 0.12);
+        --tabs-bg: rgba(var(--surface-card-rgb), 0.85);
+        --tabs-bg-active: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+        --tabs-shadow: var(--shadow);
+        --tabs-text: var(--text);
+        --tabs-text-muted: var(--text-muted);
         /* Spacing scale (semantic aliases) */
         --space-xs: var(--space-1);
         --space-sm: var(--space-2);
@@ -1194,7 +1205,9 @@
       white-space: normal;
     }
 
-    .hl--multi::before{ content: none; }
+    .hl--multi::before{ 
+      content: none !important;
+      display: none !important;}
 
     .hl.is-on::before{
       opacity: 1;
@@ -1214,7 +1227,7 @@
       .bio-highlight{
         padding: 0 .06em;
         white-space: normal;
-        background: rgba(var(--hl-rgb, 245,158,11), 0.32);
+        background: rgba(var(--hl-rgb, 245,158,11), 0.06); );
         box-shadow: none;
         border-radius: 8px;
         -webkit-box-decoration-break: clone;
@@ -1225,7 +1238,11 @@
       .bio .hl::before,
       .bio .hl.is-on::before,
       .bio-highlight::before,
-      .bio-highlight.is-on::before{ content:none; }
+      .bio-highlight.is-on::before{
+        content:none !important; 
+        display:none !important; 
+      }
+
     }
 
     .hl-amber{ --hl-rgb: 245, 158, 11; }
@@ -1268,7 +1285,7 @@
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
       font-weight: inherit;
-      box-shadow: 0 2px 6px rgba(var(--hl-rgb, 245,158,11), 0.12);
+      box-shadow: none
       animation: none;
     }
 
@@ -3156,36 +3173,28 @@ grid-auto-flow: column;
        12) Help: Master-detail layout (desktop) + accordion (mobile)
        ============================================================ */
     .help-split{
-      display:none;
-      grid-template-columns: 1fr;
-      gap:var(--space-lg);
-      align-items:start;
+      display:block;
+      width: 100%;
     }
 
-    .help-list{
-      display:grid;
-      gap:var(--space-md);
-    }
-
-    .help-item{
-      text-align:left;
-      width:100%;
+    /* Tabs: How I Can Help */
+    .help-card{
+      --tab-hl-rgb: var(--accent-rare-rgb);
+      width: 100%;
       border:1px solid var(--border);
       border-radius: var(--radius-md);
-      background: linear-gradient(180deg,
-        var(--card-top),
-        var(--card-bottom));
+      background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
       box-shadow: var(--shadow);
-      padding:var(--space-lg);
-      cursor:pointer;
-      transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease, opacity .2s ease, background .2s ease;
-      position:relative;
-      overflow:hidden;
-      font: inherit;
-      color: inherit;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      margin: 0;
+      position: relative;
+      overflow: hidden;
     }
 
-    .help-item::before{
+    .help-card::before{
       content:"";
       position:absolute;
       left:0; top:0; right:0;
@@ -3202,76 +3211,115 @@ grid-auto-flow: column;
       pointer-events: none;
     }
 
-    .help-item h3{
-      margin:0;
-      font-size: var(--type-h3);
-      line-height: 1.2;
-    }
-    /* ==========================================================
-       Help / Services
-       ========================================================== */
-
-    .help-item p{
-      margin:0;
-      color: var(--text-muted);
-      line-height: 1.6;
+    .help-tabs{
+      display: flex;
+      align-items: center;
+      gap: var(--tabs-gap);
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 6px 6px;
+      box-shadow: none;
     }
 
-    .help-item:hover{
-      transform: translateY(-2px);
-      border-color: rgba(var(--primary-rgb), 0.25);
-      box-shadow: 0 22px 52px rgba(17,20,24,.14);
-      background: linear-gradient(180deg,
-        var(--surface-card-soft-96),
-        var(--surface-card-soft-86));
+    .help-tab{
+      appearance: none;
+      border: 0;
+      background: transparent;
+      padding: var(--tabs-pad-y) var(--tabs-pad-x);
+      font: inherit;
+      font-weight: 700;
+      color: var(--tabs-text-muted);
+      cursor: pointer;
+      position: relative;
+      overflow: visible;
+      z-index: 0;
     }
 
-    .help-item:focus{ outline:none; }
-    .help-item:focus-visible{
-      box-shadow: 0 0 0 4px rgba(var(--focus-ring-rgb), 0.35), var(--shadow);
-      border-color: rgba(var(--primary-rgb), 0.35);
+    .help-tab .hl{
+      display: inline-block;
     }
 
-    .help-item.is-active{
-      border-color: rgba(var(--primary-rgb), 0.35);
-      box-shadow: 0 22px 52px rgba(17,20,24,.14);
-      transform: translateY(-2px);
+    /* Keep tab highlights clean (no stray dots/halos) */
+    .help-tabs .tab-highlight .hl::before,
+    .help-tabs .tab-highlight .hl.is-on::before{
+      display: none !important;
     }
 
-    .help-item.is-dim{
-      opacity:.72;
-      transform:none;
+    .help-tab.is-active{
+      color: var(--tabs-text);
+      box-shadow: none;
+      filter: saturate(1.02);
+    }
+
+    .help-tab:focus-visible{
+      outline: none;
+      box-shadow: none;
+      color: var(--tabs-text);
+    }
+
+    .help-tab:hover{
+      transform: scale(1.02);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .help-tab{ transition: none; transform: none !important; }
+      .help-tab:hover{ transform: none; }
+    }
+
+    @media (max-width: 720px){
+      .help-tabs{
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-sm);
+        padding: 0;
+        overflow: visible;
+      }
+      .help-tab{
+        justify-self: stretch;
+        text-align: center;
+      }
+      .help-tab:hover{ transform: none; }
+      .help-detail-cta{ display: none; }
+    }
+
+    .help-panels{ width: 100%; margin-bottom: 0; }
+
+    .help-panel{
+      display: none;
+      margin: 0;
+      padding: 0;
+      border: 1px solid rgba(var(--tab-hl-rgb, 155,122,247), 0.10);
+      background: transparent;
+      box-shadow: none;
+      border-bottom: 0;
+    }
+    .help-panel.is-active{
+      display: block; 
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(var(--tab-hl-rgb, 155,122,247), .4);
     }
 
     .help-detail{
-      border:1px solid var(--border);
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      position:relative;
+      overflow:visible;
+    }
+
+    .help-detail::before{ content:none; }
+
+    .help-detail-inner{
+      padding: var(--space-lg);
       border-radius: var(--radius-md);
       background: linear-gradient(180deg,
-        var(--card-top),
-        var(--card-bottom));
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
+        rgba(var(--surface-card-rgb), 1),
+        rgba(var(--surface-card-rgb), 0.94));
+      border: 1px solid rgba(var(--border, #DAD5CE), 0.6);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.08);
+      margin: 0;
+      border-top: 0;
     }
-
-    .help-detail::before{
-      content:"";
-      position:absolute;
-      left:0; top:0; right:0;
-      height: var(--bar-height);
-      border-radius: inherit;
-      background: var(--bar-colors, linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.65) 0%,
-        rgba(var(--primary-rgb),     0.65) 33%,
-        rgba(var(--accent-rare-rgb), 0.65) 66%,
-        rgba(var(--accent-warm-rgb), 0.65) 100%));
-      background-size: var(--bar-stripe-size);
-      animation: glowBar var(--bar-speed-base) linear infinite;
-      opacity: 1;
-      pointer-events: none;
-    }
-
-    .help-detail-inner{ padding:var(--space-lg); }
 
     .help-detail-head h3{
       margin:0 0 6px;
@@ -3310,7 +3358,7 @@ grid-auto-flow: column;
       margin-top:16px;
     }
 
-    .help-accordion{ display:block; margin-top:12px; }
+    .help-accordion{ display:none; }
 
     .help-accordion details{
       border:1px solid var(--border);
@@ -3333,7 +3381,7 @@ grid-auto-flow: column;
     .help-accordion summary::-webkit-details-marker{ display:none; }
 
     @media (min-width: 900px){
-      .help-split{ display:grid; grid-template-columns: 1fr 1.1fr; }
+      .help-split{ display:block; grid-template-columns: none; }
       .help-accordion{ display:none; }
     }
 
@@ -4677,45 +4725,110 @@ grid-auto-flow: column;
       </p>
 
       <div class="help-split" aria-label="Services list with expanded details">
-        <div class="help-list" role="tablist" aria-label="Service areas">
-          <button class="help-item is-active" role="tab" aria-selected="true" aria-controls="help-panel" data-service="ux" type="button">
-            <h3>UX Strategy for Complex Workflows</h3>
-          </button>
+        <div class="help-card">
+          <div class="help-tabs" role="tablist" aria-label="How I can help">
+            <button class="help-tab" role="tab" id="tab-ux" aria-selected="true" aria-controls="panel-ux" tabindex="0" type="button" data-hl-rgb="15,109,102"><span class="tab-highlight" data-hl-class="hl-teal">UX Strategy</span></button>
+            <button class="help-tab" role="tab" id="tab-systems" aria-selected="false" aria-controls="panel-systems" tabindex="-1" type="button" data-hl-rgb="155,122,247"><span class="tab-highlight" data-hl-class="hl-purple">Design Systems</span></button>
+            <button class="help-tab" role="tab" id="tab-brand" aria-selected="false" aria-controls="panel-brand" tabindex="-1" type="button" data-hl-rgb="196,98,42"><span class="tab-highlight" data-hl-class="hl-amber">Brand Strategy</span></button>
+            <button class="help-tab" role="tab" id="tab-training" aria-selected="false" aria-controls="panel-training" tabindex="-1" type="button" data-hl-rgb="181,196,68"><span class="tab-highlight" data-hl-class="hl-green">Training Guides</span></button>
+          </div>
 
-          <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="systems" type="button">
-            <h3>Design Systems and UI Architecture</h3>
-          </button>
+          <div class="help-panels">
+            <section class="help-panel help-detail is-active" role="tabpanel" id="panel-ux" aria-labelledby="tab-ux">
+              <div class="help-detail-inner flow-m">
+                <div class="help-detail-head">
+                  <h3 class="help-panel__title">UX Strategy for Complex Workflows</h3>
+                  <p class="fine">
+                    When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.
+                  </p>
+                </div>
 
-          <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="brand" type="button">
-            <h3>Brand Strategy, Copywriting, and Visual Design</h3>
-          </button>
+                <ul class="help-bullets">
+                  <li>Workflow mapping that shows where people get stuck</li>
+                  <li>Role-based paths and guardrails to reduce mistakes</li>
+                  <li>Clear requirements and edge cases so dev can ship confidently</li>
+                  <li>Prototype and validate before you build the expensive thing</li>
+                  <li>Simple, practical handoff that holds up in the real world</li>
+                </ul>
 
-          <button class="help-item" role="tab" aria-selected="false" aria-controls="help-panel" data-service="training" type="button">
-            <h3>Training That Scales</h3>
-          </button>
-        </div>
+                <div class="help-detail-cta">
+                  <a class="btn" href="#contact">Talk It Through</a>
+                  <a class="btn ghost" href="#work">See Examples</a>
+                </div>
+              </div>
+            </section>
 
-        <div id="help-panel" class="help-detail" role="tabpanel" aria-live="polite">
-      <div class="help-detail-inner flow-m">
-            <div class="help-detail-head">
-              <h3 id="helpDetailTitle">UX Strategy for Complex Workflows</h3>
-              <p id="helpDetailDesc" class="fine">
-                When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.
-              </p>
-            </div>
+            <section class="help-panel help-detail" role="tabpanel" id="panel-systems" aria-labelledby="tab-systems" hidden>
+              <div class="help-detail-inner flow-m">
+                <div class="help-detail-head">
+                  <h3 class="help-panel__title">Design Systems and UI Architecture</h3>
+                  <p class="fine">
+                    If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.
+                  </p>
+                </div>
 
-            <ul id="helpDetailBullets" class="help-bullets">
-              <li>Workflow mapping that shows where people get stuck</li>
-              <li>Role-based paths and guardrails to reduce mistakes</li>
-              <li>Clear requirements and edge cases so dev can ship confidently</li>
-              <li>Prototype and validate before you build the expensive thing</li>
-              <li>Simple, practical handoff that holds up in the real world</li>
-            </ul>
+                <ul class="help-bullets">
+                  <li>Component inventory and standards that reduce redesign</li>
+                  <li>Patterns for forms, tables, empty states, and errors</li>
+                  <li>Spacing, typography, and layout rules that scale</li>
+                  <li>Accessible-by-default choices, so fewer surprises later</li>
+                  <li>Practical documentation developers actually use</li>
+                </ul>
 
-            <div class="help-detail-cta">
-              <a class="btn" href="#contact">Talk It Through</a>
-              <a class="btn ghost" href="#work">See Examples</a>
-            </div>
+                <div class="help-detail-cta">
+                  <a class="btn" href="#contact">Talk It Through</a>
+                  <a class="btn ghost" href="#work">See Examples</a>
+                </div>
+              </div>
+            </section>
+
+            <section class="help-panel help-detail" role="tabpanel" id="panel-brand" aria-labelledby="tab-brand" hidden>
+              <div class="help-detail-inner flow-m">
+                <div class="help-detail-head">
+                  <h3 class="help-panel__title">Brand Strategy, Copywriting, and Visual Design</h3>
+                  <p class="fine">
+                    If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.
+                  </p>
+                </div>
+
+                <ul class="help-bullets">
+                  <li>Clear positioning and a voice that sounds human</li>
+                  <li>Messaging frameworks that stay consistent across channels</li>
+                  <li>Visual systems that look modern without trying too hard</li>
+                  <li>Copy that explains complex things in plain language</li>
+                  <li>Lightweight guidelines your team can reuse</li>
+                </ul>
+
+                <div class="help-detail-cta">
+                  <a class="btn" href="#contact">Talk It Through</a>
+                  <a class="btn ghost" href="#work">See Examples</a>
+                </div>
+              </div>
+            </section>
+
+            <section class="help-panel help-detail" role="tabpanel" id="panel-training" aria-labelledby="tab-training" hidden>
+              <div class="help-detail-inner flow-m">
+                <div class="help-detail-head">
+                  <h3 class="help-panel__title">Training That Scales</h3>
+                  <p class="fine">
+                    Growth breaks when the know-how lives with one person. We capture your process and turn it into clear onboarding, training, and playbooks so the work stays good as the team gets bigger.
+                  </p>
+                </div>
+
+                <ul class="help-bullets">
+                  <li>New-hire onboarding that doesn’t rely on one “go ask Sarah” person</li>
+                  <li>Step-by-step “how we do it here” guides</li>
+                  <li>Playbooks and checklists people actually use</li>
+                  <li>Workshops to roll out changes without confusion</li>
+                  <li>Simple standards that keep quality consistent</li>
+                </ul>
+
+                <div class="help-detail-cta">
+                  <a class="btn" href="#contact">Talk It Through</a>
+                  <a class="btn ghost" href="#work">See Examples</a>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -5736,50 +5849,90 @@ grid-auto-flow: column;
     };
 
     /* ==========================================================
-       Help: Wire up master-detail clicks
+       Help: Tabs with keyboard support
        ========================================================== */
-    (function initHelpMasterDetail(){
-      const items = Array.from(document.querySelectorAll(".help-item"));
-      const titleEl = document.getElementById("helpDetailTitle");
-      const descEl  = document.getElementById("helpDetailDesc");
-      const listEl  = document.getElementById("helpDetailBullets");
+    (function initHelpTabs(){
+      const tabs = Array.from(document.querySelectorAll('.help-tab'));
+      const panels = Array.from(document.querySelectorAll('.help-panel'));
+      const tablist = document.querySelector('.help-tabs');
+      if (!tabs.length || !panels.length) return;
 
-      if (!items.length || !titleEl || !descEl || !listEl) return;
+      const HL_CLASSES = ['hl','hl--multi','bio-highlight','hl-amber','hl-blue','hl-teal','hl-purple','hl-green','hl-cyan','hl-lavender','hl-magenta'];
 
-      function render(key){
-        const data = HELP_DETAILS[key];
-        if (!data) return;
-
-        titleEl.textContent = data.title;
-        descEl.textContent  = data.desc;
-
-        listEl.innerHTML = "";
-        data.bullets.forEach(text => {
-          const li = document.createElement("li");
-          li.textContent = text;
-          listEl.appendChild(li);
-        });
-
-        items.forEach(btn => {
-          const active = btn.dataset.service === key;
-          btn.classList.toggle("is-active", active);
-          btn.classList.toggle("is-dim", !active);
-          btn.setAttribute("aria-selected", active ? "true" : "false");
-        });
+      function setTabHighlight(tab, isActive){
+        const span = tab.querySelector('.tab-highlight');
+        if (!span) return;
+        HL_CLASSES.forEach(c => span.classList.remove(c));
+        span.classList.remove('is-on');
+        if (isActive){
+          const tone = span.dataset.hlClass || 'hl-amber';
+          span.classList.add('hl','hl--multi','bio-highlight', tone, 'is-on');
+        }
       }
 
-      items.forEach(btn => {
-        btn.addEventListener("click", () => render(btn.dataset.service));
-        btn.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
+      function activate(tab){
+        const targetId = tab.getAttribute('aria-controls');
+        const rgb = tab.dataset.hlRgb || '155,122,247';
+        const card = tab.closest('.help-card');
+        if (card){
+          card.style.setProperty('--tab-hl-rgb', rgb);
+        }
+        tabs.forEach(t => {
+          const isActive = t === tab;
+          t.classList.toggle('is-active', isActive);
+          t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          t.setAttribute('tabindex', isActive ? '0' : '-1');
+          setTabHighlight(t, isActive);
+        });
+        panels.forEach(panel => {
+          const match = panel.id === targetId;
+          panel.classList.toggle('is-active', match);
+          if (match){
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
+        });
+        tab.focus({ preventScroll: true });
+      }
+
+      function onKeyDown(e){
+        if (!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+        e.preventDefault();
+        const currentIndex = tabs.indexOf(document.activeElement);
+        if (currentIndex === -1) return;
+        let nextIndex = currentIndex;
+        if (e.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        if (e.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+        if (e.key === 'Home') nextIndex = 0;
+        if (e.key === 'End') nextIndex = tabs.length - 1;
+        tabs[nextIndex].focus();
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => activate(tab));
+        tab.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' '){
             e.preventDefault();
-            render(btn.dataset.service);
+            activate(tab);
+          }
+        });
+        tab.addEventListener('focusin', () => {
+          setTabHighlight(tab, true);
+        });
+        tab.addEventListener('focusout', () => {
+          if (!tab.classList.contains('is-active')){
+            setTabHighlight(tab, false);
           }
         });
       });
 
-      const initial = items.find(b => b.classList.contains("is-active"))?.dataset.service || items[0].dataset.service;
-      render(initial);
+      if (tablist){
+        tablist.addEventListener('keydown', onKeyDown);
+      }
+
+      // Activate first tab by default
+      activate(tabs.find(t => t.classList.contains('is-active')) || tabs[0]);
     })();
 
     /* ==========================================================
@@ -5915,7 +6068,7 @@ grid-auto-flow: column;
        Bio highlight reveal (sequential with pause on tablet/desktop)
        ========================================================== */
     (function initBioHighlights(){
-      const highlights = Array.from(document.querySelectorAll(".bio-highlight"));
+      const highlights = Array.from(document.querySelectorAll(".bio-highlight:not(.tab-highlight)"));
       if (!highlights.length) return;
 
       const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
