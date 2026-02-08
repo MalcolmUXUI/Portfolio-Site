@@ -218,7 +218,6 @@
         --glass-shadow-hover: 0 22px 44px rgba(17,20,24,.18);
         --glass-shadow-press: 0 12px 24px rgba(17,20,24,.12);
         --glass-inner: inset 0 1px 0 rgba(255,255,255,.65);
-        --toggle-hit: 40px;
         --toggle-hit: 44px;
         --toggle-visual: calc(var(--toggle-hit) * 0.7);
         --toggle-inset: calc((var(--toggle-hit) - var(--toggle-visual)) / 2);
@@ -500,12 +499,16 @@
       color: var(--text);
       text-decoration: none;
       box-shadow: var(--shadow);
-      transform: translateY(-160%);
-      transition: transform .18s ease;
+      transform: translateY(-180%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .18s ease, opacity .18s ease;
     }
 
-    .skip-link:focus{
+    .skip-link:focus-visible{
       transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
     }
     .nav{
       position: sticky;
@@ -906,7 +909,28 @@
       margin-top:14px;
       justify-content:center;
     }
+.hero-meta{
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+  color: var(--muted);
+}
 
+.hero-meta .meta-proof{
+  font-weight: 500;
+}
+
+.hero-meta__link{
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 520px){
+  .hero-meta{ font-size: 14px; }
+}
     /* ============================================================
        7) Sections (titles, ledes)
        ============================================================ */
@@ -1241,7 +1265,7 @@
       .bio-highlight{
         padding: 0 .06em;
         white-space: normal;
-        background: rgba(var(--hl-rgb, 245,158,11), 0.06); );
+        background: rgba(var(--hl-rgb, 245,158,11), 0.06);
         box-shadow: none;
         border-radius: 8px;
         -webkit-box-decoration-break: clone;
@@ -1299,7 +1323,7 @@
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
       font-weight: inherit;
-      box-shadow: none
+      box-shadow: none;
       animation: none;
     }
 
@@ -1521,6 +1545,16 @@
         padding: 0;
       }
     }
+
+    .receipt-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.receipt-list li {
+  margin-bottom: 6px;
+  color: var(--text-muted);
+}
 
     /* Cards without media revert to single column */
     #work .grid .card:not(:has(.card-media)){
@@ -4005,9 +4039,9 @@ grid-auto-flow: column;
     }
     .theme-toggle{
       position: relative;
-      width: var(--toggle-hit);
-      height: var(--toggle-hit);
-      padding: var(--toggle-inset);
+      width: var(--toggle-visual);
+      height: var(--toggle-visual);
+      margin: var(--toggle-inset);
       border-radius: 50%;
       border: 0;
       background-clip: content-box;
@@ -4093,10 +4127,10 @@ grid-auto-flow: column;
   border-radius: 50%;
   background: rgba(7,18,45,.88);
   transform:
-    translate(-10px, -5px)
-    translateX(calc((var(--moon-phase) - 0.5) * var(--toggle-hit) * 1.8))
+    translate(-8px, -2px)
+    translateX(calc((var(--moon-phase) - 0.5) * var(--toggle-hit) * 1.9))
     scale(2);
-  filter: blur(1.75px);
+  filter: blur(1.25px);
   opacity: .9;
   pointer-events:none;
   z-index: 0;
@@ -4120,7 +4154,7 @@ grid-auto-flow: column;
     box-shadow:
       -10px -5px 20px rgba(0,0,0,0.28),
       inset 0 0 0 1px rgba(255,255,255,0.35);
-    transform: translateY(-1px);
+    transform: translateY(-.5px);
   }
 }
 
@@ -4160,8 +4194,9 @@ grid-auto-flow: column;
       .subhead{ text-align: left; }
 
       .hero-theme-control{
-        top: 0;
-        right: 0;
+        top: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
       }
 
       .subhead{
@@ -4360,13 +4395,16 @@ grid-auto-flow: column;
     <header class="flow-l">
       <h1>Clear customer paths.<br>Consistent interfaces.<br>Brands people trust.</h1>
 
-      <p class="subhead">Research-first UX and design systems for complex products, built to ship.</p>
+      <p class="subhead">I bring research-first UX and design systems to complex products, turning messy workflows into buildable systems with clear flows and developer-ready specs.</p>
 
     <div class="hero-actions">
       <a class="btn" href="#work">See Case Studies</a>
-      <a class="btn ghost" href="#contact">Book a Call</a>
+      <a class="btn ghost" href="#contact">Book a 15-min intro call</a>
     </div>
-
+    <div class="hero-meta">
+      <span>Recent Work: BigIron Auctions, Cedar Bluff Technologies, & Moss Rock Ranch.<br /><em>15-minute intro call, no prep.</em>
+      <a class="hero-meta__link" href="mailto:mark@we3.design?subject=Hey Mark, let's chat!">Prefer email first?</a></span>
+    </div>
     <div class="hero-theme-control" aria-live="polite">
       <span class="sr-only">Theme follows your system preference.</span>
       <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
@@ -4402,17 +4440,40 @@ grid-auto-flow: column;
       <div class="grid">
         <article class="card surface stack-card">
           <div class="card-copy">
-            <h3>BigIron Auctions Platform Modernization</h3>
-            <p class="meta-line"><strong>Role:</strong> UX Strategy Lead | UX/UI Consultant<em>(platform, systems, & handoff)</em></p>
-            <p class="meta-line"><strong>Responsibilities:</strong> Defined workflows, mapped happy and error paths, documented edge cases, and created developer-ready specs for responsive behavior and accessibility.</p>
-            <p class="meta-line"><strong>Collaboration:</strong> Worked closely with product and engineering within React and Tailwind constraints, aligning designs to real delivery workflows and Jira traceability.</p>
-            <p class="meta-line"><strong>Scope:</strong> Worked as a UX consultant alongside product and engineering to map complex intake and bidding workflows, define role-based views across customer and internal tools, document edge cases and error states, and produce annotated, clickable prototypes for developer handoff.</p>
-            <p class="meta-line"><strong>Outcome:</strong> Reduced rework and ambiguity during implementation by surfacing edge cases, states, and constraints early, allowing teams to build with confidence.</p>
-            <p class="meta-line"><strong>Output:</strong>User flows (happy and negative paths), role-based UX definitions, PRDs, annotated prototypes, accessibility-aware component guidance.</p>
-            <p class="mt-16">
-              <button class="btn ghost work-see-more work-see-more--copy" type="button" data-open-stack="#shotStack">See Sample Pages</button>
-            </p>
-          </div>
+  <h3>BigIron Auctions Platform Modernization</h3>
+
+  <p class="meta-line">
+    <strong>Role:</strong> UX Strategy Lead | UX/UI Consultant <em>(platform, systems, handoff)</em>
+  </p>
+
+  <p class="meta-line">
+    <strong>Focus:</strong> Reduce build risk and cross-team ambiguity by making workflows, states, and constraints explicit before implementation.
+  </p>
+
+  <p class="meta-line">
+    <strong>Receipts:</strong>
+  </p>
+
+  <ul class="receipt-list">
+    <li>Role-based feature mapping tied to Jira, so engineers could see who each screen served and what “done” meant.</li>
+    <li>Dev-ready interaction coverage, including happy paths, empty states, validation, permissions, and error handling.</li>
+    <li>Operational reality translated into UX clarity, aligning status messaging and expectations to backend rules.</li>
+  </ul>
+
+  <p class="meta-line">
+    <strong>Outputs:</strong> User flows, annotated prototypes, edge-case inventory, PRD notes, accessibility and responsive component guidance.
+  </p>
+
+  <p class="meta-line">
+    <strong>Outcome:</strong> Fewer implementation surprises and less rework because edge cases and constraints were surfaced early.
+  </p>
+
+  <p class="mt-16">
+    <button class="btn ghost work-see-more work-see-more--copy" type="button" data-open-stack="#shotStack">
+      See Sample Pages
+    </button>
+  </p>
+</div>
           <div class="card-media">
             <button class="btn ghost work-see-more" type="button" data-open-stack="#shotStack">See More</button>
             <div class="work-mosaic" aria-hidden="true">
@@ -4485,40 +4546,96 @@ grid-auto-flow: column;
             </div>
           </div>
         </article>
-        <article class="card surface">
-          <div class="card-copy">
-          <h3>Cedar Bluff Tech</h3>
-          <p class="meta-line"><strong>Role:</strong> Brand Strategy | UX Consultant<em>(positioning, systems, & product narrative)</em></p>
-          <p class="meta-line"><strong>Responsibilities:</strong> Created developer- and designer-usable guidelines (tokens, typography, layout rules) to reduce inconsistency and rework.</p>
-          <p class="meta-line"><strong>Collaboration:</strong> Defined the brand's voice and messaging framework, aligning it with product and customer-facing experiences.</p>
-          <p class="meta-line"><strong>Scope:</strong> Partnered with the founder to shape brand strategy and product direction from the ground up, designing the visual identity, clarifying positioning and voice, and defining how the brand and product experience should work together across touchpoints.</p>
-          <p class="meta-line"><strong>Outcome:</strong> Created a cohesive foundation that aligned product, marketing, and investor-facing communication, supporting pitch wins, fundraising momentum, and early pilot recruitment.</p>
-          <p class="meta-line"><strong>Output:</strong> Brand strategy and positioning, visual identity and logo system, messaging framework, experience guidelines for product and customer-facing materials.</p>
-          <p class="mt-16">
-            <a class="btn ghost" href="https://marble-lettuce-c67.notion.site/ebd//142129297c60806ab2bbebdcc41c32e5" data-brand-link data-title="Cedar Bluff Tech – Brand Guidelines">View Brand Guidelines</a>
-          </p>
-        </div>
-      </article>
+
+          <article class="card surface">
+  <div class="card-copy">
+  <h3>Cedar Bluff Technologies (SpecVision)</h3>
+
+  <p class="meta-line">
+    <strong>Role:</strong> Brand Strategy Lead | UX Consultant
+    <em>(positioning, systems, product narrative)</em>
+  </p>
+
+  <p class="meta-line">
+    <strong>Focus:</strong> Made an AI-assisted product feel credible by grounding messaging, UX decisions, and scope in real dealership workflows.
+  </p>
+
+  <p class="meta-line"><strong>Receipts:</strong></p>
+  <ul class="receipt-list">
+    <li>Thin-slice MVP scope with in-scope vs out-of-scope decisions and clear decision points</li>
+    <li>Dealership-ready messaging framework, with plain-language rules that avoid inflated AI claims</li>
+    <li>Competitive positioning story that explains differentiation without sounding salesy</li>
+    <li>Brand and usage guidelines for both the product and field-facing materials</li>
+  </ul>
+
+  <p class="meta-line">
+    <strong>Scope:</strong> Partnered founder-direct to shape positioning and UX narrative from the ground up, keeping product, marketing, and pilot materials consistent.
+  </p>
+
+  <p class="meta-line">
+    <strong>Outcome:</strong> Reduced pilot confusion and shortened sales conversations by making the value easy to understand, repeat, and trust.
+  </p>
+
+  <p class="mt-16">
+    <a
+      class="btn ghost"
+      href="https://marble-lettuce-c67.notion.site/142129297c60806ab2bbebdcc41c32e5"
+      data-brand-link
+      data-title="Cedar Bluff Technologies (SpecVision) Brand Guidelines"
+    >
+      View Brand Guidelines
+    </a>
+  </p>
+</div>
+</article>
 
       <article class="card surface">
-        <div class="card-copy">
-          <h3>Moss Rock Ranch</h3>
-          <p class="meta-line"><strong>Role:</strong> Brand Strategy Consultant<em>(founders, voice, & touchpoints)</em></p>
-          <p class="meta-line"><strong>Responsibilities:</strong> Developed practical guidelines and collateral direction, with specific attention to apparel and customer-facing experiences.</p>
-          <p class="meta-line"><strong>Collaboration:</strong> Worked founder-direct, helping turn early instincts into clear decisions and usable direction.</p>
-          <p class="meta-line"><strong>Scope:</strong> Partnered directly with founders Cody and Erin Holst as a branding consultant, clarifying the brand strategy and voice, building practical guidelines and collateral direction, and advising how the Moss Rock Ranch identity should translate across touchpoints, especially apparel and customer-facing experiences.</p>
-          <p class="meta-line"><strong>Outcome:</strong> Reduced back-and-forth on brand decisions by aligning strategy, voice, and usage rules, so the team can execute faster without drifting.</p>          <p class="meta-line"><strong>Output:</strong> Brand strategy + voice direction, practical brand guidelines, apparel and collateral direction, touchpoint recommendations.</p>
-          <p class="mt-16">
-            <a class="btn ghost" href="https://marble-lettuce-c67.notion.site/ebd//159129297c608030a9cdd6ef8ca51a3d" data-brand-link data-title="Moss Rock Ranch – Brand Guidelines">View Brand Guidelines</a>
-          </p>
-        </div>
-      </article>
+  <div class="card-copy">
+  <h3>Moss Rock Ranch</h3>
+
+  <p class="meta-line">
+    <strong>Role:</strong> Brand Strategy Consultant
+    <em>(founders, voice, touchpoints)</em>
+  </p>
+
+  <p class="meta-line">
+    <strong>Focus:</strong> Turned lived ranch experience into a durable brand system that stayed authentic, usable, and consistent across real-world touchpoints.
+  </p>
+
+  <p class="meta-line"><strong>Receipts:</strong></p>
+  <ul class="receipt-list">
+    <li>Founder-direct brand purpose, voice, and tone guidance that kept the story genuine, not “market-y”</li>
+    <li>Customer-facing messaging structure for the website that clarified what to do next (shop, subscribe, watch, contact)</li>
+    <li>Practical brand rules for apparel and collateral so the identity held up off-screen</li>
+    <li>Consistency guardrails that supported a store-first pivot without losing recognition or trust</li>
+  </ul>
+
+  <p class="meta-line">
+    <strong>Scope:</strong> Partnered directly with founders Cody and Erin Holst to shape strategy, voice, and usage guidance across digital, apparel, and in-person touchpoints.
+  </p>
+
+  <p class="meta-line">
+    <strong>Outcome:</strong> Reduced second-guessing and back-and-forth on brand decisions, enabling faster execution while preserving authenticity and customer recognition.
+  </p>
+
+  <p class="mt-16">
+    <a
+      class="btn ghost"
+      href="https://marble-lettuce-c67.notion.site/159129297c608030a9cdd6ef8ca51a3d"
+      data-brand-link
+      data-title="Moss Rock Ranch – Brand Guidelines"
+    >
+      View Brand Guidelines
+    </a>
+  </p>
+</div>
+</article>
       </div>
 
       <div class="surface case-studies-card">
         <div>
           <h3>Case Studies</h3>
-          <p class="fine">A few recent wins, focused on what changed: clearer paths, fewer rework cycles, and faster handoffs.</p>
+          <p class="fine">Selected work showing how I turn complex workflows into shippable systems with clearer paths, fewer rework cycles, and faster handoffs.</p>
         </div>
         <div class="case-grid">
           <div class="case-item" data-case-card>
