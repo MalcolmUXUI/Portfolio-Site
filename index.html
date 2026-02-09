@@ -1056,7 +1056,8 @@
         rgba(var(--accent-rare-rgb), 0.65) 66%,
         rgba(var(--accent-warm-rgb), 0.65) 100%));
       background-size: var(--bar-stripe-size);
-      animation: glowBar var(--bar-speed-base) linear infinite;
+      animation: glowBar var(--bar-speed, var(--bar-speed-base)) linear infinite;
+      animation-direction: var(--bar-direction, normal);
       opacity: 1;
       pointer-events: none;
     }
@@ -1131,6 +1132,25 @@
     .quote-teal .quote-mark{ color: var(--ink-teal); }
     .quote-amber .quote-mark{ color: var(--ink-amber); }
     .quote-purple .quote-mark{ color: var(--ink-lavender); }
+    .quote-cyan .quote-mark{ color: var(--ink-cyan); }
+
+    /* Per-testimonial tempo + direction (keeps bars out of sync; colors stay global) */
+    .quote-teal{
+      --bar-speed: 21s;
+      --bar-direction: normal;
+    }
+    .quote-cyan{
+      --bar-speed: 27s;
+      --bar-direction: reverse;
+    }
+    .quote-purple{
+      --bar-speed: 24s;
+      --bar-direction: normal;
+    }
+    .quote-amber{
+      --bar-speed: 30s;
+      --bar-direction: reverse;
+    }
 
     @media (max-width: 520px){
       .quote-figure{ padding: var(--space-md); }
@@ -1353,7 +1373,7 @@
     .hl.a5{ --hl-angle:-0.3deg; }
 
     @media (min-width: 840px){
-      .testimonial-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .testimonial-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     /* ============================================================
@@ -5266,6 +5286,23 @@ grid-auto-flow: column;
         </p>
 
         <ul class="testimonial-grid">
+          <li class="testimonial-card">
+            <figure class="quote-figure quote-cyan">
+              <div class="quote-top">
+                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+                <p class="quote-text">
+                  Mark consistently operated as a <span class="hl hl-blue hl--multi is-on a4">true product partner</span>, not just a UX designer. He connects workflow reality, stakeholder needs, and delivery constraints into a clear path forward.
+                </p>
+                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+              </div>
+              <div class="quote-divider" aria-hidden="true"></div>
+              <div class="quote-cite">
+                <strong>Sean Colandrea</strong>
+                <h4>Product Manager</h4>
+              </div>
+            </figure>
+          </li>
+
           <li class="testimonial-card">
             <figure class="quote-figure quote-teal">
               <div class="quote-top">
