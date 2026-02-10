@@ -135,7 +135,7 @@
         /* Text */
         --text: #1F1A14;
         --text-rgb: 31, 26, 20;
-        --text-muted: #5D4F43;
+        --text-muted: #706256;
         --text-muted-rgb: 93, 79, 67;
 
         /* Brand roles */
@@ -1007,11 +1007,14 @@
     }
 
     .approach-card{
-      margin-top:24px;
+      margin: 0;padding: var(--space-sm);
+      border-radius: var(--radius-sm);
+      overflow: visible;
+      gap: var(--space-xs) !important;
     }
 
     #approach .callout + .callout{
-      margin-top:24px;
+      margin: var(--space-xs);
     }
 
     .testimonial-grid{
@@ -1397,6 +1400,7 @@
     /* Some cards (like the Work screenshot stack) need to let rotated images hang outside the card. */
     .surface.stack-card{
       overflow: hidden;
+      gap: var(--space-xs);
     }
 
     .surface::before{
@@ -1498,7 +1502,7 @@
     #work .grid{
       display: grid;
       grid-template-columns: 1fr;
-      gap: var(--space-xl);
+      gap: var(--space-lg) ;
     }
 
     /* Two-column inside each work card: 1/3 copy, 2/3 media */
@@ -1509,13 +1513,19 @@
       grid-template-areas: "copy media";
       align-items: center;
       overflow: hidden;
-      gap: var(--space-lg);
+      gap: 0px;
     }
 
     #work .grid .card .card-copy{
       grid-area: copy;
       min-width: 0;
-      padding: var(--space-sm);
+      padding: var(--space-md);
+      border: 1px rgba(var(--text-muted-rgb), 1) solid;);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      margin: var(--space-xs);
+      margin-top: var(--space-sm );
+      gap: var(--space-sm);
     }
     #work .grid .card .card-media{
       grid-area: media;
@@ -1567,12 +1577,14 @@
     }
 
     .receipt-list {
-  margin: 8px 0 0;
-  padding-left: 18px;
+  margin: 0;
+  padding-left: var(--space-lg);
+  line-height: var(--lh-body);
+
 }
 
 .receipt-list li {
-  margin-bottom: 6px;
+  margin-bottom: 0px;
   color: var(--text-muted);
 }
 
@@ -1612,6 +1624,7 @@
     .card h3{
       margin:0;
       font-size: var(--type-h3);
+      line-height: var(--lh-tight);
     }
 
     /* Labels like “Role:”, “Scope:”, “Outcome:”
@@ -1876,7 +1889,6 @@ grid-auto-flow: column;
       content:"";
       position:absolute;
       inset:0;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,.15));
       pointer-events:none;
       z-index: 2;
     }
@@ -2491,7 +2503,9 @@ grid-auto-flow: column;
         0 18px 40px rgba(0,0,0,0.24),
         0 0 0 1px rgba(var(--accent-rare-rgb,136,110,255),0.32);
     }
-    .stack-card{ overflow: visible; }
+    .stack-card{ 
+      overflow: visible;
+    }
 
     @keyframes luxe-pulse{
       0%, 100%{ transform: translate(-50%, -50%) scale(1); box-shadow: none; }
@@ -2510,10 +2524,14 @@ grid-auto-flow: column;
 
     /* Case Studies card */
     .case-studies-card{
-      margin: var(--space-lg) 0 0;
-      padding: clamp(12px, 3vw, 32px);
+      margin:  0;
+     padding: var(--space-xs);
+      border-radius: var(--radius-sm);
       display: grid;
-      gap: var(--space-xs);
+      gap: 0;
+    }
+    .case-top{
+      margin-left: var(--space-md);
     }
     .case-studies-card h3{
       margin: 0;
@@ -2521,16 +2539,16 @@ grid-auto-flow: column;
     }
     .case-grid{
       display: grid;
-      gap: var(--space-xl);
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      align-items: stretch;
+      gap: var(--space-xs);
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
     .case-item{
       background: linear-gradient(180deg,
         rgba(var(--surface-card-rgb), 1),
         rgba(var(--surface-card-rgb), 0.94));
-      border-radius: 14px;
-      border: 1px solid rgba(var(--border, #DAD5CE), 0.6);
+      border: 1px rgba(var(--text-muted-rgb), 1) solid;);
+      border-radius: var(--radius-sm);
+      padding: var(--space-xs);
       box-shadow: 0 14px 36px rgba(0,0,0,0.08);
       padding: var(--space-md);
       position: relative;
@@ -2766,11 +2784,12 @@ grid-auto-flow: column;
 
     /* Unified meta/label line */
     .meta-line{
-      margin: 0;
+      margin: var(--space-sm) 0 0 0;
       font-size: var(--type-meta);
       line-height: var(--lh-body);
       color: var(--meta-color);
       font-weight: var(--fw-body);
+      z-index: 9;
     }
     .meta-line strong{
       color: var(--text);
@@ -3052,7 +3071,9 @@ grid-auto-flow: column;
     /* ============================================================
        10) Callouts (shared spacing)
        ============================================================ */
-    .callout{ padding:var(--space-lg); }
+    .callout{ 
+      padding: var(--space-sm) var(--space-xs) var(--space-xs) var(--space-xs);
+    }
     .callout > h3{ margin:0 0 8px; }
     .callout > p{ margin:0; }
 
@@ -3069,21 +3090,25 @@ grid-auto-flow: column;
       margin: 0;
       padding: 0;
       counter-reset: step;
+      display:grid;
+      row-gap: var(--space-xs);
     }
 
     .process-step{
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(var(--tab-hl-rgb, 155,122,247), .4);
       counter-increment: step;
       display: grid;
       grid-template-columns: auto 1fr;
       column-gap: var(--step-gap, 18px);
       align-items: start;
-      padding: 12px var(--step-gap, 18px) 12px 0;
-      border-top: 1px solid var(--divider);
+      padding: var(--space-md);
+      margin: 0;
+      gap: var(--space-md);
+      overflow: visible;
     }
 
     .process-step:first-child{
-      border-top: 0;
-      padding-top: 0;
     }
 
     /* Left column: number badge */
@@ -3092,7 +3117,7 @@ grid-auto-flow: column;
       height: var(--step-badge, clamp(54px, 6vw, 72px));
       border-radius: 18px;
       display: flex;
-      align-items: center;
+      align-items: top;
       justify-content: center;
       align-self: center;
       margin: 0;
@@ -3336,10 +3361,10 @@ grid-auto-flow: column;
       border-radius: var(--radius-md);
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
       box-shadow: var(--shadow);
-      padding: var(--space-lg);
+      padding: var(--space-xs);
       display: flex;
       flex-direction: column;
-      gap: var(--space-md);
+      gap: 0;
       margin: 0;
       position: relative;
       overflow: hidden;
@@ -3434,12 +3459,12 @@ grid-auto-flow: column;
       .help-detail-cta{ display: none; }
     }
 
-    .help-panels{ width: 100%; margin-bottom: 0; }
+help-panels    .{ width: 100%; margin-bottom: 0; }
 
     .help-panel{
       display: none;
       margin: 0;
-      padding: 0;
+      padding: 0);
       border: 1px solid rgba(var(--tab-hl-rgb, 155,122,247), 0.10);
       background: transparent;
       box-shadow: none;
@@ -3462,7 +3487,7 @@ grid-auto-flow: column;
     .help-detail::before{ content:none; }
 
     .help-detail-inner{
-      padding: var(--space-lg);
+      padding: var(--space-md);
       border-radius: var(--radius-md);
       background: linear-gradient(180deg,
         rgba(var(--surface-card-rgb), 1),
@@ -3497,10 +3522,21 @@ grid-auto-flow: column;
 
     .help-bullets li{ margin:8px 0; }
 
-    /* Make bullets feel consistent with the text (not heavy/oversized) */
-    .help-bullets li::marker{
+    /* If lists in help panels are switched to .receipt-list, keep sane spacing/weight */
+    .help-detail .receipt-list{
+      margin:12px 0 0;
+      padding-left: 18px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: var(--type-small);
+      letter-spacing: 0;
+    }
+    .help-detail .receipt-list li{ margin:8px 0; }
+    .help-detail .receipt-list li::marker{
       color: rgba(var(--text-muted-rgb), 0.7);
       font-size: 0.95em;
+    }
+
     }
 
     .help-detail-cta{
@@ -4056,6 +4092,7 @@ grid-auto-flow: column;
       align-items:center;
       gap: var(--space-sm);
       overflow: visible;
+      pointer-events: none;
     }
     .theme-toggle{
       position: relative;
@@ -4084,7 +4121,68 @@ grid-auto-flow: column;
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
       will-change: transform;
+      pointer-events: auto;
     }
+    .sky-badge{
+      position:absolute;
+      width: 88px;
+      height: 88px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .sky-badge--toggle{ z-index: 0; }
+    .sky-stars-wrap{
+      position:absolute;
+      width: 88px;
+      height: 88px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .sky-stars{
+      position:absolute;
+      inset: 0;
+      z-index: 3;
+      opacity: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+    .sky-stars span{
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      color: rgba(255,255,255,0.85);
+      transform: translateZ(0) rotate(45deg);
+      animation: skyTwinkle 3.8s ease-in-out infinite;
+    }
+    .sky-stars span::before,
+    .sky-stars span::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: currentColor;
+      clip-path: polygon(50% 0%, 62% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 72%, 21% 91%, 32% 57%, 2% 35%, 38% 35%);
+    }
+    .sky-stars span::after{
+      transform: scale(0.6) rotate(20deg);
+      opacity: 0.75;
+    }
+    /* Spread stars toward edges */
+    .sky-stars span:nth-child(1){ left: 10px; top: 10px; animation-delay: .2s; }
+    .sky-stars span:nth-child(2){ left: 64px; top: 8px; animation-delay: 1.1s; }
+    .sky-stars span:nth-child(3){ left: 8px; top: 54px; animation-delay: 2.4s; }
+    .sky-stars span:nth-child(4){ left: 66px; top: 52px; animation-delay: .7s; }
+    .sky-stars span:nth-child(5){ left: 22px; top: 68px; animation-delay: 1.8s; }
+    .sky-stars span:nth-child(6){ left: 54px; top: 70px; animation-delay: 2.9s; }
+
+    :root[data-theme="dark"] .sky-stars{ opacity: 1; }
+
     .theme-toggle__glow{
       position:absolute;
       inset: 0;
@@ -4142,6 +4240,7 @@ grid-auto-flow: column;
     }
 :root[data-theme="dark"] .theme-toggle::after{
   content:"";
+  overflow: visible;
   position:absolute;
   inset: var(--toggle-inset);
   border-radius: 50%;
@@ -4427,6 +4526,11 @@ grid-auto-flow: column;
     </div>
     <div class="hero-theme-control" aria-live="polite">
       <span class="sr-only">Theme follows your system preference.</span>
+      <span class="sky-stars-wrap" aria-hidden="true">
+        <span class="sky-stars">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </span>
+      </span>
       <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
         <span class="sr-only">Toggle theme</span>
         <span class="theme-toggle__glow" aria-hidden="true"></span>
@@ -4567,7 +4671,7 @@ grid-auto-flow: column;
           </div>
         </article>
 
-          <article class="card surface">
+          <article class="card surface stack-card">
   <div class="card-copy">
   <h3>Cedar Bluff Technologies (SpecVision)</h3>
 
@@ -4609,7 +4713,7 @@ grid-auto-flow: column;
 </div>
 </article>
 
-      <article class="card surface">
+      <article class="card surface stack-card">
   <div class="card-copy">
   <h3>Moss Rock Ranch</h3>
 
@@ -4650,12 +4754,12 @@ grid-auto-flow: column;
   </p>
 </div>
 </article>
-      </div>
+
 
       <div class="surface case-studies-card">
-        <div>
+        <div class="case-top">
           <h3>Case Studies</h3>
-          <p class="fine">Selected work showing how I turn complex workflows into shippable systems with clearer paths, fewer rework cycles, and faster handoffs.</p>
+          <p class="section-lede">Selected work showing how I turn complex workflows into shippable systems with clearer paths, fewer rework cycles, and faster handoffs.</p>
         </div>
         <div class="case-grid">
           <div class="case-item" data-case-card>
@@ -4663,11 +4767,12 @@ grid-auto-flow: column;
               <h4>Octagon Wildlife Sanctuary</h4>
               <span class="case-type">Web Redesign</span>
             </header>
-            <ul class="case-outcome">
-              <li><strong>Outcome:</strong> Trust-first booking path people believe.</li>
-              <li>More tour bookings with less friction.</li>
-              <li>Donations lifted by clearer asks.</li>
-              <li>Fewer support questions after the redesign.</li>
+            <class meta-line><strong>Outcome:</strong></meta-line>
+            <ul class="receipt-list">
+              <li>Trust-first booking path people believe</li>
+              <li>More tour bookings with less friction</li>
+              <li>Donations lifted by clearer asks</li>
+              <li>Fewer support questions after the redesign</li>
             </ul>
 
             <div class="case-ribbons" aria-hidden="true" data-open-stack="#wildlifeStack">
@@ -4739,11 +4844,12 @@ grid-auto-flow: column;
               <h4>Flix &amp; Feast</h4>
               <span class="case-type">Concept</span>
             </header>
-            <ul class="case-outcome">
-              <li><strong>Outcome:</strong> Centered the concept on “alignment,” not recommendations.</li>
-              <li>Messaging makes the wedge obvious in one glance.</li>
-              <li>Lock-in flow tightened so couples advance together.</li>
-              <li>Reduced ambiguity about next steps.</li>
+            <class meta-line><strong>Outcome:</strong></meta-line>
+            <ul class="receipt-list">
+              <li>Centered the concept on “alignment,” not recommendations</li>
+              <li>Messaging makes the wedge obvious in one glance</li>
+              <li>Lock-in flow tightened so couples advance together</li>
+              <li>Reduced ambiguity about next steps</li>
             </ul>
             <div class="case-ribbons" aria-hidden="true" data-open-stack="#flixStack">
               <div class="case-ribbon-row row-a">
@@ -4825,11 +4931,12 @@ grid-auto-flow: column;
               <h4>FL Urban Agriculture</h4>
               <span class="case-type">Brand + Web</span>
             </header>
-            <ul class="case-outcome">
-              <li><strong>Outcome:</strong> Cohesive identity across brand and web.</li>
-              <li>Clear “what we do + how to help” story.</li>
-              <li>Repeatable messaging the team can use anywhere.</li>
-              <li>Aligned site structure that supports the brand narrative.</li>
+            <class meta-line><strong>Outcome:</strong></meta-line>
+            <ul class="receipt-list">
+              <li>Cohesive identity across brand and web</li>
+              <li>Clear “what we do + how to help” story</li>
+              <li>Repeatable messaging the team can use anywhere</li>
+              <li>Aligned site structure that supports the brand narrative</li>
             </ul>
 
             <div class="case-ribbons" aria-hidden="true" data-open-stack="#flagrStack">
@@ -4878,6 +4985,7 @@ grid-auto-flow: column;
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
 
@@ -5014,19 +5122,17 @@ grid-auto-flow: column;
               <div class="help-detail-inner flow-m">
                 <div class="help-detail-head">
                   <h3 class="help-panel__title">UX Strategy for Complex Workflows</h3>
-                  <p class="fine">
+                  <p class="section-lede">
                     When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.
                   </p>
                 </div>
-
-                <ul class="help-bullets">
+                <ul class="receipt-list">
                   <li>Workflow mapping that shows where people get stuck</li>
                   <li>Role-based paths and guardrails to reduce mistakes</li>
                   <li>Clear requirements and edge cases so dev can ship confidently</li>
                   <li>Prototype and validate before you build the expensive thing</li>
                   <li>Simple, practical handoff that holds up in the real world</li>
                 </ul>
-
                 <div class="help-detail-cta">
                   <a class="btn" href="#contact">Talk It Through</a>
                   <a class="btn ghost" href="#work">See Examples</a>
@@ -5038,12 +5144,12 @@ grid-auto-flow: column;
               <div class="help-detail-inner flow-m">
                 <div class="help-detail-head">
                   <h3 class="help-panel__title">Design Systems and UI Architecture</h3>
-                  <p class="fine">
+                  <p class="section-lede">
                     If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.
                   </p>
                 </div>
 
-                <ul class="help-bullets">
+                <ul class="help-detail-list receipt-list">
                   <li>Component inventory and standards that reduce redesign</li>
                   <li>Patterns for forms, tables, empty states, and errors</li>
                   <li>Spacing, typography, and layout rules that scale</li>
@@ -5062,12 +5168,12 @@ grid-auto-flow: column;
               <div class="help-detail-inner flow-m">
                 <div class="help-detail-head">
                   <h3 class="help-panel__title">Brand Strategy, Copywriting, and Visual Design</h3>
-                  <p class="fine">
+                  <p class="section-lede">
                     If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.
                   </p>
                 </div>
 
-                <ul class="help-bullets">
+                <ul class="help-detail-list receipt-list">
                   <li>Clear positioning and a voice that sounds human</li>
                   <li>Messaging frameworks that stay consistent across channels</li>
                   <li>Visual systems that look modern without trying too hard</li>
@@ -5086,12 +5192,12 @@ grid-auto-flow: column;
               <div class="help-detail-inner flow-m">
                 <div class="help-detail-head">
                   <h3 class="help-panel__title">Training That Scales</h3>
-                  <p class="fine">
+                  <p class="section-lede">
                     Growth breaks when the know-how lives with one person. We capture your process and turn it into clear onboarding, training, and playbooks so the work stays good as the team gets bigger.
                   </p>
                 </div>
 
-                <ul class="help-bullets">
+                <ul class="help-detail-list receipt-list">
                   <li>New-hire onboarding that doesn’t rely on one “go ask Sarah” person</li>
                   <li>Step-by-step “how we do it here” guides</li>
                   <li>Playbooks and checklists people actually use</li>
@@ -5112,8 +5218,8 @@ grid-auto-flow: column;
       <div class="help-accordion" aria-label="Service details (mobile)">
         <details open class="flow-s">
           <summary>UX Strategy for Complex Workflows</summary>
-          <p class="fine">When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.</p>
-          <ul class="help-bullets">
+          <p class="section-lede">When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.</p>
+          <ul class="help-detail-list receipt-list">
             <li>Workflow mapping that shows where people get stuck</li>
             <li>Role-based paths and guardrails to reduce mistakes</li>
             <li>Clear requirements and edge cases so dev can ship confidently</li>
@@ -5124,8 +5230,8 @@ grid-auto-flow: column;
 
         <details class="flow-s">
           <summary>Design Systems and UI Architecture</summary>
-          <p class="fine">If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.</p>
-          <ul class="help-bullets">
+          <p class="section-lede">If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.</p>
+          <ul class="help-detail-list receipt-list">
             <li>Component inventory and standards that reduce redesign</li>
             <li>Patterns for forms, tables, empty states, and errors</li>
             <li>Spacing, typography, and layout rules that scale</li>
@@ -5136,8 +5242,8 @@ grid-auto-flow: column;
 
         <details class="flow-s">
           <summary>Brand Strategy, Copywriting, and Visual Design</summary>
-          <p class="fine">If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.</p>
-          <ul class="help-bullets">
+          <p class="section-lede">If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.</p>
+          <ul class="help-detail-list receipt-list">
             <li>Clear positioning and a voice that sounds human</li>
             <li>Messaging frameworks that stay consistent across channels</li>
             <li>Visual systems that look modern without trying too hard</li>
@@ -5148,8 +5254,8 @@ grid-auto-flow: column;
 
         <details class="flow-s">
           <summary>Training That Scales</summary>
-          <p class="fine">Growth breaks when the know-how lives with one person. We capture your process and turn it into clear onboarding, training, and playbooks so the work stays good as the team gets bigger.</p>
-          <ul class="help-bullets">
+          <p class="section-lede">Growth breaks when the know-how lives with one person. We capture your process and turn it into clear onboarding, training, and playbooks so the work stays good as the team gets bigger.</p>
+          <ul class="help-detail-list receipt-list">
             <li>Onboarding that doesn’t rely on a “go ask Sarah” person</li>
             <li>Step-by-step “how we do it here” guides</li>
             <li>Playbooks and checklists people actually use</li>
@@ -5265,16 +5371,10 @@ grid-auto-flow: column;
         </ol>
       </div>
 
-      <div class="callout surface stack-tight flow-m">
-        <h3 class="about-h3">Why I work this way</h3>
-
-        <p class="fine">
-          I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.
-        </p>
-
-        <p class="fine">
-          Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.
-        </p>
+      <div class="surface case-studies-card card-top">
+        <h3 class="h3">Why I work this way</h3>
+        <p class="section-lede">I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.</p>
+        <p class="section-lede">Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.</p>
       </div>
 
     </section>
@@ -5359,9 +5459,7 @@ grid-auto-flow: column;
 
     <section id="contact">
       <h2 class="section-title">Let’s Talk</h2>
-      <p class="section-lede">
-        If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.
-      </p>
+      <p class="section-lede">If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.</p>
 
     <div class="schedule-grid" aria-label="Calendly scheduling options">
       <span class="sr-only" id="calendlyHint">
@@ -6570,7 +6668,7 @@ grid-auto-flow: column;
       if (!toggle) return;
 
       const STORAGE_KEY = "we3_theme_mode";
-      const prefers = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+      const prefers = null; // ignore system preference; default to light
 
       function safeRead(){
         if (!window.localStorage) return null;
@@ -6584,11 +6682,15 @@ grid-auto-flow: column;
       }
 
       let manualTheme = null;
-      let currentTheme = null;
+      let currentTheme = "light"; // default to light unless user picks dark
 
+      // Respect a stored choice; otherwise start in light mode explicitly
       const stored = safeRead();
       if (stored === "dark" || stored === "light"){
         manualTheme = stored;
+        currentTheme = stored;
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
       }
 
       function refreshButton(){
@@ -6600,18 +6702,10 @@ grid-auto-flow: column;
         toggle.setAttribute("title", label);
       }
 
-      function inspectSystem(){
-        return prefers && prefers.matches ? "dark" : "light";
-      }
-
       function syncTheme(){
-        if (manualTheme){
-          document.documentElement.setAttribute("data-theme", manualTheme);
-          currentTheme = manualTheme;
-        } else {
-          document.documentElement.removeAttribute("data-theme");
-          currentTheme = inspectSystem();
-        }
+        const next = manualTheme || "light";
+        currentTheme = next;
+        document.documentElement.setAttribute("data-theme", next);
         refreshButton();
       }
 
@@ -6620,18 +6714,6 @@ grid-auto-flow: column;
         safeWrite(manualTheme);
         syncTheme();
       });
-
-      if (prefers){
-        const handleChange = () => {
-          if (manualTheme) return;
-          syncTheme();
-        };
-        if (prefers.addEventListener){
-          prefers.addEventListener("change", handleChange);
-        } else if (prefers.addListener){
-          prefers.addListener(handleChange);
-        }
-      }
 
       syncTheme();
     })();
