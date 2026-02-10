@@ -494,7 +494,7 @@
       z-index: 1000;
       padding: 10px 12px;
       border-radius: 12px;
-      background: rgba(var(--surface-card-rgb), 0.92);
+      background: rgba(var(--surface-card-rgb), 0.82);
       border: 1px solid var(--border);
       color: var(--text);
       text-decoration: none;
@@ -1519,7 +1519,7 @@
       grid-area: copy;
       min-width: 0;
       padding: var(--space-md);
-      border: 1px rgba(var(--text-muted-rgb), 1) solid;);
+      border: 1px rgba(var(--border), 1) solid;);
       border-radius: var(--radius-sm);
       padding: var(--space-md);
       margin: var(--space-xs);
@@ -2546,7 +2546,7 @@ grid-auto-flow: column;
       background: linear-gradient(180deg,
         rgba(var(--surface-card-rgb), 1),
         rgba(var(--surface-card-rgb), 0.94));
-      border: 1px rgba(var(--text-muted-rgb), 1) solid;);
+      border: 1px rgba(var(--border), 1) solid;);
       border-radius: var(--radius-sm);
       padding: var(--space-xs);
       box-shadow: 0 14px 36px rgba(0,0,0,0.08);
@@ -3112,6 +3112,8 @@ grid-auto-flow: column;
       --shadow-blur: 28px;
       --shadow-spread: -14px;
       --shadow-strength: 0.22;
+      --step-highlight-rgb: var(--accent-warm-rgb, 196,98,42);
+      --glow: 0;
       --rx: 0deg;
       --ry: 0deg;
       --sx: 0px;
@@ -3122,7 +3124,35 @@ grid-auto-flow: column;
       box-shadow:
         calc(var(--sx) * 1) calc(var(--sy) * 1) var(--shadow-blur) var(--shadow-spread)
         rgba(0,0,0,var(--shadow-strength));
-      transition: box-shadow 180ms ease, transform 180ms ease;
+      border-color: rgba(var(--step-highlight-rgb), 0.30);
+      background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      transition:
+        box-shadow 180ms ease,
+        transform 180ms ease,
+        border-color 1500ms ease;
+      position: relative;
+    }
+    .process-step::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius: inherit;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 56px 50%,
+          rgba(var(--step-highlight-rgb,196,98,42), 0.26) 0%,
+          rgba(var(--step-highlight-rgb,196,98,42), 0.18) 36%,
+          rgba(var(--step-highlight-rgb,196,98,42), 0.06) 72%,
+          transparent 100%);
+      opacity: var(--glow, 0);
+      transition: opacity 1500ms ease;
+      z-index: 0;
+      mix-blend-mode: normal;
+    }
+    .process-step > *{ position: relative; z-index: 1; }
+    .process-step.is-active{
+      --glow: 1;
+      border-color: rgba(var(--step-highlight-rgb, 196,98,42), 0.38);
     }
 
     .process-step:first-child{
@@ -3183,30 +3213,45 @@ grid-auto-flow: column;
       font-weight: 700;
     }
 
+    .process-step:nth-child(1){
+      --step-highlight-rgb: var(--hl-amber-rgb);
+    }
     .process-step:nth-child(1) .process-num{
       background: rgba(var(--hl-amber-rgb), 0.28);
       border-color: rgba(var(--hl-amber-rgb), 0.45);
     }
     .process-step:nth-child(1) .process-num::before{ color: var(--ink-amber); }
 
+    .process-step:nth-child(2){
+      --step-highlight-rgb: var(--hl-lavender-rgb);
+    }
     .process-step:nth-child(2) .process-num{
       background: rgba(var(--hl-lavender-rgb), 0.28);
       border-color: rgba(var(--hl-lavender-rgb), 0.45);
     }
     .process-step:nth-child(2) .process-num::before{ color: var(--ink-lavender); }
 
+    .process-step:nth-child(3){
+      --step-highlight-rgb: var(--hl-teal-rgb);
+    }
     .process-step:nth-child(3) .process-num{
       background: rgba(var(--hl-teal-rgb), 0.28);
       border-color: rgba(var(--hl-teal-rgb), 0.45);
     }
     .process-step:nth-child(3) .process-num::before{ color: var(--ink-teal); }
 
+    .process-step:nth-child(4){
+      --step-highlight-rgb: var(--hl-cyan-rgb);
+    }
     .process-step:nth-child(4) .process-num{
       background: rgba(var(--hl-cyan-rgb), 0.26);
       border-color: rgba(var(--hl-cyan-rgb), 0.42);
     }
     .process-step:nth-child(4) .process-num::before{ color: var(--ink-cyan); }
 
+    .process-step:nth-child(5){
+      --step-highlight-rgb: var(--hl-lime-rgb);
+    }
     .process-step:nth-child(5) .process-num{
       background: rgba(var(--hl-lime-rgb), 0.28);
       border-color: rgba(var(--hl-lime-rgb), 0.45);
@@ -6673,6 +6718,74 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
       }, { threshold: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1] });
 
       bySection.forEach((_, section) => io.observe(section));
+    })();
+
+    /* ==========================================================
+       Process cards: cursor tilt + dynamic shadow
+       ========================================================== */
+    (function initProcessTilt(){
+      const cards = Array.from(document.querySelectorAll(".process-step"));
+      if (!cards.length) return;
+
+      const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+
+      cards.forEach((card) => {
+        let raf = 0;
+        let last = { rx: 0, ry: 0, sx: 0, sy: 10, mx: 50, my: 50 };
+
+        const lerp = (a, b, t) => a + (b - a) * t;
+
+        function update(next, smooth = true){
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(() => {
+            const t = smooth ? 0.18 : 1;
+            last.rx = lerp(last.rx, next.rx, t);
+            last.ry = lerp(last.ry, next.ry, t);
+            last.sx = lerp(last.sx, next.sx, t);
+            last.sy = lerp(last.sy, next.sy, t);
+            last.mx = lerp(last.mx, next.mx, t);
+            last.my = lerp(last.my, next.my, t);
+
+            card.style.setProperty("--rx", `${last.rx}deg`);
+            card.style.setProperty("--ry", `${last.ry}deg`);
+            card.style.setProperty("--sx", `${last.sx}px`);
+            card.style.setProperty("--sy", `${last.sy}px`);
+            card.style.setProperty("--mx", `${last.mx}%`);
+            card.style.setProperty("--my", `${last.my}%`);
+          });
+        }
+
+        function onMove(e){
+          const r = card.getBoundingClientRect();
+          const x = clamp((e.clientX - r.left) / r.width, 0, 1);
+          const y = clamp((e.clientY - r.top) / r.height, 0, 1);
+          const cx = x - 0.5;
+          const cy = y - 0.5;
+          const maxTilt = Number(getComputedStyle(card).getPropertyValue("--max-tilt")) || 12;
+
+          const rx = (-cy * maxTilt) * 2;
+          const ry = (cx * maxTilt) * 2;
+          const sx = cx * 18;
+          const sy = 10 + cy * 18;
+
+          update({ rx, ry, sx, sy, mx: x * 100, my: y * 100 });
+        }
+
+        function onEnter(){
+          card.classList.add("is-active");
+          card.style.transition = "box-shadow 60ms ease, transform 60ms ease";
+        }
+
+        function onLeave(){
+          card.classList.remove("is-active");
+          card.style.transition = "box-shadow 2000ms ease, transform 2000ms ease";
+          update({ rx: 0, ry: 0, sx: 0, sy: 10, mx: 50, my: 50 }, false);
+        }
+
+        card.addEventListener("pointerenter", onEnter);
+        card.addEventListener("pointermove", onMove);
+        card.addEventListener("pointerleave", onLeave);
+      });
     })();
 
     (function initThemeToggle(){
