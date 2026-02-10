@@ -989,7 +989,6 @@
     .section-lede{
       margin:0 0 16px;
       color: var(--text-muted);
-      max-width: min(72ch, 92%);
       line-height: 1.65;
       text-align: left;
     }
@@ -2532,6 +2531,7 @@ grid-auto-flow: column;
     }
     .case-top{
       margin-left: var(--space-md);
+      line-height: var(--lh-tight);
     }
     .case-studies-card h3{
       margin: 0;
@@ -3106,6 +3106,23 @@ grid-auto-flow: column;
       margin: 0;
       gap: var(--space-md);
       overflow: visible;
+      /* tilt defaults */
+      --max-tilt: 12;
+      --lift: 8px;
+      --shadow-blur: 28px;
+      --shadow-spread: -14px;
+      --shadow-strength: 0.22;
+      --rx: 0deg;
+      --ry: 0deg;
+      --sx: 0px;
+      --sy: 10px;
+      perspective: 900px;
+      transform-style: preserve-3d;
+      transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(var(--lift));
+      box-shadow:
+        calc(var(--sx) * 1) calc(var(--sy) * 1) var(--shadow-blur) var(--shadow-spread)
+        rgba(0,0,0,var(--shadow-strength));
+      transition: box-shadow 180ms ease, transform 180ms ease;
     }
 
     .process-step:first-child{
@@ -5369,14 +5386,11 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
             </div>
           </li>
         </ol>
+        <div class="case-top">
+        <h3 class="h3 ">Why I work this way</h3>
+        <p class="section-lede">I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.</br>Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.</p>
       </div>
-
-      <div class="surface case-studies-card card-top">
-        <h3 class="h3">Why I work this way</h3>
-        <p class="section-lede">I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.</p>
-        <p class="section-lede">Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.</p>
       </div>
-
     </section>
 
     <section id="testimonials" class="testimonials section-tight-top flow-m">
@@ -5460,11 +5474,9 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
     <section id="contact">
       <h2 class="section-title">Let’s Talk</h2>
       <p class="section-lede">If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.</p>
-
+      <span class="sr-only" id="calendlyHint">Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.</span>
     <div class="schedule-grid" aria-label="Calendly scheduling options">
-      <span class="sr-only" id="calendlyHint">
-        Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.
-      </span>
+      
           <button
           class="schedule-card surface"
           type="button"
