@@ -4,3 +4,4 @@
 backups/
 # local storage / not part of website
 ZZZ-AUX/
+node_modules
