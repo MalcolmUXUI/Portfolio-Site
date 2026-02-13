@@ -3388,6 +3388,8 @@ grid-auto-flow: column;
       display:grid;
       grid-template-columns: 1fr;
       gap:var(--space-lg);
+            overflow: visible;
+
     }
 
     .about-h3{
@@ -3398,19 +3400,34 @@ grid-auto-flow: column;
     /* About card with avatar */
     .aboutCard{
       position: relative;
-      padding: var(--space-lg);
+      padding-left: var(--space-lg);
+      padding-right: var(--space-lg);
+      padding-bottom: var(--space-lg);
       display: flex;
       gap: var(--space-lg);
       align-items: flex-start;
-      overflow: hidden;
+      overflow: visible; /* allow the avatar to escape the card edge */
     }
 
+    /* Allow the headshot PNG to extend outside the card box */
+.aboutCard.surface{
+  overflow: visible;
+}
+
+/* But keep the surface decoration neatly clipped to the rounded corners */
+.aboutCard.surface::before,
+.aboutCard.surface::after{
+  /* let shadows bleed past the rounded mask */
+    clip-path: inset(-100px round var(--radius-2xl));
+
+  overflow: visible !important;
+
+}
+
     .aboutCard__header{
+      position: relative;
       display: block;
-      grid-template-columns: var(--avatarSize) 1fr;
-      gap: var(--aboutHeaderGap);
       padding: var(--aboutHeaderPadY) var(--aboutHeaderPadX);
-      align-items: right;
     }
 
     .aboutCard__avatar{
@@ -3427,52 +3444,114 @@ grid-auto-flow: column;
     }
 
     .aboutCard__title{ margin: 0; }
-    .aboutCard__lede{ margin: 6px 0 0; }
+    .aboutCard__lede{
+      margin: 6px 0 0;
+      padding-right: 0;
+    }
 
     .aboutCard__body{
       padding: var(--space-md);
       flex: 1;
       min-width: 0;
+      overflow: visible;
     }
 
     /* Headshot anchored at lower-right via flex */
-    .aboutCard__photo{
-      position: static;
-      align-self: flex-end;
-      margin-left: var(--space-lg);
-      width: 210px;
-      height: 210px;
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow:
-        0 18px 34px rgba(0,0,0,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.8);
+/* PNG pop-out: do NOT crop the bitmap */
+.aboutCard__photo{
+  object-fit:contain;
+
+  margin-left: var(--space-lg);
+
+  /* keep a max size, but let the image keep its natural aspect */
+  width: 210px;
+  max-width: 210px;
+  height: auto;
+
+  /* these three are what typically cause the crop */
+  /* border-radius: 50%; */
+  /* object-fit: cover; */
+  /* height: 210px; */
+
+  display: block;
+  overflow: visible;
+  background: transparent !important;
+  border-radius: 999px; /* keep the circle */
+  filter: drop-shadow(0 18px 34px rgba(0,0,0,0.18));
+  box-shadow: none;
+
+  /* optional: keep your shadow, but it will no longer be circular */
+
+}
+/* The usual culprit: some card/surface style is clipping. */
+.aboutCard,
+.aboutCard__body,
+.aboutCard__media{
+  overflow: visible;
+}
+
+/* Wrapper controls layout area, but does not clip the image */
+.aboutCard__media{
+  display: flex;
+  justify-content: flex-end;
+  align-self: flex-end;
+  margin-left: var(--space-lg);
+  overflow: visible;
+  margin-bottom: -50px; /* hang below card */
+
+
+}
     }
 
-    @media (max-width: 640px){
+@media (max-width: 640px){
       .aboutCard{
         flex-direction: column;
         align-items: center;
+        padding-bottom: var(--aboutHeaderPadY);
+        overflow:visible;
+
       }
       .aboutCard__photo{
-        margin-left: 0;
+        margin: var(--space-sm);
+        padding: var(--space-sm); /* hang below card */
+        overflow:visible !important;
         width: 190px;
         height: 190px;
+        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18));
+        box-sizing: none !important; /* opt out of global border-box */
+
+
+      }
+      .heroAvatar{
+        position: static;
+        transform: none;
+        overflow:visible ;
+        margin: var(--space-sm);
+        padding: var(--space-sm);
+      }
+      .aboutCard__media{
+        padding-right: var(--space-xs); /* hang below card */
+        padding-left: var(--space-lg); /* hang below card */
+        margin-left: var(--space-lg); /* hang below card */
+        overflow:visible;
       }
     }
 
     /* Popout avatar (two-layer) */
     .heroAvatar{
-      position: relative;
+      position: absolute;
+      left: 50%;
+      bottom: -50px;
+      transform: translateX(-50%);
       width: var(--avatarSize);
       height: var(--avatarSize);
       overflow: visible;
-      align-items: right;
     }
 
     .heroAvatar__base{
       display: none;
       align-items: right;
+      overflow: visible;
     }
 
     .heroAvatar__pop{
@@ -3488,27 +3567,39 @@ grid-auto-flow: column;
       transform-origin: center;
       z-index: 2;
       pointer-events: none;
-      align-items: right;
+      border-radius: 999px;    /* ensure PNG shows only its circle */
+      background: transparent; /* honor transparency */
+      display: block;
+      overflow:visible;
     }
 
     @media (max-width: 980px){
       :root{ --avatarSize: var(--avatarSizeSm); }
-      .aboutCard__header{
-        grid-template-columns: var(--avatarSize) 1fr;
-      }
     }
 
     @media (max-width: 640px){
-      :root{ --avatarSize: var(--avatarSizeXs); }
-      .aboutCard__header{
-        grid-template-columns: 1fr;
-        justify-items: center;
-        text-align: center;
+      :root{ --avatarSize: var(--avatarSizeSm); }
+      .aboutCard{
+        padding-bottom: var(--aboutHeaderPadY);
+        overflow: hidden;
+        flex-direction: column;
+        align-items: center;
       }
+      .aboutCard__header{
+        text-align: center;
+        position: static;
+      }
+      .aboutCard__lede{ padding-right: 0; }
       .aboutCard__body{
         padding: 0 0 var(--aboutHeaderPadY);
+        padding-right: var(--space-md);
       }
       .aboutCard__headerText{ width: 100%; }
+      .heroAvatar{
+        position: static;
+        margin: 0 auto calc(-1 * var(--space-sm));
+        transform: none;
+      }
     }
 
     /* ============================================================
@@ -4601,16 +4692,47 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
       .section-pad-bottom-100{ margin-bottom:0; padding-bottom:100px; }
       .section-pad-top-100{ margin-top:0; padding-top:100px; }
       .section-tight-top{ margin:0 0 100px 0; padding-top:100px; }
+      /* Tulip footer strip */
+      .tulip-strip{
+        margin-top: var(--space-lg);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background:
+          linear-gradient(180deg,
+            rgba(var(--accent-rare-rgb), 0.12),
+            rgba(var(--accent-warm-rgb), 0.10));
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.6),
+          0 16px 34px rgba(0,0,0,0.08);
+        position: relative;
+        min-height: 220px;
+      }
+
+      #tulipCanvas{
+        display: block;
+        width: 100%;
+        height: 240px;
+      }
+
+      @media (max-width: 640px){
+        #tulipCanvas{ height: 200px; }
+      }
+
+      @media (prefers-reduced-motion: reduce){
+        #tulipCanvas{ display: none; }
+        .tulip-strip{ display: none; }
+      }
+      /* Visually hidden (screen-reader only), rewritten to avoid stock snippet */
       .sr-only{
-        position:absolute;
-        width:1px;
-        height:1px;
-        padding:0;
-        margin:-1px;
-        overflow:hidden;
-        clip: rect(0,0,0,0);
-        white-space:nowrap;
-        border:0;
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        padding: 0;
+        margin: -2px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
       }
     }
   </style>
@@ -5241,13 +5363,15 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
             I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-green bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
           </p>
     
-          <img
-            class="aboutCard__photo"
-            src="assets/headshot/popout-headshot.png"
-            alt="Portrait of Mark Malcolm"
-            loading="eager"
-            decoding="async"
-          />
+          <div class="aboutCard__media" aria-hidden="true">
+    <img
+      class="aboutCard__photo"
+      src="assets/headshot/popout-headshot.png"
+      alt="Portrait of Mark Malcolm"
+      loading="eager"
+      decoding="async"
+    />
+  </div>
         </div>
 
         
@@ -5990,6 +6114,9 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
        ========================================================== -->
     <footer>
       <div class="fine">© <span id="y"></span> Mark Malcolm. Temporary site, full portfolio in progress.</div>
+      <div class="tulip-strip" aria-hidden="true">
+        <canvas id="tulipCanvas"></canvas>
+      </div>
     </footer>
 
   </main>
@@ -7486,6 +7613,177 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
         ticking = true;
         requestAnimationFrame(update);
       }, { passive: true });
+    })();
+  </script>
+
+  <script>
+    (function initTulip(){
+      const canvas = document.getElementById('tulipCanvas');
+      const strip = canvas ? canvas.parentElement : null;
+      /* Safety valve: disable the WebGL tulip for now to stop preview crashes.
+         Remove this early return once Safari stops crashing or when we swap in a 2D version. */
+      if (strip){
+        strip.style.display = 'none';
+      }
+      return;
+
+      if (!canvas) return;
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){
+        if (strip) strip.style.display = 'none';
+        return;
+      }
+
+      const gl = canvas.getContext('webgl', { antialias: true, alpha: false }) ||
+                 canvas.getContext('experimental-webgl', { antialias: true, alpha: false });
+      if (!gl){
+        if (strip) strip.style.display = 'none';
+        return;
+      }
+
+      const colPetal1 = [155/255, 122/255, 247/255]; // purple
+      const colPetal2 = [216/255,  46/255, 122/255]; // magenta
+      const colPetal3 = [196/255,  98/255,  42/255]; // warm
+      const colPetal4 = [245/255, 158/255,  11/255]; // amber
+      const colStem   = [ 15/255, 118/255, 110/255]; // teal
+      const colLeaf   = [166/255, 179/255,  63/255]; // lime-ish
+      const petals = [colPetal1, colPetal2, colPetal3, colPetal4];
+
+      const vsSrc = `
+        attribute vec2 a_pos;
+        attribute vec3 a_col;
+        uniform float u_time;
+        varying vec3 v_col;
+        varying float v_y;
+        void main(){
+          float bend = (a_pos.y + 1.0) * 0.5;
+          float sway = 0.045 * sin(u_time * 0.9) * pow(bend, 1.7);
+          float x = a_pos.x + sway;
+          gl_Position = vec4(x, a_pos.y, 0.0, 1.0);
+          v_col = a_col;
+          v_y = a_pos.y;
+        }
+      `;
+
+      const fsSrc = `
+        precision mediump float;
+        varying vec3 v_col;
+        varying float v_y;
+        void main(){
+          float light = 0.86 + 0.18 * (v_y * 0.5 + 0.5);
+          gl_FragColor = vec4(v_col * light, 1.0);
+        }
+      `;
+
+      function compile(type, src){
+        const sh = gl.createShader(type);
+        gl.shaderSource(sh, src);
+        gl.compileShader(sh);
+        if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)){
+          console.error(gl.getShaderInfoLog(sh));
+          gl.deleteShader(sh);
+          return null;
+        }
+        return sh;
+      }
+
+      const vsh = compile(gl.VERTEX_SHADER, vsSrc);
+      const fsh = compile(gl.FRAGMENT_SHADER, fsSrc);
+      if (!vsh || !fsh) return;
+
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vsh);
+      gl.attachShader(prog, fsh);
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)){
+        console.error(gl.getProgramInfoLog(prog));
+        return;
+      }
+
+      const locPos = gl.getAttribLocation(prog, 'a_pos');
+      const locCol = gl.getAttribLocation(prog, 'a_col');
+      const locTime = gl.getUniformLocation(prog, 'u_time');
+
+      const verts = [];
+      function pushTri(ax,ay,bx,by,cx,cy,r,g,b){
+        verts.push(
+          ax,ay,r,g,b,
+          bx,by,r,g,b,
+          cx,cy,r,g,b
+        );
+      }
+      function pushQuad(x0,y0,x1,y1,x2,y2,x3,y3,r,g,b){
+        pushTri(x0,y0,x1,y1,x2,y2,r,g,b);
+        pushTri(x0,y0,x2,y2,x3,y3,r,g,b);
+      }
+      function petalFan(cx,cy,w,h,count,col){
+        const r=col[0], g=col[1], b=col[2];
+        const start = -0.88 * 3.14159;
+        const end   = -0.12 * 3.14159;
+        for (let i=0; i<count; i++){
+          const t0 = i / count;
+          const t1 = (i+1) / count;
+          const a0 = start + (end - start) * t0;
+          const a1 = start + (end - start) * t1;
+          const f0 = 0.9 + 0.1 * Math.sin(i * 1.3);
+          const f1 = 0.9 + 0.1 * Math.sin((i+1) * 1.3);
+          const px0 = cx + Math.cos(a0) * w * f0;
+          const py0 = cy + Math.sin(a0) * h;
+          const px1 = cx + Math.cos(a1) * w * f1;
+          const py1 = cy + Math.sin(a1) * h;
+          const shade = 0.9 + 0.08 * Math.sin(i * 2.1);
+          pushTri(cx, cy, px0, py0, px1, py1, r*shade, g*shade, b*shade);
+        }
+      }
+
+      (function buildTulip(){
+        verts.length = 0;
+        // Stem
+        pushQuad(-0.03,-0.95, 0.03,-0.95, 0.03,0.05, -0.03,0.05, colStem[0], colStem[1], colStem[2]);
+        // Leaves
+        pushTri(-0.02,-0.55, -0.42,-0.62, -0.18,-0.30, colLeaf[0], colLeaf[1], colLeaf[2]);
+        pushTri( 0.04,-0.50,  0.44,-0.56,  0.22,-0.22, colLeaf[0], colLeaf[1], colLeaf[2]);
+        // Cup
+        pushQuad(-0.16,0.02, 0.16,0.02, 0.12,0.16, -0.12,0.16, colPetal3[0], colPetal3[1], colPetal3[2]);
+        // Petals (layers, biggest to smallest)
+        petalFan(0.0,0.10, 0.34,0.46, 10, petals[0]);
+        petalFan(0.0,0.12, 0.26,0.36,  9, petals[1]);
+        petalFan(0.0,0.14, 0.18,0.28,  8, petals[2]);
+        petalFan(0.0,0.16, 0.12,0.20,  7, petals[3]);
+      })();
+
+      const vbo = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verts), gl.STATIC_DRAW);
+
+      gl.useProgram(prog);
+      gl.enableVertexAttribArray(locPos);
+      gl.enableVertexAttribArray(locCol);
+      const stride = 5 * 4;
+      gl.vertexAttribPointer(locPos, 2, gl.FLOAT, false, stride, 0);
+      gl.vertexAttribPointer(locCol, 3, gl.FLOAT, false, stride, 2 * 4);
+
+      function resize(){
+        const dpr = Math.min(1.25, window.devicePixelRatio || 1);
+        const w = Math.floor(canvas.clientWidth * dpr);
+        const h = Math.floor(canvas.clientHeight * dpr);
+        if (canvas.width !== w || canvas.height !== h){
+          canvas.width = w;
+          canvas.height = h;
+          gl.viewport(0, 0, w, h);
+        }
+      }
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+
+      function frame(ms){
+        resize();
+        gl.clearColor(0.03, 0.04, 0.07, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(locTime, ms * 0.001);
+        gl.drawArrays(gl.TRIANGLES, 0, verts.length / 5);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
     })();
   </script>
 
