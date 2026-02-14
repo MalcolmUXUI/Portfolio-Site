@@ -38,8 +38,18 @@
         --overlay-pad-x: 14px;
         --overlay-pad-y: 12px;
         --overlay-gap: 10px;
-        /* Shadows */
-        --shadow-card: var(--shadow);
+        /* Shadows: semantic families */
+        --shadow-surface-base: 0 14px 40px rgba(17,20,24,.10);
+        --shadow-surface-soft: 0 10px 24px rgba(17,20,24,.08);
+        --shadow-surface-strong: 0 18px 48px rgba(17,20,24,.14);
+        --shadow-interactive-base: var(--shadow-surface-base);
+        --shadow-cutout-lg: drop-shadow(0 18px 34px rgba(0,0,0,.18));
+        --shadow-cutout-md: drop-shadow(0 10px 22px rgba(0,0,0,.18));
+        --shadow-cutout-sm: drop-shadow(0 4px 12px rgba(0,0,0,.18));
+        --shadow-cutout-current: var(--shadow-cutout-lg);
+        /* Legacy aliases to avoid broad refactors */
+        --shadow: var(--shadow-surface-base);
+        --shadow-card: var(--shadow-surface-base);
         --shadow-overlay: 0 28px 62px rgba(0,0,0,.24),
           0 12px 28px rgba(0,0,0,.16),
           0 0 0 1px rgba(0,0,0,0.06);
@@ -68,7 +78,6 @@
         --radius-pill: 999px;
         /* Legacy default radius (kept for existing rules) */
         --radius: 18px;
-        --shadow: 0 14px 40px rgba(17,20,24,.10);
         --space-1: 8px;
         --space-2: 12px;
         --space-3: 16px;
@@ -352,6 +361,14 @@
           --ink-cyan: #6FADF8;
           --ink-lavender: #A486F6;
         }
+      }
+
+      @media (max-width: 960px){
+        :root{ --shadow-cutout-current: var(--shadow-cutout-md); }
+      }
+
+      @media (max-width: 640px){
+        :root{ --shadow-cutout-current: var(--shadow-cutout-sm); }
       }
     }
 
@@ -1909,7 +1926,7 @@
       /* column width scales with the card width but stays within sensible bounds */
       --mosaic-col: clamp(90px, 12vw, 150px);
       display: grid;
-grid-auto-flow: column;
+      grid-auto-flow: column;
       grid-auto-columns: minmax(var(--mosaic-col), 1fr);
       gap: var(--space-sm);
       padding: 18px;
@@ -3251,9 +3268,6 @@ grid-auto-flow: column;
         translate(-50%, -50%) scale(1.05);;
     }
 
-    .process-step:first-child{
-    }
-
     /* Left column: number badge */
     .process-num{
       width: var(--chip, 60px);
@@ -3414,14 +3428,9 @@ grid-auto-flow: column;
   overflow: visible;
 }
 
-/* But keep the surface decoration neatly clipped to the rounded corners */
-.aboutCard.surface::before,
+/* Keep the card grain behind content so popout image doesn't get a hard seam at card edges */
 .aboutCard.surface::after{
-  /* let shadows bleed past the rounded mask */
-    clip-path: inset(-100px round var(--radius-2xl));
-
-  overflow: visible !important;
-
+  z-index: 0;
 }
 
     .aboutCard__header{
@@ -3477,7 +3486,7 @@ grid-auto-flow: column;
   overflow: visible;
   background: transparent !important;
   border-radius: 999px; /* keep the circle */
-  filter: drop-shadow(0 18px 34px rgba(0,0,0,0.18));
+  filter: var(--shadow-cutout-current);
   box-shadow: none;
 
   /* optional: keep your shadow, but it will no longer be circular */
@@ -3496,12 +3505,14 @@ grid-auto-flow: column;
   justify-content: flex-end;
   align-self: flex-end;
   margin-left: var(--space-lg);
-  overflow: visible;
-  margin-bottom: -50px; /* hang below card */
-
-
+  overflow:visible;
+  margin-left: var(--space-md);
+  padding-right: var(--space-md);
+  margin-right: var(--space-md);
+  padding-left: var(--space-md);
+  margin-bottom: calc(var(--space-3xl) * -2);
+  padding-bottom: var(--space-sm);
 }
-    }
 
 @media (max-width: 640px){
       .aboutCard{
@@ -3509,32 +3520,29 @@ grid-auto-flow: column;
         align-items: center;
         padding-bottom: var(--aboutHeaderPadY);
         overflow:visible;
-
       }
       .aboutCard__photo{
-        margin: var(--space-sm);
-        padding: var(--space-sm); /* hang below card */
+        margin: var(--space-xs);
+        padding: var(--space-xs); /* hang below card */
         overflow:visible !important;
         width: 190px;
         height: 190px;
-        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18));
-        box-sizing: none !important; /* opt out of global border-box */
-
-
       }
       .heroAvatar{
         position: static;
         transform: none;
         overflow:visible ;
-        margin: var(--space-sm);
-        padding: var(--space-sm);
+        margin: var(--space-xs);
+        padding: var(--space-xs);
       }
       .aboutCard__media{
-        padding-right: var(--space-xs); /* hang below card */
-        padding-left: var(--space-lg); /* hang below card */
-        margin-left: var(--space-lg); /* hang below card */
         overflow:visible;
-        margin-bottom: -50px; /* hang below card */
+        margin-left: var(--space-sm);
+        padding-right: var(--space-sm);
+        margin-right: var(--space-sm);
+        padding-left: var(--space-sm);
+        margin-bottom: calc(var(--space-3xl) * -2);
+        padding-bottom: var(--space-sm);
       }
     }
 
@@ -3580,12 +3588,6 @@ grid-auto-flow: column;
 
     @media (max-width: 640px){
       :root{ --avatarSize: var(--avatarSizeSm); }
-      .aboutCard{
-        padding-bottom: var(--aboutHeaderPadY);
-        overflow: hidden;
-        flex-direction: column;
-        align-items: center;
-      }
       .aboutCard__header{
         text-align: center;
         position: static;
@@ -3717,12 +3719,10 @@ grid-auto-flow: column;
       .help-detail-cta{ display: none; }
     }
 
-help-panels    .{ width: 100%; margin-bottom: 0; }
-
     .help-panel{
       display: none;
       margin: 0;
-      padding: 0);
+      padding: 0;
       border: 1px solid rgba(var(--tab-hl-rgb, 155,122,247), 0.10);
       background: transparent;
       box-shadow: none;
@@ -3793,8 +3793,6 @@ help-panels    .{ width: 100%; margin-bottom: 0; }
     .help-detail .receipt-list li::marker{
       color: rgba(var(--text-muted-rgb), 0.7);
       font-size: 0.95em;
-    }
-
     }
 
     .help-detail-cta{
