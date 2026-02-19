@@ -99,18 +99,6 @@
         --tabs-shadow: var(--shadow);
         --tabs-text: var(--text);
         --tabs-text-muted: var(--text-muted);
-        /* About header */
-        --aboutHeaderGap: 18px;
-        --aboutHeaderPadX: 18px;
-        --aboutHeaderPadY: 16px;
-        --avatarSize: var(--space-10);
-        --avatarSizeSm: var(--space-9);
-        --avatarSizeXs: var(--space-8);
-        --avatarFocusY: 42%;
-        --avatarShadow: 0 18px 40px rgba(0,0,0,.18);
-        --avatarRing: 6px;
-        --avatarPopScale: 1.12;
-        --avatarPopY: -4px;
         /* Spacing scale (semantic aliases) */
         --space-xs: var(--space-1);
         --space-sm: var(--space-2);
@@ -580,7 +568,14 @@
       display: none;
       flex-direction: column;
       gap: 14px;
-      padding: clamp(32px, 8vw, 56px) var(--gutter) clamp(24px, 6vw, 42px);
+      --mobile-nav-item-h: 56px;
+      --mobile-close-size: 52px;
+      --mobile-close-top: clamp(12px, 3vw, 18px);
+      padding:
+        calc(var(--mobile-close-top) + var(--mobile-close-size) + var(--space-sm))
+        calc(var(--gutter) + env(safe-area-inset-right))
+        calc(clamp(24px, 6vw, 42px) + env(safe-area-inset-bottom))
+        calc(var(--gutter) + env(safe-area-inset-left));
       background:
         radial-gradient(120% 120% at 20% 0%, rgba(var(--accent-warm-rgb),0.18), transparent 60%),
         radial-gradient(120% 120% at 80% 10%, rgba(var(--primary-rgb),0.16), transparent 62%),
@@ -590,6 +585,8 @@
       border-top: 1px solid rgba(var(--border-rgb, 218,213,206), 0.7);
       box-shadow: 0 28px 60px rgba(0,0,0,0.22);
       z-index: 120;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
     .mobile-nav-panel.is-open{
       display: flex;
@@ -600,12 +597,15 @@
       to{ opacity: 1; transform: translateY(0); }
     }
     .mobile-nav-panel a{
-      display: block;
+      display: flex;
+      align-items: center;
+      min-block-size: var(--mobile-nav-item-h);
       font-size: var(--type-body);
       font-weight: 700;
       color: var(--text);
       text-decoration: none;
-      padding: 14px var(--space-md);
+      white-space: nowrap;
+      padding: 0 var(--space-md);
       border-radius: var(--radius-md);
       background:
         linear-gradient(180deg,
@@ -628,22 +628,31 @@
     }
     .mobile-nav-close{
       position: absolute;
-      top: 14px;
-      right: 18px;
+      top: var(--mobile-close-top);
+      right: calc(var(--gutter) + env(safe-area-inset-right));
+      inline-size: var(--mobile-close-size);
+      block-size: var(--mobile-close-size);
+      display: grid;
+      place-items: center;
       border: 1px solid rgba(var(--text-rgb), 0.14);
       background:
         linear-gradient(180deg,
           rgba(255,255,255,0.85),
           rgba(255,255,255,0.1)),
         linear-gradient(180deg, var(--card-top), var(--card-bottom));
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: var(--type-body);
+      border-radius: 999px;
+      padding: 0;
+      font-size: clamp(24px, 5vw, 28px);
+      line-height: 1;
       cursor: pointer;
       color: var(--text);
       box-shadow:
         0 10px 20px rgba(0,0,0,0.12),
         inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+    .mobile-nav-close:focus-visible{
+      border-radius: 999px;
+      outline-offset: 2px;
     }
     body.nav-open{
       overflow: hidden;
@@ -788,6 +797,7 @@
       align-items:center;
       justify-content:center;
       padding:0.7rem 1.1rem;
+      white-space: nowrap;
       border-radius:12px;
       border:1px solid rgba(var(--text-rgb), 0.12);
       background:
@@ -808,6 +818,10 @@
         var(--shadow),
         inset 0 1px 0 rgba(255,255,255,.55);
       text-shadow: none;
+    }
+
+    .nav-links .btn{
+      flex-shrink: 0;
     }
 
     .btn::before{
@@ -1056,7 +1070,8 @@
     }
 
     .approach-card{
-      margin: 0;padding: var(--space-sm);
+      margin: 0;
+      padding: var(--space-sm) var(--space-xs) var(--space-xs) var(--space-xs) !important;
       border-radius: var(--radius-sm);
       overflow: visible;
       gap: var(--space-xs) !important;
@@ -1075,8 +1090,6 @@
     }
 
     .testimonial-card{
-      margin:0;
-      padding:0;
       height:100%;
     }
 
@@ -1084,13 +1097,13 @@
       margin: 0;
       display: grid;
       grid-template-rows: 1fr auto auto;
-      row-gap: 0;
+      row-gap: var(--space-xs);
       align-items: stretch;
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
       box-shadow: var(--shadow);
-      padding: var(--space-lg);
+      padding: var(--space-md) var(--space-xs) var(--space-xs) var(--space-md);
       position: relative;
       overflow: hidden;
       height: 100%;
@@ -1122,7 +1135,7 @@
     }
 
     .quote-text{
-      margin: 12px;
+      margin: var(--space-xs);
       text-align: left;
       font-style: italic;
       color: var(--text);
@@ -1132,12 +1145,10 @@
     .quote-divider{
       height: 1px;
       background: var(--divider);
-      width: calc(100% - 24px);
-      margin: 24px auto;
     }
 
     .quote-cite{
-      margin: 0;
+      margin:var(--space-xs) 0;
       color: var(--text-muted);
       display: grid;
       row-gap: 2px;
@@ -1149,7 +1160,6 @@
       color: var(--text);
       font-weight: 700;
       font-style: normal;
-      margin-bottom: 2px;
       display: block;
     }
 
@@ -1519,6 +1529,7 @@
     /* Disable hover lift for specific surfaces (e.g., email card). */
     .surface.no-hover:hover{
       transform: none;
+      margin: var(--space-md);
       border-color: var(--border);
       box-shadow: var(--shadow);
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
@@ -1633,6 +1644,7 @@
   margin: 0;
   padding-left: var(--space-lg);
   line-height: var(--lh-body);
+  z-index: 50;
 
 }
 
@@ -2577,8 +2589,8 @@
 
     /* Case Studies card */
     .case-studies-card{
-      margin:  0;
-     padding: var(--space-xs);
+      margin:0;
+      padding:var(--space-lg) var(--space-xs)var(--space-xs)var(--space-xs);
       border-radius: var(--radius-sm);
       display: grid;
       gap: 0;
@@ -3130,13 +3142,14 @@
        10) Callouts (shared spacing)
        ============================================================ */
     .callout{ 
-      padding: var(--space-sm) var(--space-xs) var(--space-xs) var(--space-xs);
+      padding: var(--space-lg);
     }
     .callout > h3{ margin:0 0 8px; }
     .callout > p{ margin:0; }
 
     .link-accent{
       color: var(--link);
+      margin: var(--space-md);
       text-decoration: underline;
     }
 
@@ -3207,10 +3220,10 @@
       content: counter(step);
       position: absolute;
       left: calc(var(--chip) / 2);
-      top: calc(50% - var(--pop));
+      top: var(--space-2xl);
       transform: translate(-50%, -50%);
-      width: var(--badge);
-      height: var(--badge);
+      width: calc(var(--badge) * .9);
+      height: calc(var(--badge) * .9);
       border:none ;
       border-radius: 999px;
       display: grid;
@@ -3268,36 +3281,11 @@
         translate(-50%, -50%) scale(1.05);;
     }
 
-    /* Left column: number badge */
-    .process-num{
-      width: var(--chip, 60px);
-      height: var(--chip, 60px);
-      border-radius: 999px;
-      border: none;
-      align-self: center;
-      margin: 0;
-      border: 0;
-      outline: 0;
-      background: none;
-      box-shadow: none;
-      pointer-events: none;
-    }
-
-    .process-num::before{
-      content: "";
-      font-size: 0;
-            border: none;
-
-      line-height: 0;
-      color: transparent;
-            border: none;
-
-    }
-
     /* Right column: text stack */
     .process-body{
       min-width: 0;
       display: grid;
+      grid-column: 2;
       row-gap: 6px; /* controls title-to-body spacing */
     }
 
@@ -3346,16 +3334,10 @@
     /* Small screens */
     @media (max-width: 520px){
       .process-step{
-        grid-template-columns: auto 1fr;
+        --chip: var(--step-badge, clamp(44px, 12vw, 60px));
+        grid-template-columns: var(--chip) 1fr;
         column-gap: var(--space-xs);
         padding: var(--space-xs);
-      }
-
-      .process-num{
-        width: var(--step-badge, clamp(44px, 12vw, 60px));
-        height: var(--step-badge, clamp(44px, 12vw, 60px));
-        border-radius: 14px;
-        margin: 0;
       }
 
     }
@@ -3373,10 +3355,8 @@
       }
       .process-body{
         display: contents;
+        grid-column: 1;
         row-gap: 0;
-      }
-      .process-num{
-        display: none;
       }
       .process-title{
         margin-top: 0;
@@ -3414,12 +3394,20 @@
     /* About card with avatar */
     .aboutCard{
       position: relative;
-      padding-left: var(--space-lg);
-      padding-right: var(--space-lg);
-      padding-bottom: var(--space-lg);
-      display: flex;
-      gap: var(--space-lg);
-      align-items: flex-start;
+      --about-shape-w: clamp(168px, 22vw, 232px);
+      --about-shape-radius: 999px;
+      --about-shape-radius-pct: 55%;
+      --about-shape-center-x: 45%;
+      --about-shape-center-y: 45%;
+      --about-shape-margin: clamp(10px, 1.2vw, 14px);
+      --about-wrap-gap-inline: clamp(10px, 1.1vw, 16px);
+      --about-photo-pop: clamp(60px, 6.8vw, 76px); /* image breakout above card */
+      --about-media-mt: calc(var(--about-photo-pop) * -1);
+      --about-media-mr: 0px;
+      --about-media-mb: 0px;
+      --about-media-ml: var(--about-wrap-gap-inline);
+      padding: var(--space-xs);
+      display: block;
       overflow: visible; /* allow the avatar to escape the card edge */
     }
 
@@ -3433,49 +3421,31 @@
   z-index: 0;
 }
 
-    .aboutCard__header{
-      position: relative;
-      display: block;
-      padding: var(--aboutHeaderPadY) var(--aboutHeaderPadX);
-    }
-
-    .aboutCard__avatar{
-      width: var(--avatarSize);
-      height: var(--avatarSize);
-      border-radius: 999px;
-      box-shadow: var(--avatarShadow);
-      display: block;
-      object-fit: contain;
-      object-position: 50% var(--avatarFocusY);
-      overflow: visible !important;
-
-      border: 0;
-    }
-
-    .aboutCard__title{ margin: 0; }
-    .aboutCard__lede{
-      margin: 6px 0 0;
-      padding-right: 0;
-    }
-
-    .aboutCard__body{
-      padding: var(--space-md);
-      flex: 1;
+    .aboutCard__body{;
       min-width: 0;
+      display: flow-root; /* contain floated media wrap cleanly */
       overflow: visible;
+    }
+
+    .aboutCard__copy{
+      margin: var(--space-md);
+    }
+
+    .para-stack > p{
+      margin: 0;
+    }
+
+    .para-stack > p + p{
+      margin-top: var(--space-md);
     }
 
     /* Headshot anchored at lower-right via flex */
 /* PNG pop-out: do NOT crop the bitmap */
 .aboutCard__photo{
   object-fit:contain;
-
-  margin-left: var(--space-lg);
-
-  /* keep a max size, but let the image keep its natural aspect */
-  width: 210px;
-  max-width: 210px;
-  height: auto;
+  width: 100%;
+  max-width: none;
+  height: 100%;
 
   /* these three are what typically cause the crop */
   /* border-radius: 50%; */
@@ -3485,124 +3455,110 @@
   display: block;
   overflow: visible;
   background: transparent !important;
-  border-radius: 999px; /* keep the circle */
+  border-radius: var(--about-shape-radius); /* keep the circle */
   filter: var(--shadow-cutout-current);
   box-shadow: none;
+  margin: 0;
+  padding: 0;
 
   /* optional: keep your shadow, but it will no longer be circular */
 
 }
-/* The usual culprit: some card/surface style is clipping. */
-.aboutCard,
-.aboutCard__body,
-.aboutCard__media{
-  overflow: visible;
-}
-
 /* Wrapper controls layout area, but does not clip the image */
 .aboutCard__media{
-  display: flex;
-  justify-content: flex-end;
-  align-self: flex-end;
-  margin-left: var(--space-lg);
-  overflow:visible;
-  margin-left: var(--space-md);
-  padding-right: var(--space-md);
-  margin-right: var(--space-md);
-  padding-left: var(--space-md);
-  margin-bottom: calc(var(--space-3xl) * -2);
-  padding-bottom: var(--space-sm);
+  float: right;
+  width: var(--about-shape-w);
+  block-size: var(--about-shape-w);
+  margin: var(--about-media-mt) var(--about-media-mr) var(--about-media-mb) var(--about-media-ml);
+  padding: 0;
+  border-radius: var(--about-shape-radius);
+  -webkit-shape-outside: circle(var(--about-shape-radius-pct) at var(--about-shape-center-x) var(--about-shape-center-y)) border-box;
+  shape-outside: circle(var(--about-shape-radius-pct) at var(--about-shape-center-x) var(--about-shape-center-y)) border-box;
+  shape-margin: var(--about-shape-margin);
+  overflow: visible;
+  display: block;
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+  clear: none;
 }
 
 @media (max-width: 640px){
       .aboutCard{
-        flex-direction: column;
-        align-items: center;
-        padding-bottom: var(--aboutHeaderPadY);
+        --about-shape-w: min(220px, 62vw);
+        --about-shape-margin: 0px;
+        --about-media-mt: 0px;
+        --about-media-mr: auto;
+        --about-media-mb: 0px;
+        --about-media-ml: auto;
+        padding-bottom: var(--space-md);
         overflow:visible;
-      }
-      .aboutCard__photo{
-        margin: var(--space-xs);
-        padding: var(--space-xs); /* hang below card */
-        overflow:visible !important;
-        width: 190px;
-        height: 190px;
-      }
-      .heroAvatar{
-        position: static;
-        transform: none;
-        overflow:visible ;
-        margin: var(--space-xs);
-        padding: var(--space-xs);
       }
       .aboutCard__media{
+        float: none;
+        -webkit-shape-outside: none;
+        shape-outside: none;
+        shape-margin: var(--about-shape-margin);
+        width: var(--about-shape-w);
+        block-size: var(--about-shape-w);
+        margin: var(--space-sm) auto 0;
         overflow:visible;
-        margin-left: var(--space-sm);
-        padding-right: var(--space-sm);
-        margin-right: var(--space-sm);
-        padding-left: var(--space-sm);
-        margin-bottom: calc(var(--space-3xl) * -2);
-        padding-bottom: var(--space-sm);
+        padding: 0;
+        pointer-events: auto;
       }
     }
 
-    /* Popout avatar (two-layer) */
-    .heroAvatar{
-      position: absolute;
-      left: 50%;
-      bottom: -50px;
-      transform: translateX(-50%);
-      width: var(--avatarSize);
-      height: var(--avatarSize);
-      overflow: visible;
-    }
-
-    .heroAvatar__base{
-      display: none;
-      align-items: right;
-      overflow: visible;
-    }
-
-    .heroAvatar__pop{
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 100%;
-      height: auto;
-      transform:
-        translate(-50%, -50%)
-        translateY(var(--avatarPopY))
-        scale(var(--avatarPopScale));
-      transform-origin: center;
-      z-index: 2;
+    .chat-float{
+      position: fixed;
+      right: max(10px, calc(env(safe-area-inset-right) + 10px));
+      bottom: max(10px, calc(env(safe-area-inset-bottom) + 10px));
+      inline-size: 60px;
+      block-size: 60px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      z-index: 145;
       pointer-events: none;
-      border-radius: 999px;    /* ensure PNG shows only its circle */
-      background: transparent; /* honor transparency */
+      margin-bottom:var(--space-md);
+      margin-right: var(--space-md);
+      overflow: visible !important;
+      isolation: isolate;
+    }
+
+    .chat-float::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle at 50% 50%,
+        rgba(255, 255, 255, 0.20) 0%,
+        rgba(255, 255, 255, 0.10) 48%,
+        rgba(255, 255, 255, 0.03) 78%,
+        rgba(255, 255, 255, 0.00) 100%);
+      backdrop-filter: blur(1.6px) saturate(105%);
+      -webkit-backdrop-filter: blur(2.6px) saturate(105%);
+      -webkit-mask-image: radial-gradient(circle at 50% 50%,
+        rgba(0,0,0,1) 0 48%,
+        rgba(0,0,0,0.32) 74%,
+        rgba(0,0,0,0) 100%);
+      mask-image: radial-gradient(circle at 50% 50%,
+        rgba(0,0,0,1) 0 48%,
+        rgba(0,0,0,0.32) 74%,
+        rgba(0,0,0,0) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: 0 2px 10px rgba(17, 20, 24, 0.12);
+    }
+
+    .chat-float__img{
+      position: relative;
+      z-index: 1;
+      inline-size: 48px;
+      block-size: 48px;
+      object-fit: contain;
+      object-position: center;
       display: block;
-      overflow:visible;
-    }
-
-    @media (max-width: 980px){
-      :root{ --avatarSize: var(--avatarSizeSm); }
-    }
-
-    @media (max-width: 640px){
-      :root{ --avatarSize: var(--avatarSizeSm); }
-      .aboutCard__header{
-        text-align: center;
-        position: static;
-      }
-      .aboutCard__lede{ padding-right: 0; }
-      .aboutCard__body{
-        padding: 0 0 var(--aboutHeaderPadY);
-        padding-right: var(--space-md);
-      }
-      .aboutCard__headerText{ width: 100%; }
-      .heroAvatar{
-        position: static;
-        margin: 0 auto calc(-1 * var(--space-sm));
-        transform: none;
-      }
+      border-radius: 999px;
+      background-color: transparent !important;
     }
 
     /* ============================================================
@@ -4520,6 +4476,9 @@
     animation: none;
   }
   .theme-toggle{
+    transform: translateY(-.5px);
+  }
+  :root[data-theme="dark"] .theme-toggle{
     background:
       var(--moon-texture) center/cover no-repeat,
       radial-gradient(circle at 30% 45%,
@@ -4532,7 +4491,6 @@
     box-shadow:
       -10px -5px 20px rgba(0,0,0,0.28),
       inset 0 0 0 1px rgba(255,255,255,0.35);
-    transform: translateY(-.5px);
   }
 }
 
@@ -4663,12 +4621,12 @@
     }
 
     /* end @layer components */
-    }
+
 
     @layer utilities {
       .stack-tight > .fine{ margin:0; }
       .stack-tight > .fine + .fine{ margin-top:10px; }
-      .mt-16{ margin-top:16px; }
+      .mt-16{ margin-top:var(--space-lg); }
       .mb-8{ margin-bottom:8px; }
       .m-0{ margin:0; }
       .flow-s > * + *{ margin-top: var(--space-sm); }
@@ -4784,7 +4742,10 @@
       <button class="mobile-nav-close" type="button" aria-label="Close navigation">✕</button>
       <a href="#work">Work</a>
       <a href="#about">About</a>
-      <a class="btn" href="#contact">Book a Call</a>
+      <a href="#help">How I Can Help</a>
+      <a href="#approach">Approach</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#contact">Contact</a>
     </div>
   </div>
 
@@ -5348,29 +5309,23 @@
       <section class="aboutCard surface stack-tight">
         
 
-        <div class="aboutCard__body flow-m">
-          <p class="fine">
-            I’m Mark Malcolm, a <span class="hl hl-blue bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-amber bio-highlight a2">product partner, not just a screen designer</span>.
-          </p>
-          <p class="fine">
-            My work sits at the intersection of UX strategy, brand systems, and real-world delivery. I’ve spent my career inside environments where <span class="hl hl-teal bio-highlight a3">clarity matters</span>: strict brand guidelines, multi-role workflows, high-stakes operations, and teams trying to move fast without breaking things. That background trained me to look beyond individual screens and focus on how decisions ripple across people, tools, and process.
-          </p>
-          <p class="fine">
-            I’m especially effective when problems feel messy or undefined. I <span class="hl hl-purple bio-highlight a4">turn complex workflows into clear, buildable systems</span>, helping teams surface what’s really happening, align stakeholders around shared goals, and translate ambiguity into clear structure. That often means guiding conversations, tightening requirements, and designing systems that scale, not just interfaces that look good.
-          </p>
-          <p class="fine">
-            I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-green bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
-          </p>
-    
-          <div class="aboutCard__media" aria-hidden="true">
-    <img
-      class="aboutCard__photo"
-      src="assets/headshot/popout-headshot.png"
-      alt="Portrait of Mark Malcolm"
-      loading="eager"
-      decoding="async"
-    />
-  </div>
+        <div class="aboutCard__body">
+          <div class="fine aboutCard__copy para-stack">
+            <p>
+              I’m Mark Malcolm, a <span class="hl hl-blue bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-amber bio-highlight a2">product partner, not just a screen designer</span>.
+            </p>
+            <p>
+              My work sits at the intersection of UX strategy, brand systems, and real-world delivery. I’ve spent my career inside environments where clarity matters: <span class="hl hl-teal bio-highlight a3">strict brand guidelines, multi-role workflows, high-stakes operations</span>, and teams trying to move fast without breaking things. That background trained me to look beyond individual screens and focus on how decisions ripple across people, tools, and process.
+            </p>
+            
+            <p>
+              I’m especially effective when problems feel messy or undefined. I <span class="hl hl-purple bio-highlight a4">turn complex workflows into clear, buildable systems</span>, helping teams surface what’s really happening, align stakeholders around shared goals, and translate ambiguity into clear structure. That often means guiding conversations, tightening requirements, and designing systems that scale, not just interfaces that look good.
+            </p>
+            <p>
+              I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-green bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
+            </p>
+          </div>
+
         </div>
 
         
@@ -5575,8 +5530,6 @@
       <div class="callout surface approach-card">
         <ol class="process" aria-label="Project process steps">
           <li class="process-step">
-            <span class="process-num" aria-hidden="true"></span>
-
             <div class="process-body">
               <h3 class="process-title">Define the Target</h3>
               <p class="fine process-why">
@@ -5589,8 +5542,6 @@
           </li>
 
           <li class="process-step">
-            <span class="process-num" aria-hidden="true"></span>
-
             <div class="process-body">
               <h3 class="process-title">Map the Reality</h3>
               <p class="fine process-why">
@@ -5603,8 +5554,6 @@
           </li>
 
           <li class="process-step">
-            <span class="process-num" aria-hidden="true"></span>
-
             <div class="process-body">
               <h3 class="process-title">Design the Next Version</h3>
               <p class="fine process-why">
@@ -5617,8 +5566,6 @@
           </li>
 
           <li class="process-step">
-            <span class="process-num" aria-hidden="true"></span>
-
             <div class="process-body">
               <h3 class="process-title">Validate Before You Build</h3>
               <p class="fine process-why">
@@ -5631,8 +5578,6 @@
           </li>
 
           <li class="process-step">
-            <span class="process-num" aria-hidden="true"></span>
-
             <div class="process-body">
               <h3 class="process-title">Ship, Learn, Tighten</h3>
               <p class="fine process-why">
@@ -5646,7 +5591,10 @@
         </ol>
         <div class="case-top">
         <h3 class="h3 ">Why I work this way</h3>
-        <p class="section-lede">I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.</br>Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.</p>
+        <div class="section-lede case-top__copy para-stack">
+          <p>I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.</p>
+          <p>Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.</p>
+        </div>
       </div>
       </div>
     </section>
@@ -5670,7 +5618,7 @@
               <div class="quote-divider" aria-hidden="true"></div>
               <div class="quote-cite">
                 <strong>Sean Colandrea</strong>
-                <h4>Product Manager</h4>
+                <h4 class="schedule-sub">Product Manager</h4>
               </div>
             </figure>
           </li>
@@ -5687,7 +5635,7 @@
               <div class="quote-divider" aria-hidden="true"></div>
               <div class="quote-cite">
                 <strong>Kai Mills</strong>
-                <h4>UI Designer</h4>
+                <h4 class="schedule-sub">UI Designer</h4>
               </div>
             </figure>
           </li>
@@ -5704,7 +5652,7 @@
               <div class="quote-divider" aria-hidden="true"></div>
               <div class="quote-cite">
                 <strong>Michael McTavish</strong>
-                <h4>Project Manager</h4>
+                <h4 class="schedule-sub">Project Manager</h4>
               </div>
             </figure>
           </li>
@@ -5721,7 +5669,7 @@
               <div class="quote-divider" aria-hidden="true"></div>
               <div class="quote-cite">
                 <strong>Alan Donth</strong>
-                <h4>Product Design</h4>
+                <h4 class="schedule-sub">Product Design</h4>
               </div>
             </figure>
           </li>
@@ -6100,9 +6048,8 @@
         </div>
       </noscript>
 
-      <div class="callout surface no-hover mt-16 flow-s">
+      <div class="callout surface no-hover mt-16 flow-m">
         <p class="fine">
-          <!-- Update these lines with your real contact info. -->
           Email: <a class="link-accent" href="mailto:mark@we3.design">mark@we3.design</a><br />
         </p>
       </div>
@@ -6119,6 +6066,16 @@
     </footer>
 
   </main>
+
+  <div class="chat-float" aria-hidden="true">
+    <img
+      class="chat-float__img"
+      src="assets/headshot/popout-headshot.png"
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
 
   <script>
     /* ==========================================================
