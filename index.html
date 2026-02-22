@@ -4881,10 +4881,6 @@
     }
   </style>
 
-  <!-- Calendly popup widget assets -->
-  <link rel="preconnect" href="https://assets.calendly.com" crossorigin>
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 </head>
 
 <body>
@@ -6280,21 +6276,122 @@
     document.getElementById("y").textContent = new Date().getFullYear();
 
     /* ==========================================================
-       Calendly: open popup if available, else fallback to new tab
+       Calendly: lazy-load popup widget only when needed
        ========================================================== */
-    function openCalendly(url){
-      if (!window.Calendly || !Calendly.initPopupWidget){
-        // fallback to new tab on older browsers or if Calendly JS not ready
-        const frame = document.getElementById('scheduleOverlayFrame');
-        if (frame){
-          frame.dataset.src = url;
-          frame.src = url;
-        } else {
-          window.open(url, "_blank", "noopener,noreferrer");
+    const CALENDLY_ORIGIN = "https://calendly.com";
+    const CALENDLY_ASSETS_ORIGIN = "https://assets.calendly.com";
+    const CALENDLY_WIDGET_CSS = `${CALENDLY_ASSETS_ORIGIN}/assets/external/widget.css`;
+    const CALENDLY_WIDGET_JS = `${CALENDLY_ASSETS_ORIGIN}/assets/external/widget.js`;
+    let calendlyWidgetPromise = null;
+    let calendlyOriginsWarmed = false;
+
+    function warmCalendlyOrigins(){
+      if (calendlyOriginsWarmed || !document.head) return;
+      calendlyOriginsWarmed = true;
+      [CALENDLY_ORIGIN, CALENDLY_ASSETS_ORIGIN].forEach((href) => {
+        const existing = document.head.querySelector(`link[rel="preconnect"][href="${href}"]`);
+        if (existing) return;
+        const link = document.createElement("link");
+        link.rel = "preconnect";
+        link.href = href;
+        link.crossOrigin = "anonymous";
+        document.head.appendChild(link);
+      });
+    }
+
+    function ensureCalendlyWidget(){
+      warmCalendlyOrigins();
+
+      if (window.Calendly && window.Calendly.initPopupWidget){
+        return Promise.resolve(window.Calendly);
+      }
+      if (calendlyWidgetPromise){
+        return calendlyWidgetPromise;
+      }
+
+      calendlyWidgetPromise = new Promise((resolve, reject) => {
+        if (!document.head){
+          reject(new Error("Calendly widget load failed: <head> not available"));
+          return;
         }
+
+        if (!document.head.querySelector(`link[href="${CALENDLY_WIDGET_CSS}"]`)){
+          const css = document.createElement("link");
+          css.rel = "stylesheet";
+          css.href = CALENDLY_WIDGET_CSS;
+          document.head.appendChild(css);
+        }
+
+        const resolveIfReady = () => {
+          if (window.Calendly && window.Calendly.initPopupWidget){
+            resolve(window.Calendly);
+            return true;
+          }
+          return false;
+        };
+        if (resolveIfReady()) return;
+
+        let script = document.querySelector(`script[src="${CALENDLY_WIDGET_JS}"]`);
+        const onLoad = () => {
+          cleanup();
+          if (!resolveIfReady()){
+            reject(new Error("Calendly widget loaded but API was unavailable"));
+          }
+        };
+        const onError = () => {
+          cleanup();
+          reject(new Error("Failed to load Calendly widget"));
+        };
+        const cleanup = () => {
+          if (!script) return;
+          script.removeEventListener("load", onLoad);
+          script.removeEventListener("error", onError);
+        };
+
+        if (!script){
+          script = document.createElement("script");
+          script.src = CALENDLY_WIDGET_JS;
+          script.async = true;
+          document.head.appendChild(script);
+        }
+
+        script.addEventListener("load", onLoad);
+        script.addEventListener("error", onError);
+      }).catch((err) => {
+        calendlyWidgetPromise = null;
+        throw err;
+      });
+
+      return calendlyWidgetPromise;
+    }
+
+    function fallbackOpenCalendly(url){
+      // fallback to inline frame (if present) or a new tab when widget JS isn't available
+      const frame = document.getElementById("scheduleOverlayFrame");
+      if (frame){
+        frame.dataset.src = url;
+        frame.src = url;
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    }
+
+    async function openCalendly(url){
+      const safeUrl = (url || "").trim();
+      if (!safeUrl) return;
+
+      try {
+        await ensureCalendlyWidget();
+      } catch (err){
+        fallbackOpenCalendly(safeUrl);
         return;
       }
-      Calendly.initPopupWidget({ url: url });
+
+      if (!window.Calendly || !Calendly.initPopupWidget){
+        fallbackOpenCalendly(safeUrl);
+        return;
+      }
+      Calendly.initPopupWidget({ url: safeUrl });
     }
 
     /* ==========================================================
@@ -6314,6 +6411,7 @@
       function open(url, title){
         const safeUrl = (url || "").trim();
         if (!safeUrl) return;
+        warmCalendlyOrigins();
         const sep = safeUrl.includes("?") ? "&" : "?";
         const embedUrl = `${safeUrl}${sep}embed_domain=${location.hostname}&embed_type=Inline`;
         iframe.src = embedUrl;
@@ -6362,6 +6460,10 @@
       }
 
       schedButtons.forEach(btn => {
+        const prewarm = () => warmCalendlyOrigins();
+        btn.addEventListener("pointerenter", prewarm, { once: true, passive: true });
+        btn.addEventListener("focus", prewarm, { once: true });
+        btn.addEventListener("touchstart", prewarm, { once: true, passive: true });
         btn.addEventListener("click", (e) => {
           e.preventDefault();
           lastTrigger = btn;
