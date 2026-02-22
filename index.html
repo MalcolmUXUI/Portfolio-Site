@@ -567,7 +567,7 @@
       inset: 0;
       display: none;
       flex-direction: column;
-      gap: 14px;
+      gap: 0;
       --mobile-nav-item-h: 56px;
       --mobile-close-size: 52px;
       --mobile-close-top: clamp(12px, 3vw, 18px);
@@ -601,30 +601,29 @@
       align-items: center;
       min-block-size: var(--mobile-nav-item-h);
       font-size: var(--type-body);
-      font-weight: 700;
-      color: var(--text);
+      font-weight: 500;
+      color: var(--text-muted);
       text-decoration: none;
-      white-space: nowrap;
-      padding: 0 var(--space-md);
-      border-radius: var(--radius-md);
-      background:
-        linear-gradient(180deg,
-          rgba(255,255,255,0.75),
-          rgba(255,255,255,0.15)),
-        linear-gradient(180deg, var(--card-top), var(--card-bottom));
-      border: 1px solid rgba(var(--text-rgb), 0.12);
-      box-shadow:
-        0 12px 28px rgba(0,0,0,0.14),
-        inset 0 1px 0 rgba(255,255,255,0.65);
-      transition: transform .15s ease, box-shadow .18s ease, border-color .18s ease;
+      white-space: normal;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      border: 0;
+      border-bottom: 1px solid rgba(var(--text-rgb), 0.16);
+      box-shadow: none;
+      transition: color .18s ease, border-color .18s ease;
+    }
+    .mobile-nav-panel a:last-of-type{
+      border-bottom: 0;
     }
     .mobile-nav-panel a:focus-visible,
     .mobile-nav-panel a:hover{
-      transform: translateY(-1px);
-      border-color: rgba(var(--text-rgb), 0.22);
-      box-shadow:
-        0 16px 32px rgba(0,0,0,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.7);
+      transform: none;
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      border-color: rgba(var(--text-rgb), 0.28);
+      box-shadow: none;
     }
     .mobile-nav-close{
       position: absolute;
@@ -703,21 +702,24 @@
     .nav-links{
       display:flex;
       align-items:center;
-      gap:14px;
+      gap: 0;
     }
 
     .nav-links a:not(.btn){
-      padding:8px 10px;
-      border-radius:12px;
-      color: rgba(var(--text-rgb), 0.78);
+      display: inline-flex;
+      align-items: center;
+      padding: 0 var(--space-sm);
+      min-height: 32px;
+      white-space: nowrap;
+      color: var(--text-muted);
       font-size: var(--type-body);
       font-weight: var(--fw-body);
       text-shadow: none;
-      transition: background .2s ease, color .2s ease, box-shadow .18s ease;
-      position:relative; /* needed for underline effect */
+      transition: color .2s ease;
+      position: relative;
       text-decoration: none;
     }
-    @media (max-width: 720px){
+    @media (max-width: 1140px){
       .nav-links{ display: none; }
       .nav-toggle{
         display: inline-flex;
@@ -727,46 +729,27 @@
       }
       .nav{ padding: 8px 12px; }
       .nav-inner{ gap: var(--space-sm); padding: 10px var(--space-md); }
-    }
-
-    @media (max-width: 880px){
-      .nav-inner{ gap:12px; }
       .brand{
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
         gap: 6px;
+      }
+      .brand > span:first-of-type{
+        white-space: nowrap;
       }
       .brand-meta{ display:none; }
     }
 
     .nav-links a:not(.btn):hover{
-      background: rgba(var(--text-rgb), 0.08);
-      color:var(--text);
-      box-shadow: inset 0 -2px 0 rgba(var(--accent-warm-rgb), 0.45);
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
     .nav-links a:not(.btn):focus-visible{
-      background: rgba(var(--text-rgb), 0.10);
-      color:var(--text);
-      box-shadow: inset 0 -2px 0 rgba(var(--accent-warm-rgb), 0.55);
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
-
-    /* Underline effect (NAV ONLY) */
-    .nav-links a:not(.btn)::after{
-      content:"";
-      position:absolute;
-      left:10px;
-      right:10px;
-      bottom:6px;
-      height:2px;
-      border-radius:999px;
-      background: rgba(var(--primary-rgb), 0.55);
-      transform: scaleX(0);
-      transform-origin:left;
-      transition: transform .18s ease;
-      box-shadow: 0 0 0 1px rgba(var(--surface-card-rgb),0.25);
-    }
-    .nav-links a:not(.btn):hover::after{ transform: scaleX(1); }
-    .nav-links a:not(.btn):focus-visible::after{ transform: scaleX(1); }
 
     /* ============================================================
        Tap highlight (iOS Safari)
@@ -979,7 +962,10 @@
   flex-direction: column;
   gap: 6px;
   text-align: center;
-  color: var(--muted);
+  font-size: var(--type-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+  color: var(--text-muted);
 }
 
 .hero-meta .meta-proof{
@@ -990,10 +976,6 @@
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-
-@media (max-width: 520px){
-  .hero-meta{ font-size: 14px; }
 }
     /* ============================================================
        7) Sections (titles, ledes)
@@ -1165,9 +1147,12 @@
 
     .quote-cite h4{
       margin: 0;
-      font-size: var(--type-body);
-      font-weight: inherit;
-      font-style: italic;
+      font-size: 14px;
+      line-height: 1.35;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 200 !important;
+      font-style: normal;
       color: var(--text-muted);
     }
 
@@ -1529,7 +1514,6 @@
     /* Disable hover lift for specific surfaces (e.g., email card). */
     .surface.no-hover:hover{
       transform: none;
-      margin: var(--space-md);
       border-color: var(--border);
       box-shadow: var(--shadow);
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
@@ -2606,7 +2590,12 @@
     .case-grid{
       display: grid;
       gap: var(--space-xs);
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 980px){
+      .case-grid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
     }
     .case-item{
       background: linear-gradient(180deg,
@@ -3408,20 +3397,19 @@
       --about-media-ml: var(--about-wrap-gap-inline);
       padding: var(--space-xs);
       display: block;
-      overflow: visible; /* allow the avatar to escape the card edge */
     }
 
     /* Allow the headshot PNG to extend outside the card box */
-.aboutCard.surface{
-  overflow: visible;
-}
+    .aboutCard.surface{
+      overflow: visible;
+    }
 
-/* Keep the card grain behind content so popout image doesn't get a hard seam at card edges */
-.aboutCard.surface::after{
-  z-index: 0;
-}
+    /* Keep the card grain behind content so popout image doesn't get a hard seam at card edges */
+    .aboutCard.surface::after{
+      z-index: 0;
+    }
 
-    .aboutCard__body{;
+    .aboutCard__body{
       min-width: 0;
       display: flow-root; /* contain floated media wrap cleanly */
       overflow: visible;
@@ -3510,10 +3498,32 @@
 
     .chat-float{
       position: fixed;
-      right: max(10px, calc(env(safe-area-inset-right) + 10px));
-      bottom: max(10px, calc(env(safe-area-inset-bottom) + 10px));
-      inline-size: 60px;
-      block-size: 60px;
+      /* Floating chat CTA tuning tokens (layout + motion) */
+      --chat-float-offset: 10px;
+      --chat-float-frame-size: 60px;
+      --chat-hover-hit-pad: 12px;
+      --chat-headshot-size: 48px;
+      --chat-headshot-hover-scale: 3;
+      --chat-headshot-base-scale: 0.3333333;
+      --chat-headshot-raster-size: calc(var(--chat-headshot-size) * var(--chat-headshot-hover-scale));
+      --chat-headshot-inset: calc((var(--chat-float-frame-size) - var(--chat-headshot-size)) / 2);
+      --chat-cta-tuck-x: -10px;
+      --chat-cta-base-scale: 0.34;
+      --chat-cta-reveal-gap: 4px;
+      --chat-cta-anchor-y: 60%;
+      --chat-cta-idle-y: -50%;
+      --chat-cta-reveal-y: -120%;
+      --chat-motion-duration: .34s;
+      --chat-motion-ease: cubic-bezier(.22,.61,.36,1);
+      --chat-cta-motion-duration: calc(var(--chat-motion-duration) + .1s);
+      --chat-cta-hint-cycle: 8s;
+      --chat-cta-hint-nudge-1: -5px;
+      --chat-cta-hint-nudge-2: -10px;
+      --chat-cta-hint-nudge-3: -6px;
+      right: max(var(--chat-float-offset), calc(env(safe-area-inset-right) + var(--chat-float-offset)));
+      bottom: max(var(--chat-float-offset), calc(env(safe-area-inset-bottom) + var(--chat-float-offset)));
+      inline-size: var(--chat-float-frame-size);
+      block-size: var(--chat-float-frame-size);
       display: grid;
       place-items: center;
       border-radius: 999px;
@@ -3529,6 +3539,7 @@
       content: "";
       position: absolute;
       inset: 0;
+      z-index: 0;
       border-radius: inherit;
       background: radial-gradient(circle at 50% 50%,
         rgba(255, 255, 255, 0.20) 0%,
@@ -3547,18 +3558,133 @@
         rgba(0,0,0,0) 100%);
       border: 1px solid rgba(255, 255, 255, 0.24);
       box-shadow: 0 2px 10px rgba(17, 20, 24, 0.12);
+      pointer-events: none;
     }
 
+    .chat-float__avatar-link{
+      position: absolute;
+      right: var(--chat-headshot-inset);
+      bottom: var(--chat-headshot-inset);
+      z-index: 2;
+      inline-size: var(--chat-headshot-raster-size);
+      block-size: var(--chat-headshot-raster-size);
+      border-radius: 999px;
+      transform-origin: 100% 100%;
+      transform: scale(var(--chat-headshot-base-scale));
+      transition: transform var(--chat-motion-duration) var(--chat-motion-ease);
+      pointer-events: auto;
+      text-decoration: none;
+      touch-action: manipulation;
+    }
+    .chat-float__avatar-link:focus-visible{
+      outline: none;
+      box-shadow:
+        0 0 0 3px rgba(var(--focus-ring-rgb), 0.42),
+        0 0 0 6px rgba(255,255,255,0.72);
+    }
     .chat-float__img{
-      position: relative;
-      z-index: 1;
-      inline-size: 48px;
-      block-size: 48px;
+      inline-size: 100%;
+      block-size: 100%;
       object-fit: contain;
       object-position: center;
       display: block;
       border-radius: 999px;
       background-color: transparent !important;
+    }
+    .chat-float__cta{
+      position: absolute;
+      right: var(--chat-headshot-inset);
+      top: var(--chat-cta-anchor-y);
+      z-index: 1;
+      white-space: nowrap;
+      opacity: 1;
+      transform-origin: 100% 50%;
+      transform: translate3d(calc(0% + var(--chat-cta-tuck-x)), var(--chat-cta-idle-y), 0) scale(var(--chat-cta-base-scale));
+      transition: transform var(--chat-cta-motion-duration) var(--chat-motion-ease);
+      will-change: transform;
+      pointer-events: none;
+      touch-action: manipulation;
+    }
+    .chat-float__cta-label{
+      display: inline-block;
+      transform: translateX(0);
+    }
+    @keyframes chatCtaHintNudge{
+      0%, 82%, 100%{ transform: translateX(0); }
+      88%{ transform: translateX(var(--chat-cta-hint-nudge-1)); }
+      94%{ transform: translateX(var(--chat-cta-hint-nudge-2)); }
+      97%{ transform: translateX(var(--chat-cta-hint-nudge-3)); }
+    }
+    .chat-float:focus-within .chat-float__avatar-link{
+      transform: scale(1);
+    }
+    .chat-float:focus-within .chat-float__cta{
+      transform: translate3d(calc(-100% + var(--chat-cta-reveal-gap)), var(--chat-cta-reveal-y), 0) scale(1);
+      pointer-events: auto;
+    }
+    .chat-float:focus-within .chat-float__cta .chat-float__cta-label{
+      animation-play-state: paused;
+    }
+    @media (prefers-reduced-motion: reduce){
+      .chat-float__avatar-link,
+      .chat-float__cta{
+        transition-duration: 1ms !important;
+      }
+      .chat-float__cta-label{
+        animation: none !important;
+      }
+    }
+    .chat-float__hit{
+      position: absolute;
+      right: calc(var(--chat-headshot-inset) - var(--chat-hover-hit-pad));
+      bottom: calc(var(--chat-headshot-inset) - var(--chat-hover-hit-pad));
+      inline-size: calc(var(--chat-headshot-size) + (var(--chat-hover-hit-pad) * 2));
+      block-size: calc(var(--chat-headshot-size) + (var(--chat-hover-hit-pad) * 2));
+      border-radius: 999px;
+      background: transparent;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @media (hover: hover) and (pointer: fine){
+      .chat-float__cta-label{
+        animation: chatCtaHintNudge var(--chat-cta-hint-cycle) ease-in-out infinite;
+      }
+      .chat-float__hit{
+        pointer-events: auto;
+      }
+      .chat-float__hit:hover ~ .chat-float__avatar-link,
+      .chat-float__avatar-link:hover,
+      .chat-float__avatar-link:focus-visible{
+        transform: scale(1);
+      }
+      .chat-float__hit:hover ~ .chat-float__cta,
+      .chat-float__avatar-link:hover ~ .chat-float__cta,
+      .chat-float__avatar-link:focus-visible ~ .chat-float__cta,
+      .chat-float__cta:hover,
+      .chat-float__cta:focus-visible{
+        transform: translate3d(calc(-100% + var(--chat-cta-reveal-gap)), var(--chat-cta-reveal-y), 0) scale(1);
+        pointer-events: auto;
+      }
+      .chat-float__hit:hover ~ .chat-float__cta .chat-float__cta-label,
+      .chat-float__avatar-link:hover ~ .chat-float__cta .chat-float__cta-label,
+      .chat-float__avatar-link:focus-visible ~ .chat-float__cta .chat-float__cta-label,
+      .chat-float__cta:hover .chat-float__cta-label,
+      .chat-float__cta:focus-visible .chat-float__cta-label{
+        animation-play-state: paused;
+      }
+    }
+    @media (hover: none) and (pointer: coarse){
+      .chat-float{
+        --chat-float-offset: 8px;
+        margin-bottom: var(--space-sm);
+        margin-right: var(--space-sm);
+      }
+      .chat-float__cta{
+        display: none;
+      }
+      .chat-float__hit{
+        display: none;
+      }
     }
 
     /* ============================================================
@@ -4212,7 +4338,7 @@
       line-height: 1.35;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      font-weight: 200;
+      font-weight: 200 !important;
     }
 
     .schedule-desc{
@@ -4505,6 +4631,43 @@
       margin-top: var(--section-gap);
       text-align: center;
     }
+    .footer-nav{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 0 0 var(--space-sm);
+      padding: 0;
+    }
+    .footer-nav a{
+      display: inline-flex;
+      align-items: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0 var(--space-sm);
+      min-height: 32px;
+      position: relative;
+    }
+    .footer-nav a:hover,
+    .footer-nav a:focus-visible{
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .footer-nav a + a::before{
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1px;
+      height: 14px;
+      background: rgba(var(--text-rgb), 0.28);
+      transform: translateY(-50%);
+    }
+    .footer-meta{
+      margin: 0;
+    }
 
     /* ============================================================
        Responsive rules (5 breakpoints)
@@ -4578,6 +4741,30 @@
 
       .fortune-wrap{ padding: 0; justify-content: center; }
       .ticker-section{ margin: var(--space-xl) 0; }
+    }
+
+    @media (max-width: var(--bp-sm)){
+      .footer-nav{
+        flex-direction: column;
+        align-items: stretch;
+        width: min(100%, 360px);
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .footer-nav a{
+        justify-content: center;
+        min-height: 40px;
+      }
+      .footer-nav a + a::before{
+        content: none;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse){
+      .footer-nav a:hover{
+        color: var(--text-muted);
+        text-decoration: none;
+      }
     }
 
     /* MD: Tablet */
@@ -4731,6 +4918,7 @@
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#work">Work</a>
         <a href="#about">About</a>
+        <a href="#help">How I Can Help</a>
         <a class="btn" href="#contact">Book a Call</a>
       </nav>
       <button class="nav-toggle" type="button" aria-controls="mobileNavPanel" aria-expanded="false">
@@ -4743,9 +4931,7 @@
       <a href="#work">Work</a>
       <a href="#about">About</a>
       <a href="#help">How I Can Help</a>
-      <a href="#approach">Approach</a>
-      <a href="#testimonials">Testimonials</a>
-      <a href="#contact">Contact</a>
+      <a href="#contact">Book a Call</a>
     </div>
   </div>
 
@@ -4764,7 +4950,7 @@
     </div>
     <div class="hero-meta">
       <span>Recent Work: BigIron Auctions, Cedar Bluff Technologies, & Moss Rock Ranch.<br /><em>15-minute intro call, no prep.</em>
-      <a class="hero-meta__link" href="mailto:mark@we3.design?subject=Hey Mark, let's chat!">Prefer email first?</a></span>
+      <a class="hero-meta__link" href="mailto:mark@we3.design?subject=Hey%20Mark%2C%20let%27s%20chat%21">Prefer email first?</a></span>
     </div>
     <div class="hero-theme-control" aria-live="polite">
       <span class="sr-only" aria-hidden="true" hidden></span>
@@ -6059,7 +6245,13 @@
          Footer
        ========================================================== -->
     <footer>
-      <div class="fine">© <span id="y"></span> Mark Malcolm. Temporary site, full portfolio in progress.</div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#help">How I Can Help</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <p class="fine footer-meta">© <span id="y"></span> Mark Malcolm. Temporary site, full portfolio in progress.</p>
       <div class="tulip-strip" aria-hidden="true">
         <canvas id="tulipCanvas"></canvas>
       </div>
@@ -6067,14 +6259,18 @@
 
   </main>
 
-  <div class="chat-float" aria-hidden="true">
-    <img
-      class="chat-float__img"
-      src="assets/headshot/popout-headshot.png"
-      alt=""
-      loading="lazy"
-      decoding="async"
-    />
+  <div class="chat-float">
+    <span class="chat-float__hit" aria-hidden="true"></span>
+    <a class="chat-float__avatar-link" href="#contact" aria-label="Book a Call">
+      <img
+        class="chat-float__img"
+        src="assets/headshot/popout-headshot.png"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
+    <a class="btn chat-float__cta" href="#contact"><span class="chat-float__cta-label">Book a Call</span></a>
   </div>
 
   <script>
@@ -7482,10 +7678,25 @@
       const panel = document.getElementById("mobileNavPanel");
       if (!toggle || !panel) return;
 
+      // Keep the fixed menu outside sticky/filtered nav to avoid iOS clipping.
+      if (panel.parentElement !== document.body){
+        document.body.appendChild(panel);
+      }
+
+      const navRoot = toggle.closest(".nav");
       const closeBtn = panel.querySelector(".mobile-nav-close");
       const links = Array.from(panel.querySelectorAll("a"));
+      const toggleLabel = toggle.querySelector(".sr-only");
+      const toggleGlyph = toggle.querySelector('span[aria-hidden="true"]');
       const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
       let lastFocus = null;
+
+      function syncToggleUi(open){
+        const label = open ? "Close navigation" : "Open navigation";
+        toggle.setAttribute("aria-label", label);
+        if (toggleLabel) toggleLabel.textContent = label;
+        if (toggleGlyph) toggleGlyph.textContent = open ? "✕" : "☰";
+      }
 
       function trapFocus(e){
         if (e.key !== "Tab") return;
@@ -7504,9 +7715,14 @@
       }
 
       function setOpen(open){
+        if (open){
+          navRoot?.classList.remove("nav-hidden");
+          panel.scrollTop = 0;
+        }
         panel.classList.toggle("is-open", open);
         panel.setAttribute("aria-hidden", open ? "false" : "true");
         toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        syncToggleUi(open);
         document.body.classList.toggle("nav-open", open);
         if (open){
           lastFocus = document.activeElement;
@@ -7534,6 +7750,8 @@
           setOpen(false);
         }
       });
+
+      syncToggleUi(false);
     })();
 
     (function initScrollNav(){
