@@ -904,10 +904,10 @@
 
     .subhead{
       max-width: min(72ch, 90%);
-      font-size: 18px;
-      color: var(--text-muted);
       padding: 0 16px;
       margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
+      font-size: 18px;
+      color: var(--text-muted);
       line-height: 1.65;
       text-align:center;
       margin-left:auto;
@@ -923,6 +923,9 @@
     }
 .hero-meta{
   margin-top: 16px;
+  max-width: min(72ch, 90%);
+  padding: 0 16px;
+  margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -3151,25 +3154,61 @@
     /* ============================================================
        Fortune Cookie (image-based)
        ============================================================ */
-    .fortune-wrap{
+    .fortune-section{
+      margin: 100px 0 60px;
+      padding: 0 var(--gutter);
+      border-top: 0;
+      border-bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      box-sizing: border-box;
       position: relative;
-      padding: 0 80px 0 0;
-      margin: -120px 0 -80px 0;
+      overflow: visible;
+    }
+    .fortune-section:first-of-type{
+      margin-top: 100px;
+    }
+    .fortune-section::before{
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -34px;
+      width: min(720px, calc(100% - (2 * var(--gutter))));
+      height: 1px;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg,
+        rgba(var(--text-rgb), 0) 0%,
+        rgba(var(--text-rgb), 0.12) 18%,
+        rgba(var(--accent-rare-rgb), 0.18) 50%,
+        rgba(var(--text-rgb), 0.12) 82%,
+        rgba(var(--text-rgb), 0) 100%);
+      box-shadow: 0 8px 22px rgba(var(--primary-rgb), 0.05);
+      pointer-events: none;
+    }
+    .fortune-wrap{
+      --fortune-scale: 1;
+      position: relative;
+      width: min(720px, 100%);
+      padding: 0;
+      margin: 0;
       overflow: visible;
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
+      align-items: flex-start;
     }
 
     .fortune-stage{
       position: relative;
-      min-height: 200px;
+      min-height: calc(280px * var(--fortune-scale));
       perspective: 900px;
-      width: min(520px, 100%);
+      width: min(560px, 100%);
     }
 
     .cookie{
       position: absolute;
-      right: 0;
+      left: 50%;
+      right: auto;
       top: -30px;
       width: 300px;
       height: 300px;
@@ -3179,6 +3218,8 @@
       cursor: default;
       outline: none;
       overflow: visible;
+      transform: translateX(-50%) scale(var(--fortune-scale));
+      transform-origin: 50% 0;
       --split: 0px;
       --lift: 0px;
       --paper-opacity: 0;
@@ -3352,10 +3393,18 @@
       animation: crumbFall .85s ease forwards;
     }
 
+    @media (min-width: calc(var(--bp-sm) + 1px)) and (max-width: var(--bp-md)){
+      .fortune-wrap{
+        --fortune-scale: .9;
+      }
+    }
+    @media (max-width: var(--bp-sm)){
+      .fortune-wrap{
+        --fortune-scale: .85;
+      }
+    }
     @media (max-width: 700px){
-      .fortune-wrap{ padding: 0; justify-content: center; margin: calc(-1 * var(--section-gap)) 0 var(--section-gap) 0; }
-      .fortune-stage{ width: 100%; min-height: 200px; }
-      .cookie{ left: 50%; right: auto; transform: translateX(-50%); }
+      .fortune-stage{ width: 100%; }
     }
 
     /* ============================================================
@@ -3856,6 +3905,9 @@
       margin-top: var(--section-gap);
       text-align: center;
     }
+    .fortune-section + footer{
+      margin-top: 0;
+    }
     .footer-nav{
       display: flex;
       flex-wrap: wrap;
@@ -3938,7 +3990,6 @@
 
       .schedule-grid{ gap: var(--space-lg); }
       .schedule-card{ padding: var(--space-lg)}
-      .fortune-wrap{ padding: 0; justify-content: center; }
       .tape-track{ font-size: 12.5px; gap: 12px; }
       .tape-run{ gap: var(--space-xs); padding-right: var(--space-xs); }
       .ticker-section{ margin: var(--space-xl) 0; }
@@ -3964,8 +4015,13 @@
 
       .schedule-grid{ gap: var(--space-md); }
 
-      .fortune-wrap{ padding: 0; justify-content: center; }
       .ticker-section{ margin: var(--space-xl) 0; }
+    }
+
+    @media (max-width: 600px){
+      .brand .brand-meta{
+        display: none;
+      }
     }
 
     @media (max-width: var(--bp-sm)){
@@ -4886,29 +4942,6 @@
       </div>
     </section>
 
-    <!-- ==========================================================
-         Fortune Cookie Delight (optional, small)
-         ========================================================== -->
-    <section class="fortune-section" aria-label="Fortune cookie interaction">
-      <div class="fortune-wrap">
-        <div class="fortune-stage" id="fortuneStage">
-          <button class="cookie" id="cookieBtn" type="button" aria-label="Open the fortune cookie" data-fortune-cookie>
-            <img class="cookie-shell" src="assets/fortune/cookie-closed.png" alt="" aria-hidden="true" />
-            <span class="cookie-shadow shadow-left" aria-hidden="true"></span>
-            <span class="cookie-shadow shadow-right" aria-hidden="true"></span>
-            <img class="cookie-half cookie-left" src="assets/fortune/cookie-left.png" alt="" aria-hidden="true" />
-            <img class="cookie-half cookie-right" src="assets/fortune/cookie-right.png" alt="" aria-hidden="true" />
-
-            <span class="fortune-paper">
-              <span class="fortune-text" id="fortuneText" role="status" aria-live="polite" data-fortune-text></span>
-            </span>
-
-            <span class="crumbs" id="crumbs" aria-hidden="true"></span>
-          </button>
-        </div>
-      </div>
-    </section>
-
     <section id="approach" class="section-pad-bottom-100">
       <h2 class="section-title">
         How We’ll Tackle It
@@ -5445,10 +5478,35 @@
       </div>
     </section>
 
-    <!-- ==========================================================
-         Footer
+  </main>
+
+  <!-- ==========================================================
+       Fortune Cookie Delight (optional, small)
        ========================================================== -->
-    <footer>
+  <section class="fortune-section" aria-label="Fortune cookie interaction">
+    <div class="fortune-wrap">
+      <div class="fortune-stage" id="fortuneStage">
+        <button class="cookie" id="cookieBtn" type="button" aria-label="Open the fortune cookie" data-fortune-cookie>
+          <img class="cookie-shell" src="assets/fortune/cookie-closed.png" alt="" aria-hidden="true" />
+          <span class="cookie-shadow shadow-left" aria-hidden="true"></span>
+          <span class="cookie-shadow shadow-right" aria-hidden="true"></span>
+          <img class="cookie-half cookie-left" src="assets/fortune/cookie-left.png" alt="" aria-hidden="true" />
+          <img class="cookie-half cookie-right" src="assets/fortune/cookie-right.png" alt="" aria-hidden="true" />
+
+          <span class="fortune-paper">
+            <span class="fortune-text" id="fortuneText" role="status" aria-live="polite" data-fortune-text></span>
+          </span>
+
+          <span class="crumbs" id="crumbs" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       Footer
+     ========================================================== -->
+  <footer class="wrap">
       <nav class="footer-nav" aria-label="Footer navigation">
         <a href="#work">Work</a>
         <a href="#about">About</a>
@@ -5459,9 +5517,7 @@
       <div class="tulip-strip" aria-hidden="true">
         <canvas id="tulipCanvas"></canvas>
       </div>
-    </footer>
-
-  </main>
+  </footer>
 
   <div class="chat-float">
     <span class="chat-float__hit" aria-hidden="true"></span>
