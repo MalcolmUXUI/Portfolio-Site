@@ -140,6 +140,8 @@
         --primary-rgb: 15, 109, 102;
         --accent-warm: #C4622A;
         --accent-warm-rgb: 196, 98, 42;
+        --hero-hl: rgba(var(--hl-lime-rgb), 0.22);
+        --hero-hl-border: rgba(var(--hl-lime-rgb), 0.13);
         --accent-rare: #9B7AF7;
         --accent-rare-rgb: 155, 122, 247;
         --brand: var(--primary);
@@ -167,7 +169,7 @@
 
         /* Highlighters (light mode) */
         --hl-amber-rgb: 245, 158, 11;
-        --hl-lime-rgb: 181, 196, 68;
+        --hl-lime-rgb: 220, 240, 20;
         --hl-teal-rgb: 15, 118, 110;
         --hl-blue-rgb: 37, 99, 235;
         --hl-cyan-rgb: 96, 165, 250;
@@ -182,7 +184,7 @@
         --hl-magenta: rgba(var(--hl-magenta-rgb), 0.55);
 
         --ink-amber: #E0910C;
-        --ink-lime: #A6B33F;
+        --ink-lime: #DCF014;
         --ink-teal: #116D65;
         --ink-cyan: #5A97E3;
         --ink-lavender: #8F70E0;
@@ -247,6 +249,8 @@
         --primary-rgb: 55, 177, 168;
         --accent-warm: #F2A36C;
         --accent-warm-rgb: 242, 163, 108;
+        --hero-hl: rgba(var(--hl-lime-rgb), 0.28);
+        --hero-hl-border: rgba(var(--hl-lime-rgb), 0.18);
         --accent-rare: #BCA8FF;
         --accent-rare-rgb: 188, 168, 255;
         --bar-colors: linear-gradient(90deg,
@@ -314,6 +318,8 @@
           --primary-rgb: 55, 177, 168;
           --accent-warm: #F2A36C;
           --accent-warm-rgb: 242, 163, 108;
+          --hero-hl: rgba(var(--hl-lime-rgb), 0.28);
+          --hero-hl-border: rgba(var(--hl-lime-rgb), 0.18);
           --accent-rare: #BCA8FF;
           --accent-rare-rgb: 188, 168, 255;
           --link: var(--primary);
@@ -786,6 +792,7 @@
 
     .nav-links .btn{
       flex-shrink: 0;
+      margin-inline-start: var(--space-sm);
     }
 
     .btn::before{
@@ -901,6 +908,110 @@
       letter-spacing:-.6px;
       text-align:center;
     }
+    .hero-headline{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .hero-line{
+      display: block;
+      position: relative;
+      z-index: 0;
+      --hero-line-left-top-x: 1px;
+      --hero-line-left-bottom-x: 3px;
+      --hero-line-right-top-x: 2px;
+      --hero-line-right-bottom-x: 1px;
+      padding: 0.08em 0.34em;
+      line-height: inherit;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      border-radius: 10px;
+      transition: filter 220ms ease;
+    }
+    .hero-line::before{
+      content:"";
+      position:absolute;
+      left:-0.08em;
+      right:-0.08em;
+      top: 56%;
+      height: 1.18em;
+      transform: translateY(-50%) rotate(var(--hero-line-hl-angle, -0.4deg)) scaleX(0.02);
+      transform-origin: left center;
+      z-index: -1;
+      border-radius: 10px;
+      -webkit-clip-path: polygon(
+        var(--hero-line-left-top-x, 0px) 0%,
+        calc(100% - var(--hero-line-right-top-x, 0px)) 0%,
+        calc(100% - var(--hero-line-right-bottom-x, 0px)) 100%,
+        var(--hero-line-left-bottom-x, 0px) 100%
+      );
+      clip-path: polygon(
+        var(--hero-line-left-top-x, 0px) 0%,
+        calc(100% - var(--hero-line-right-top-x, 0px)) 0%,
+        calc(100% - var(--hero-line-right-bottom-x, 0px)) 100%,
+        var(--hero-line-left-bottom-x, 0px) 100%
+      );
+      background:
+        radial-gradient(22px 14px at 4% 56%,
+          rgba(var(--hl-lime-rgb), .62),
+          rgba(var(--hl-lime-rgb), 0) 70%),
+        radial-gradient(24px 16px at 96% 60%,
+          rgba(var(--hl-lime-rgb), .58),
+          rgba(var(--hl-lime-rgb), 0) 72%),
+        linear-gradient(180deg,
+          rgba(var(--hl-lime-rgb), .10) 0%,
+          rgba(var(--hl-lime-rgb), .60) 22%,
+          rgba(var(--hl-lime-rgb), .54) 78%,
+          rgba(var(--hl-lime-rgb), .16) 100%);
+      mix-blend-mode: multiply;
+      -webkit-mask-image:
+        radial-gradient(12px 8px at 10% 25%, #000 60%, transparent 64%),
+        radial-gradient(10px 7px at 30% 15%, #000 62%, transparent 66%),
+        radial-gradient(12px 9px at 55% 20%, #000 60%, transparent 65%),
+        radial-gradient(10px 8px at 75% 30%, #000 62%, transparent 67%),
+        radial-gradient(12px 9px at 92% 22%, #000 60%, transparent 65%),
+        linear-gradient(#000, #000);
+      -webkit-mask-composite: source-over, source-over, source-over, source-over, source-over, destination-in;
+      mask-image:
+        radial-gradient(12px 8px at 10% 25%, #000 60%, transparent 64%),
+        radial-gradient(10px 7px at 30% 15%, #000 62%, transparent 66%),
+        radial-gradient(12px 9px at 55% 20%, #000 60%, transparent 65%),
+        radial-gradient(10px 8px at 75% 30%, #000 62%, transparent 67%),
+        radial-gradient(12px 9px at 92% 22%, #000 60%, transparent 65%),
+        linear-gradient(#000, #000);
+      mask-composite: add, add, add, add, add, intersect;
+      opacity: 0;
+      transition:
+        opacity 140ms ease,
+        transform 240ms cubic-bezier(.2,.9,.2,1),
+        filter 240ms ease;
+      will-change: opacity, transform;
+    }
+    .hero-line.is-active{
+      filter: saturate(1.02);
+    }
+    .hero-line.is-active::before{
+      opacity: 1;
+      transform: translateY(-50%) rotate(var(--hero-line-hl-angle, -0.4deg)) scaleX(1);
+    }
+    .hero-line:nth-child(1){ --hero-line-hl-angle: -0.6deg; }
+    .hero-line:nth-child(2){ --hero-line-hl-angle: -0.2deg; }
+    .hero-line:nth-child(3){ --hero-line-hl-angle: 0.4deg; }
+    @media (max-width: var(--bp-sm)){
+      .hero-line{
+        transition: background 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+      }
+      .hero-line::before,
+      .hero-line.is-active::before{
+        content: none;
+        display: none;
+      }
+      .hero-line.is-active{
+        background: var(--hero-hl);
+        box-shadow: inset 0 0 0 1px var(--hero-hl-border);
+      }
+    }
 
     .subhead{
       max-width: min(72ch, 90%);
@@ -925,10 +1036,9 @@
       border-width: 3px;
     }
 .hero-meta{
-  margin-top: 16px;
   max-width: min(72ch, 90%);
   padding: 0 16px;
-  margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
+  margin: calc(var(--hero-title-size) / 3) auto var(--hero-title-size);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -4194,16 +4304,20 @@
          Hero
        ========================================================== -->
     <header class="flow-l">
-      <h1>Clear customer paths.<br>Consistent interfaces.<br>Brands people trust.</h1>
+      <h1 class="hero-headline">
+        <span class="hero-line">Clear customer paths.</span>
+        <span class="hero-line">Consistent interfaces.</span>
+        <span class="hero-line">Brands people trust.</span>
+      </h1>
 
       <p class="subhead">I bring research-first UX and design systems to complex products, turning messy workflows into buildable systems with clear flows and developer-ready specs.</p>
 
     <div class="hero-actions">
-      <a class="btn" href="#work">See Case Studies</a>
-      <a class="btn ghost hero-book-cta" href="#contact">Book a 15-min intro call</a>
+      <a class="btn" href="#work">See Work</a>
+      <a class="btn ghost hero-book-cta" href="#contact">Book Intro Call</a>
     </div>
     <div class="hero-meta">
-      <span>Recent Work: BigIron Auctions, Cedar Bluff Technologies, & Moss Rock Ranch.<br /><em>15-minute intro call, no prep.</em>
+      <span>Recent Work: BigIron Auctions, Cedar Bluff Technologies, & Moss Rock Ranch.<br /><em>Intro calls are 15 minutes, no prep.</em>
       <a class="hero-meta__link" href="mailto:mark@we3.design?subject=Hey%20Mark%2C%20let%27s%20chat%21">Prefer email first?</a></span>
     </div>
     <div class="hero-theme-control" aria-live="polite">
@@ -5536,6 +5650,83 @@
        Utility: Current year in footer
        ========================================================== */
     document.getElementById("y").textContent = new Date().getFullYear();
+
+    /* ==========================================================
+       Hero headline: one-pass editorial highlight sequence
+       ========================================================== */
+    (function initHeroHeadlineSequence(){
+      const run = () => {
+        const headline = document.querySelector(".hero-headline");
+        if (!headline || headline.dataset.heroSequenceInit === "1") return;
+        headline.dataset.heroSequenceInit = "1";
+
+        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+          return;
+        }
+
+        const lines = Array.from(headline.querySelectorAll(".hero-line"));
+        if (!lines.length) return;
+
+        const applyMarkerEdgeJitter = (line, index) => {
+          const pxPerDeg = Math.max(1.2, (line.getBoundingClientRect().height || 56) * 0.035);
+          const randDeg = () => ((Math.random() * 4) - 2);
+          const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+          const baseInset = 2;
+          const maxInset = 6;
+          const leftShift = Math.tan((randDeg() * Math.PI) / 180) * pxPerDeg * 10;
+          const rightShift = Math.tan((randDeg() * Math.PI) / 180) * pxPerDeg * 10;
+          const leftTop = clamp(baseInset + (leftShift / 2), 0, maxInset);
+          const leftBottom = clamp(baseInset - (leftShift / 2), 0, maxInset);
+          const rightTop = clamp(baseInset + (rightShift / 2), 0, maxInset);
+          const rightBottom = clamp(baseInset - (rightShift / 2), 0, maxInset);
+
+          line.style.setProperty("--hero-line-left-top-x", `${leftTop.toFixed(2)}px`);
+          line.style.setProperty("--hero-line-left-bottom-x", `${leftBottom.toFixed(2)}px`);
+          line.style.setProperty("--hero-line-right-top-x", `${rightTop.toFixed(2)}px`);
+          line.style.setProperty("--hero-line-right-bottom-x", `${rightBottom.toFixed(2)}px`);
+
+          if (!line.style.getPropertyValue("--hero-line-hl-angle")){
+            const baseAngles = [-0.6, -0.2, 0.4];
+            const angleJitter = (Math.random() * 0.6) - 0.3;
+            const baseAngle = baseAngles[index] ?? 0;
+            line.style.setProperty("--hero-line-hl-angle", `${(baseAngle + angleJitter).toFixed(2)}deg`);
+          }
+        };
+
+        lines.forEach(applyMarkerEdgeJitter);
+
+        const holdDurations = [900, 600, 700];
+        const interLinePause = 150;
+        const startDelay = 120;
+
+        const runLine = (index) => {
+          if (index >= lines.length) return;
+
+          if (index > 0){
+            lines[index - 1].classList.remove("is-active");
+          }
+
+          const line = lines[index];
+          const hold = holdDurations[Math.min(index, holdDurations.length - 1)];
+          line.classList.add("is-active");
+
+          window.setTimeout(() => {
+            line.classList.remove("is-active");
+            if (index + 1 < lines.length){
+              window.setTimeout(() => runLine(index + 1), interLinePause);
+            }
+          }, hold);
+        };
+
+        window.setTimeout(() => runLine(0), startDelay);
+      };
+
+      if (document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", run, { once: true });
+        return;
+      }
+      run();
+    })();
 
     /* ==========================================================
        Calendly: lazy-load popup widget only when needed
