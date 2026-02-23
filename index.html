@@ -5696,7 +5696,8 @@
         lines.forEach(applyMarkerEdgeJitter);
 
         const holdDurations = [900, 600, 700];
-        const interLinePause = 150;
+        const highlightFadeOutMs = 160; // CSS fade is ~140ms; keep a small buffer
+        const interLineBeat = 90; // explicit neutral beat between highlights
         const startDelay = 120;
 
         const runLine = (index) => {
@@ -5713,7 +5714,7 @@
           window.setTimeout(() => {
             line.classList.remove("is-active");
             if (index + 1 < lines.length){
-              window.setTimeout(() => runLine(index + 1), interLinePause);
+              window.setTimeout(() => runLine(index + 1), highlightFadeOutMs + interLineBeat);
             }
           }, hold);
         };
