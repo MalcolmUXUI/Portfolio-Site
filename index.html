@@ -146,11 +146,11 @@
         --accent-rare-rgb: 155, 122, 247;
         --brand: var(--primary);
         --accent: var(--accent-warm);
-        --success: var(--ink-lime);
+        --success: color-mix(in oklab, rgb(var(--hl-lime-rgb)) 78%, var(--text) 22%);
 
         /* Dot colors: token-based so they adapt with themes */
         --dot-15: var(--hl-amber);
-        --dot-30: var(--hl-lime);
+        --dot-30: var(--hl-cyan);
         --dot-60: var(--hl-teal);
 
         /* Derived utility */
@@ -164,17 +164,25 @@
 
         /* Gradients */
         --grad-wash: linear-gradient(135deg, #F4EFE7 0%, #E6F2EF 100%);
-        --grad-underline: linear-gradient(90deg, #0F6D66 0%, #9B7AF7 100%);
+        --grad-underline: linear-gradient(90deg, #0F6D66 0%, #CE97FB  100%);
         --grad-hero: linear-gradient(90deg, #0F6D66 0%, #37B1A8 55%, #C4622A 100%);
 
-        /* Highlighters (light mode) */
-        --hl-amber-rgb: 245, 158, 11;
-        --hl-lime-rgb: 220, 240, 20;
-        --hl-teal-rgb: 15, 118, 110;
-        --hl-blue-rgb: 37, 99, 235;
-        --hl-cyan-rgb: 96, 165, 250;
-        --hl-lavender-rgb: 155, 122, 247;
-        --hl-magenta-rgb: 216, 46, 122;
+        /* Highlighter palette (Stabilo Pastel standard) */
+        --hl-turquoise-rgb: 103, 235, 250; /* #67EBFA */
+        --hl-mint-rgb: 152, 251, 225;      /* #98FBE1 */
+        --hl-lime-rgb: 222, 255, 00;       /* #DEFF00 */
+        --hl-yellow-rgb: 240, 223, 126;    /* #F0DF7E */
+        --hl-peach-rgb: 250, 169, 157;     /* #FAA99D */
+        --hl-pink-rgb: 246, 165, 235;      /* #F6A5EB */
+        --hl-lilac-rgb: 206, 151, 251;     /* #CE97FB */
+
+        /* Legacy compatibility aliases -> mapped to the pastel palette */
+        --hl-amber-rgb: var(--hl-yellow-rgb);
+        --hl-teal-rgb: var(--hl-mint-rgb);
+        --hl-blue-rgb: var(--hl-peach-rgb);
+        --hl-cyan-rgb: var(--hl-turquoise-rgb);
+        --hl-lavender-rgb: var(--hl-lilac-rgb);
+        --hl-magenta-rgb: var(--hl-pink-rgb);
         --hl-amber: rgba(var(--hl-amber-rgb), 0.85);
         --hl-lime: rgba(var(--hl-lime-rgb), 0.75);
         --hl-teal: rgba(var(--hl-teal-rgb), 0.65);
@@ -183,17 +191,19 @@
         --hl-lavender: rgba(var(--hl-lavender-rgb), 0.50);
         --hl-magenta: rgba(var(--hl-magenta-rgb), 0.55);
 
-        --ink-amber: #E0910C;
-        --ink-lime: #DCF014;
-        --ink-teal: #116D65;
-        --ink-cyan: #5A97E3;
-        --ink-lavender: #8F70E0;
-
         /* Derived gradients + washes */
         --surface-top: #F7F4EE;
         --surface-bottom: var(--surface-base);
         --card-top: #FFFCF6;
         --card-bottom: #FFFCF7;
+        /* Nested "card on card" surfaces */
+        --nested-card-panel-bg: rgba(255,255,255,0.5);
+        --nested-card-panel-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.9),
+          0 var(--space-xs) var(--space-sm) rgba(0,0,0,0.06);
+        --nested-card-case-top: rgba(var(--surface-card-rgb), 1);
+        --nested-card-case-bottom: rgba(var(--surface-card-rgb), 0.94);
+        --nested-card-case-shadow: 0 14px 36px rgba(0,0,0,0.08);
         --moon-phase: 0;
         --sun-core: #ffd55e,.4;
         --sun-glow: rgba(255, 213, 94, 0.4);
@@ -251,8 +261,8 @@
         --accent-warm-rgb: 242, 163, 108;
         --hero-hl: rgba(var(--hl-lime-rgb), 0.28);
         --hero-hl-border: rgba(var(--hl-lime-rgb), 0.18);
-        --accent-rare: #BCA8FF;
-        --accent-rare-rgb: 188, 168, 255;
+        --accent-rare: #DEFF00;
+        --accent-rare-rgb: 222, 255, 0;
         --bar-colors: linear-gradient(90deg,
           rgba(var(--accent-warm-rgb), 0.65) 0%,
           rgba(var(--primary-rgb),     0.65) 33%,
@@ -275,6 +285,15 @@
         --surface-bottom: var(--surface-base);
         --card-top: #0B1935;
         --card-bottom: #0A162E;
+        --nested-card-panel-bg: linear-gradient(180deg,
+          color-mix(in oklab, var(--card-top) 78%, black 22%),
+          color-mix(in oklab, var(--card-bottom) 76%, black 24%));
+        --nested-card-panel-shadow:
+          inset 0 1px 0 rgba(255,255,255,.05),
+          0 10px 24px rgba(0,0,0,.28);
+        --nested-card-case-top: color-mix(in oklab, var(--card-top) 78%, black 22%);
+        --nested-card-case-bottom: color-mix(in oklab, var(--card-bottom) 74%, black 26%);
+        --nested-card-case-shadow: 0 16px 34px rgba(0,0,0,.28);
         --surface-card-soft-96: #162442;
         --surface-card-soft-86: #2E3B56;
         --wash1: rgba(var(--accent-warm-rgb), 0.22);
@@ -292,12 +311,6 @@
         --glass-shadow-hover: 0 22px 44px rgba(0,0,0,.55);
         --glass-shadow-press: 0 12px 24px rgba(0,0,0,.42);
         --glass-inner: inset 0 1px 0 rgba(255,255,255,.08);
-
-        --ink-amber: #F5A621;
-        --ink-lime: #BCC955;
-        --ink-teal: #26827A;
-        --ink-cyan: #6FADF8;
-        --ink-lavender: #A486F6;
 
         --dot-15: color-mix(in srgb, var(--hl-amber) 90%, #000 10%);
         --dot-30: color-mix(in srgb, var(--hl-lime) 60%, var(--card-top, #0B1C2A) 40%);
@@ -320,8 +333,8 @@
           --accent-warm-rgb: 242, 163, 108;
           --hero-hl: rgba(var(--hl-lime-rgb), 0.28);
           --hero-hl-border: rgba(var(--hl-lime-rgb), 0.18);
-          --accent-rare: #BCA8FF;
-          --accent-rare-rgb: 188, 168, 255;
+          --accent-rare: #DEFF00;
+          --accent-rare-rgb: 222, 255, 0;
           --link: var(--primary);
           --focus-ring: var(--primary);
           --focus-ring-rgb: var(--primary-rgb);
@@ -331,6 +344,15 @@
           --surface-bottom: var(--surface-base);
           --card-top: #0B1935;
           --card-bottom: #0A162E;
+          --nested-card-panel-bg: linear-gradient(180deg,
+            color-mix(in oklab, var(--card-top) 78%, black 22%),
+            color-mix(in oklab, var(--card-bottom) 76%, black 24%));
+          --nested-card-panel-shadow:
+            inset 0 1px 0 rgba(255,255,255,.05),
+            0 10px 24px rgba(0,0,0,.28);
+          --nested-card-case-top: color-mix(in oklab, var(--card-top) 78%, black 22%);
+          --nested-card-case-bottom: color-mix(in oklab, var(--card-bottom) 74%, black 26%);
+          --nested-card-case-shadow: 0 16px 34px rgba(0,0,0,.28);
           --surface-card-soft-96: #162442;
           --surface-card-soft-86: #2E3B56;
           --wash1: rgba(var(--accent-warm-rgb), 0.22);
@@ -349,11 +371,6 @@
           --glass-shadow-press: 0 12px 24px rgba(0,0,0,.42);
           --glass-inner: inset 0 1px 0 rgba(255,255,255,.08);
 
-          --ink-amber: #F5A621;
-          --ink-lime: #BCC955;
-          --ink-teal: #26827A;
-          --ink-cyan: #6FADF8;
-          --ink-lavender: #A486F6;
         }
       }
 
@@ -1117,15 +1134,42 @@
     }
 
     /* ============================================================
-       Testimonials
+       Proof Quotes (single-testimonial component)
        ============================================================ */
-    .testimonials{
-      margin-top:28px;
+    .proof-quote{
+      display: block;
+      width: 100%;
+      max-width: min(860px, 100%);
+      margin: var(--space-lg) auto;
     }
-
-    .testimonials-title{
-      margin:0 0 10px;
-      color: var(--text-muted);
+    .proof-quote .quote-figure{
+      height: auto;
+    }
+    .proof-quote--work{
+      max-width: min(840px, 100%);
+      margin-top: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .proof-quote--help{
+      max-width: min(840px, 100%);
+      margin-top: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .proof-quote--process{
+      max-width: min(880px, 100%);
+      margin-top: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .proof-quote--about{
+      max-width: 100%;
+      margin: var(--space-sm) 0;
+    }
+    .proof-quote--case{
+      max-width: 100%;
+      margin: var(--space-sm) 0 var(--space-md);
+    }
+    .proof-quote--case .quote-figure{
+      padding: var(--space-sm) var(--space-xs) var(--space-xs) var(--space-sm);
     }
 
     .approach-card{
@@ -1140,19 +1184,11 @@
       margin: var(--space-xs);
     }
 
-    .testimonial-grid{
-      list-style:none;
-      margin:0;
-      padding:0;
-      display:grid;
-      gap:var(--space-lg);
-    }
-
-    .testimonial-card{
-      height:100%;
-    }
-
     .quote-figure{
+      --quote-accent-rgb: var(--accent-warm-rgb);
+      --quote-accent-color: rgb(var(--quote-accent-rgb, var(--accent-warm-rgb)));
+      /* Derive a moodier "ink" from the same highlight hue */
+      --quote-mark-color: color-mix(in oklab, var(--quote-accent-color) 72%, var(--text-muted) 28%);
       margin: 0;
       display: grid;
       grid-template-rows: 1fr auto auto;
@@ -1162,7 +1198,7 @@
       border: 1px solid var(--border);
       background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
       box-shadow: var(--shadow);
-      padding: var(--space-md) var(--space-xs) var(--space-xs) var(--space-md);
+      padding: var(--space-md) var(--space-xs) var(--space-xs) var(--space-xs);
       position: relative;
       overflow: hidden;
       height: 100%;
@@ -1175,10 +1211,10 @@
       height: var(--bar-height);
       border-radius: inherit;
       background: var(--bar-colors, linear-gradient(90deg,
-        rgba(var(--accent-warm-rgb), 0.65) 0%,
-        rgba(var(--primary-rgb),     0.65) 33%,
-        rgba(var(--accent-rare-rgb), 0.65) 66%,
-        rgba(var(--accent-warm-rgb), 0.65) 100%));
+        rgba(var(--quote-accent-rgb, var(--accent-warm-rgb)), 0.65) 0%,
+        rgba(var(--primary-rgb), 0.58) 36%,
+        rgba(var(--accent-rare-rgb), 0.58) 68%,
+        rgba(var(--quote-accent-rgb, var(--accent-warm-rgb)), 0.65) 100%));
       background-size: var(--bar-stripe-size);
       animation: glowBar var(--bar-speed, var(--bar-speed-base)) linear infinite;
       animation-direction: var(--bar-direction, normal);
@@ -1194,7 +1230,7 @@
     }
 
     .quote-text{
-      margin: var(--space-xs);
+      margin: var(--space-xs) 0  var(--space-xs) 0;
       text-align: left;
       font-style: italic;
       color: var(--text);
@@ -1232,12 +1268,31 @@
       font-style: normal;
       color: var(--text-muted);
     }
+    .quote-cite h4.schedule-sub{
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: center;
+      gap: .25ch;
+    }
+    .quote-cite h4.schedule-sub .quote-role,
+    .quote-cite h4.schedule-sub .quote-company{
+      display: inline;
+      font: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      color: inherit;
+    }
+    .quote-cite h4.schedule-sub .quote-company{
+      white-space: nowrap;
+    }
 
     .quote-mark{
       font-weight: 800;
       font-size: clamp(42px, 6vw, 68px);
       line-height: 1;
       opacity: .45;
+      color: var(--quote-mark-color);
       -webkit-user-select: none;
       user-select: none;
     }
@@ -1253,27 +1308,54 @@
       transform: translateY(20px);
     }
 
-    .quote-teal .quote-mark{ color: var(--ink-teal); }
-    .quote-amber .quote-mark{ color: var(--ink-amber); }
-    .quote-purple .quote-mark{ color: var(--ink-lavender); }
-    .quote-cyan .quote-mark{ color: var(--ink-cyan); }
+    .quote-mint,
+    .quote-teal{ --quote-accent-rgb: var(--hl-mint-rgb); }
+
+    .quote-yellow,
+    .quote-amber{ --quote-accent-rgb: var(--hl-yellow-rgb); }
+
+    .quote-lilac,
+    .quote-purple{ --quote-accent-rgb: var(--hl-lilac-rgb); }
+
+    .quote-turquoise,
+    .quote-cyan{ --quote-accent-rgb: var(--hl-turquoise-rgb); }
+
+    .quote-peach,
+    .quote-blue{ --quote-accent-rgb: var(--hl-peach-rgb); }
+
+    .quote-pink,
+    .quote-lime{ --quote-accent-rgb: var(--hl-pink-rgb); }
 
     /* Per-testimonial tempo + direction (keeps bars out of sync; colors stay global) */
+    .quote-mint,
     .quote-teal{
       --bar-speed: 21s;
       --bar-direction: normal;
     }
+    .quote-turquoise,
     .quote-cyan{
       --bar-speed: 27s;
       --bar-direction: reverse;
     }
+    .quote-lilac,
     .quote-purple{
       --bar-speed: 24s;
       --bar-direction: normal;
     }
+    .quote-yellow,
     .quote-amber{
       --bar-speed: 30s;
       --bar-direction: reverse;
+    }
+    .quote-pink,
+    .quote-lime{
+      --bar-speed: 26s;
+      --bar-direction: reverse;
+    }
+    .quote-peach,
+    .quote-blue{
+      --bar-speed: 23s;
+      --bar-direction: normal;
     }
 
     @media (max-width: 520px){
@@ -1284,11 +1366,28 @@
         opacity: .42;
       }
     }
+    @media (max-width: var(--bp-sm)){
+      .quote-cite h4.schedule-sub{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+      .quote-cite h4.schedule-sub .quote-role,
+      .quote-cite h4.schedule-sub .quote-company{
+        display: block;
+      }
+    }
 
     /* Bio highlights: human marker feel + staggered reveal */
     .hl{
       position: relative;
       display: inline;
+      --hl-corner-radius: var(--radius-xs);
+      --hl-edge-left-top-x: 0px;
+      --hl-edge-left-bottom-x: 0px;
+      --hl-edge-right-top-x: 0px;
+      --hl-edge-right-bottom-x: 0px;
       padding: 0 .06em;
       z-index: 0;
       white-space: normal;
@@ -1307,7 +1406,7 @@
       transform: translateY(-50%) rotate(var(--hl-angle, -0.4deg));
       transform-origin: left center;
       z-index: -1;
-      border-radius: 10px;
+      border-radius: var(--hl-corner-radius);
       background:
         radial-gradient(16px 10px at 4% 55%,
           rgba(var(--hl-rgb), .55),
@@ -1349,6 +1448,7 @@
 
     /* Multi-line highlight support (used in testimonials) */
     .hl--multi{
+      padding: .10em .10em;
       background:
         radial-gradient(16px 10px at 4% 60%,
           rgba(var(--hl-rgb), .55),
@@ -1366,12 +1466,28 @@
           rgba(var(--hl-rgb), .45) 22%,
           rgba(var(--hl-rgb), .38) 78%,
           rgba(var(--hl-rgb), .10) 100%);
-      background-size: 100% 1.08em;
+      background-size: 100% 1.18em;
       background-position: 0 58%;
       background-repeat: repeat-x;
+      border-radius: var(--hl-corner-radius);
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
       white-space: normal;
+    }
+    .hl--multi.hl-edge-jitter,
+    .bio-highlight.hl-edge-jitter{
+      -webkit-clip-path: polygon(
+        var(--hl-edge-left-top-x, 0px) 0%,
+        calc(100% - var(--hl-edge-right-top-x, 0px)) 0%,
+        calc(100% - var(--hl-edge-right-bottom-x, 0px)) 100%,
+        var(--hl-edge-left-bottom-x, 0px) 100%
+      );
+      clip-path: polygon(
+        var(--hl-edge-left-top-x, 0px) 0%,
+        calc(100% - var(--hl-edge-right-top-x, 0px)) 0%,
+        calc(100% - var(--hl-edge-right-bottom-x, 0px)) 100%,
+        var(--hl-edge-left-bottom-x, 0px) 100%
+      );
     }
 
     .hl--multi::before{ 
@@ -1393,11 +1509,11 @@
     /* Mobile: simplify bio highlights to static multi-line style */
     @media (max-width: var(--bp-sm)){
       .bio-highlight{
-        padding: 0 .06em;
+        padding: .08em .08em;
         white-space: normal;
         background: rgba(var(--hl-rgb, 245,158,11), 0.06);
         box-shadow: none;
-        border-radius: 8px;
+        border-radius: var(--hl-corner-radius);
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         font-weight: 600;
@@ -1411,16 +1527,31 @@
 
     }
 
-    .hl-amber{ --hl-rgb: 245, 158, 11; }
-    .hl-blue{ --hl-rgb: 37, 99, 235; }
-    .hl-teal{ --hl-rgb: 15, 118, 110; }
-    .hl-purple{ --hl-rgb: 155, 122, 247; }
-    .hl-green{ --hl-rgb: 181, 196, 68; }
+    /* Canonical text highlighter classes (Stabilo Pastel) */
+    .hl-turquoise,
+    .hl-cyan{ --hl-rgb: var(--hl-turquoise-rgb); }
+
+    .hl-mint,
+    .hl-teal,
+    .hl-green{ --hl-rgb: var(--hl-mint-rgb); }
+
+    .hl-yellow,
+    .hl-amber{ --hl-rgb: var(--hl-yellow-rgb); }
+
+    .hl-peach,
+    .hl-blue{ --hl-rgb: var(--hl-peach-rgb); }
+
+    .hl-pink,
+    .hl-magenta{ --hl-rgb: var(--hl-pink-rgb); }
+
+    .hl-lilac,
+    .hl-purple,
+    .hl-lavender{ --hl-rgb: var(--hl-lilac-rgb); }
 
     /* Bio highlights: multi-line safe; animated fill on tablet/desktop */
     .bio-highlight{
       position: relative;
-      padding: 0 .08em;
+      padding: .14em .12em;
       --hl-fill: linear-gradient(180deg,
           rgba(var(--hl-rgb, 245,158,11), .05) 0%,
           rgba(var(--hl-rgb, 245,158,11), .45) 22%,
@@ -1446,7 +1577,7 @@
         100% 100%;
       background-position: 0 58%, 0 58%;
       background-repeat: no-repeat, repeat;
-      border-radius: 8px;
+      border-radius: var(--hl-corner-radius);
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
       font-weight: inherit;
@@ -1476,8 +1607,14 @@
     .hl.a4{ --hl-angle: 0.8deg; }
     .hl.a5{ --hl-angle:-0.3deg; }
 
-    @media (min-width: 840px){
-      .testimonial-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (max-width: 520px){
+      .proof-quote{
+        margin: var(--space-md) auto;
+      }
+      .proof-quote--about,
+      .proof-quote--case{
+        margin: var(--space-sm) 0;
+      }
     }
 
     /* ============================================================
@@ -1622,10 +1759,8 @@
       margin: var(--space-xs);
       margin-top: var(--space-sm );
       gap: var(--space-sm);
-      background: rgba(255,255,255,0.5);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.9),
-        0 var(--space-xs) var(--space-sm) rgba(0,0,0,0.06);
+      background: var(--nested-card-panel-bg);
+      box-shadow: var(--nested-card-panel-shadow);
     }
     
     #work .grid .card .card-media{
@@ -2164,12 +2299,12 @@
     }
     .case-item{
       background: linear-gradient(180deg,
-        rgba(var(--surface-card-rgb), 1),
-        rgba(var(--surface-card-rgb), 0.94));
+        var(--nested-card-case-top),
+        var(--nested-card-case-bottom));
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: var(--space-md);
-      box-shadow: 0 14px 36px rgba(0,0,0,0.08);
+      box-shadow: var(--nested-card-case-shadow);
       position: relative;
       overflow: hidden;
       display: flex;
@@ -2185,6 +2320,9 @@
       margin: 0;
       font-size: var(--type-h4, 20px);
       font-weight: 700;
+    }
+    .case-item .quote-cite h4.schedule-sub{
+      font-size: 14px;
     }
     .case-type{
       display: inline-flex;
@@ -2592,14 +2730,10 @@
       border-radius: var(--radius-sm);
       border: 2px solid rgba(var(--tab-hl-rgb, 155,122,247), .4);
       counter-increment: step;
-      display: grid;
-      grid-template-columns: var(--chip, 60px) 1fr;
-      column-gap: 14px;
-      align-items: start;
+      display: block;
       padding: var(--space-md);
       margin: 0;
-      gap: var(--space-md);
-      overflow: visible;
+      overflow: hidden;
       position: relative;
 
       /* size knobs for badge */
@@ -2621,26 +2755,18 @@
       --sx: 0px;
       --sy: 10px;
 
-      perspective: 900px;
-      transform-style: preserve-3d;
-      transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(var(--lift));
-      box-shadow:
-        calc(var(--sx) * 1) calc(var(--sy) * 1) var(--shadow-blur) var(--shadow-spread)
-        rgba(0,0,0,var(--shadow-strength));
+      perspective: none;
+      transform-style: flat;
+      transform: none;
       border-color: rgba(var(--step-highlight-rgb), 0.30);
-      background: rgba(255,255,255,0.5);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.9),
-        0 var(--space-xs) var(--space-sm) rgba(0,0,0,0.06);
-      transition:
-        box-shadow 180ms ease,
-        transform 180ms ease,
-        border-color 1500ms ease;
+      background: var(--nested-card-panel-bg);
+      box-shadow: none;
+      transition: border-color 180ms ease, background 180ms ease;
     }
 
     /* pop-out number badge */
     .process-step::before{
-      content: counter(step);
+      content: none;
       position: absolute;
       left: calc(var(--chip) / 2);
       top: var(--space-2xl);
@@ -2657,7 +2783,7 @@
       background: rgba(var(--step-highlight-rgb, 196,98,42), 0.70);
             -webkit-backdrop-filter: blur(10px) saturate(1.02);
       backdrop-filter: blur(10px) saturate(1.02);
-      color: #fff;
+      color: color-mix(in oklab, var(--text) 82%, var(--text-muted) 18%);
       outline: var(--ring) solid rgba(var(--step-highlight-rgb, 196,98,42), 0.55);
       box-shadow: 0 6px 18px rgba(0,0,0,0.18);
       z-index: 2;
@@ -2670,7 +2796,7 @@
 
     /* radial glow overlay */
     .process-step::after{
-      content:"";
+      content:none;
       
       position:absolute;
       inset:0;
@@ -2708,15 +2834,63 @@
     .process-body{
       min-width: 0;
       display: grid;
-      grid-column: 2;
+      grid-column: auto;
       row-gap: 6px; /* controls title-to-body spacing */
     }
 
+    .process-title::before{
+      content: counter(step) ". ";
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-right: 2px;
+    }
+
     .process-title{
+      position: relative;
+      justify-self: start;
+      width: fit-content;
+      max-width: 100%;
+      padding: 0 .08em;
       font-size: var(--type-h3);
       line-height: 1.18;
       letter-spacing: -.2px;
       margin: 0; /* Tight, predictable margins (no surprise whitespace) */
+      --process-title-hl-fill: linear-gradient(180deg,
+          rgba(var(--step-highlight-rgb, 245,158,11), .05) 0%,
+          rgba(var(--step-highlight-rgb, 245,158,11), .42) 22%,
+          rgba(var(--step-highlight-rgb, 245,158,11), .36) 78%,
+          rgba(var(--step-highlight-rgb, 245,158,11), .10) 100%);
+      --process-title-hl-texture:
+        radial-gradient(16px 10px at 4% 60%,
+          rgba(var(--step-highlight-rgb, 245,158,11), .45),
+          rgba(var(--step-highlight-rgb, 245,158,11), 0) 72%),
+        radial-gradient(18px 12px at 96% 60%,
+          rgba(var(--step-highlight-rgb, 245,158,11), .40),
+          rgba(var(--step-highlight-rgb, 245,158,11), 0) 74%);
+      background:
+        var(--process-title-hl-fill),
+        var(--process-title-hl-texture);
+      background-size:
+        0% 100%,
+        100% 100%;
+      background-position: 0 58%, 0 58%;
+      background-repeat: no-repeat, no-repeat;
+      border-radius: var(--hl-corner-radius);
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      box-shadow: none;
+      animation: none;
+    }
+    .process-title.is-on{
+      animation: hl-fill 780ms cubic-bezier(.2,.9,.2,1) forwards;
+      background-size:
+        100% 100%,
+        100% 100%;
+    }
+    @media (prefers-reduced-motion: reduce){
+      .process-title.is-on{
+        animation: none;
+      }
     }
 
     .process-why{
@@ -2782,13 +2956,18 @@
         row-gap: 0;
       }
       .process-title{
+        width: auto;
+        max-width: 100%;
         margin-top: 0;
       }
       .process-title::before{
-        content: counter(step) " ";
-        color: var(--ink-amber);
+        content: counter(step) ". ";
+        color: var(--text-muted);
         font-weight: 800;
         margin-right: 8px;
+      }
+      .process-title.is-on{
+        animation-duration: 640ms;
       }
       .process-why{
         margin-top: 0;
@@ -3185,11 +3364,9 @@
     .help-detail-inner{
       padding: var(--space-md);
       border-radius: var(--radius-md);
-      background: rgba(255,255,255,0.5);
+      background: var(--nested-card-panel-bg);
       border: 1px solid rgba(var(--border, #DAD5CE), 0.6);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.9),
-        0 var(--space-xs) var(--space-sm) rgba(0,0,0,0.06);
+      box-shadow: var(--nested-card-panel-shadow);
       margin: 0;
       border-top: 0;
     }
@@ -4356,6 +4533,25 @@
         A few examples of real projects where I helped teams clarify the problem, align stakeholders, and deliver systems that scaled beyond individual screens.
       </p>
 
+      <aside class="proof-quote proof-quote--work" aria-label="Proof quote from Sean Colandrea">
+        <figure class="quote-figure quote-turquoise">
+          <div class="quote-top">
+            <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+            <p class="quote-text">
+Mark consistently operated as a true product partner, not just a UX designer. He has a rare ability to
+<span class="hl hl-turquoise hl--multi is-on a4">connect workflow reality, stakeholder needs and delivery constraints into a clear path forward</span>.
+He helped us untangle complex, multi-role workflows into structures the team could actually build and maintain.
+</p>
+            <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+          </div>
+          <div class="quote-divider" aria-hidden="true"></div>
+          <div class="quote-cite">
+            <strong>Sean Colandrea</strong>
+            <h4 class="schedule-sub"><span class="quote-role">Product Manager,</span> <span class="quote-company">BigIron Auctions</span></h4>
+          </div>
+        </figure>
+      </aside>
+
       <div class="grid">
         <article class="card surface stack-card">
           <div class="card-copy">
@@ -4569,6 +4765,25 @@
               <li>Donations lifted by clearer asks</li>
               <li>Fewer support questions after the redesign</li>
             </ul>
+
+            <aside class="proof-quote proof-quote--case" aria-label="Project proof quote from Kai Mills">
+              <figure class="quote-figure quote-peach">
+                <div class="quote-top">
+                  <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+                  <p class="quote-text">
+Mark takes initiative and really takes the time to understand user needs. I was impressed with his ability to
+<span class="hl hl-peach hl--multi is-on a1">take complex feedback and simplify it into simple solutions</span>
+in a timely manner, which helped our team create a user focused product.
+</p>
+                  <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+                </div>
+                <div class="quote-divider" aria-hidden="true"></div>
+                <div class="quote-cite">
+                  <strong>Kai Mills</strong>
+                  <h4 class="schedule-sub"><span class="quote-role">Visual Designer,</span> <span class="quote-company">Freelance</span></h4>
+                </div>
+              </figure>
+            </aside>
 
             <div class="case-ribbons" aria-hidden="true" data-open-stack="#wildlifeStack">
               <div class="case-ribbon-row row-a">
@@ -4866,18 +5081,58 @@
         <div class="aboutCard__body">
           <div class="fine aboutCard__copy para-stack">
             <p>
-              I’m Mark Malcolm, a <span class="hl hl-blue bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-amber bio-highlight a2">product partner, not just a screen designer</span>.
+              I’m Mark Malcolm, a <span class="hl hl-turquoise bio-highlight a1">UX Consultant and Senior Designer</span> who helps teams navigate complexity and turn it into systems they can actually build, use, and trust. I’m a <span class="hl hl-peach bio-highlight a2">product partner, not just a screen designer</span>.
             </p>
+
+            <aside class="proof-quote proof-quote--about" aria-label="Proof quote from Michael McTavish">
+              <figure class="quote-figure quote-lilac">
+                <div class="quote-top">
+                  <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+                  <p class="quote-text">
+Mark makes projects fun, even when challenging. He takes on additional work, listens well, and
+<span class="hl hl-lilac hl--multi is-on a3">respects everyone on the team's thoughts and opinions</span>.
+He makes the role of project manager a lot easier.
+</p>
+                  <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+                </div>
+                <div class="quote-divider" aria-hidden="true"></div>
+                <div class="quote-cite">
+                  <strong>Michael McTavish</strong>
+                  <h4 class="schedule-sub"><span class="quote-role">Project Manager,</span> <span class="quote-company">DevBlue Research</span></h4>
+                </div>
+              </figure>
+            </aside>
+            
             <p>
-              My work sits at the intersection of UX strategy, brand systems, and real-world delivery. I’ve spent my career inside environments where clarity matters: <span class="hl hl-teal bio-highlight a3">strict brand guidelines, multi-role workflows, high-stakes operations</span>, and teams trying to move fast without breaking things. That background trained me to look beyond individual screens and focus on how decisions ripple across people, tools, and process.
+              My work sits at the intersection of UX strategy, brand systems, and real-world delivery. I’ve spent my career inside environments where clarity matters: <span class="hl hl-mint bio-highlight a3">strict brand guidelines, multi-role workflows, high-stakes operations</span>, and teams trying to move fast without breaking things. That background trained me to look beyond individual screens and focus on how decisions ripple across people, tools, and process.
             </p>
             
             <p>
-              I’m especially effective when problems feel messy or undefined. I <span class="hl hl-purple bio-highlight a4">turn complex workflows into clear, buildable systems</span>, helping teams surface what’s really happening, align stakeholders around shared goals, and translate ambiguity into clear structure. That often means guiding conversations, tightening requirements, and designing systems that scale, not just interfaces that look good.
+              I’m especially effective when problems feel messy or undefined. I <span class="hl hl-lilac bio-highlight a4">turn complex workflows into clear, buildable systems</span>, helping teams surface what’s really happening, align stakeholders around shared goals, and translate ambiguity into clear structure. That often means guiding conversations, tightening requirements, and designing systems that scale, not just interfaces that look good.
             </p>
             <p>
-              I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-green bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
+              I’m comfortable moving between hands-on design and strategic leadership, depending on what the business needs. If there’s a common thread in my work, it’s this: I <span class="hl hl-yellow bio-highlight a5">reduce ambiguity and rework, so delivery moves faster</span>, and I’m at my best when helping teams find a thoughtful, buildable path forward.
             </p>
+
+            <aside class="proof-quote proof-quote--about" aria-label="Proof quote from Linda Rose">
+              <figure class="quote-figure quote-pink">
+                <div class="quote-top">
+                  <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+                  <p class="quote-text">
+Mark was an absolute pleasure to work with. His quick-thinking and creative problem-solving made him a joy to work alongside, and he developed unique solutions that
+<span class="hl hl-pink hl--multi is-on a3">maintained not only the high standards of our company</span>
+but also memorable customer experiences and great team morale.
+</p>
+                  <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+                </div>
+                <div class="quote-divider" aria-hidden="true"></div>
+                <div class="quote-cite">
+                  <strong>Linda Rose</strong>
+                  <h4 class="schedule-sub"><span class="quote-role">Senior Manager,</span> <span class="quote-company">Expedia Local Expert</span></h4>
+                </div>
+              </figure>
+            </aside>
+
           </div>
 
         </div>
@@ -4892,13 +5147,32 @@
         These are the ways I typically support teams when the work is complex, cross-functional, or starting to feel fragile as it grows.
       </p>
 
+      <aside class="proof-quote proof-quote--help" aria-label="Proof quote from Cassandra Mobley">
+        <figure class="quote-figure quote-mint">
+          <div class="quote-top">
+            <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+            <p class="quote-text">
+Mark is one of the most phenomenal project managers I’ve worked with. His
+<span class="hl hl-mint hl--multi is-on a1">unwavering work ethic and organization is undeniable from the moment a project begins</span>.
+He understands the intended user and helps create products that feel delightful and intuitive.
+</p>
+            <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+          </div>
+          <div class="quote-divider" aria-hidden="true"></div>
+          <div class="quote-cite">
+            <strong>Cassandra Mobley</strong>
+            <h4 class="schedule-sub"><span class="quote-role">UX Engineer,</span> <span class="quote-company">Cadmot</span></h4>
+          </div>
+        </figure>
+      </aside>
+
       <div class="help-split" aria-label="Services list with expanded details">
         <div class="help-card">
           <div class="help-tabs" role="tablist" aria-label="How I can help">
-            <button class="help-tab" role="tab" id="tab-ux" aria-selected="true" aria-controls="panel-ux" tabindex="0" type="button" data-hl-rgb="15,109,102"><span class="tab-highlight" data-hl-class="hl-teal">UX Strategy</span></button>
-            <button class="help-tab" role="tab" id="tab-systems" aria-selected="false" aria-controls="panel-systems" tabindex="-1" type="button" data-hl-rgb="155,122,247"><span class="tab-highlight" data-hl-class="hl-purple">Design Systems</span></button>
-            <button class="help-tab" role="tab" id="tab-brand" aria-selected="false" aria-controls="panel-brand" tabindex="-1" type="button" data-hl-rgb="196,98,42"><span class="tab-highlight" data-hl-class="hl-amber">Brand Strategy</span></button>
-            <button class="help-tab" role="tab" id="tab-training" aria-selected="false" aria-controls="panel-training" tabindex="-1" type="button" data-hl-rgb="181,196,68"><span class="tab-highlight" data-hl-class="hl-green">Training Guides</span></button>
+            <button class="help-tab" role="tab" id="tab-ux" aria-selected="true" aria-controls="panel-ux" tabindex="0" type="button" data-hl-rgb="152,251,225"><span class="tab-highlight" data-hl-class="hl-mint">UX Strategy</span></button>
+            <button class="help-tab" role="tab" id="tab-systems" aria-selected="false" aria-controls="panel-systems" tabindex="-1" type="button" data-hl-rgb="206,151,251"><span class="tab-highlight" data-hl-class="hl-lilac">Design Systems</span></button>
+            <button class="help-tab" role="tab" id="tab-brand" aria-selected="false" aria-controls="panel-brand" tabindex="-1" type="button" data-hl-rgb="250,169,157"><span class="tab-highlight" data-hl-class="hl-peach">Brand Strategy</span></button>
+            <button class="help-tab" role="tab" id="tab-training" aria-selected="false" aria-controls="panel-training" tabindex="-1" type="button" data-hl-rgb="240,223,126"><span class="tab-highlight" data-hl-class="hl-yellow">Training Guides</span></button>
           </div>
 
           <div class="help-panels">
@@ -5058,6 +5332,24 @@
         Before we design anything, we clarify the decision we’re actually making. I use a repeatable framework that keeps decisions grounded and reduces rework as we go, but I’m not precious about it. We’ll adjust to fit real constraints, timelines, and stakeholders.
       </p>
 
+      <aside class="proof-quote proof-quote--process" aria-label="Proof quote from Alan Donth">
+        <figure class="quote-figure quote-yellow">
+          <div class="quote-top">
+            <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
+            <p class="quote-text">
+Mark goes the extra step to ensure his design is thorough and truly addresses users’ needs. He’s diligent in his research and
+<span class="hl hl-yellow hl--multi is-on a2">backs up every decision with well constructed reasoning</span>.
+</p>
+            <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
+          </div>
+          <div class="quote-divider" aria-hidden="true"></div>
+          <div class="quote-cite">
+            <strong>Alan Donth</strong>
+            <h4 class="schedule-sub"><span class="quote-role">Product Design,</span> <span class="quote-company">Accenture</span></h4>
+          </div>
+        </figure>
+      </aside>
+
       <div class="callout surface approach-card">
         <ol class="process" aria-label="Project process steps">
           <li class="process-step">
@@ -5127,84 +5419,6 @@
           <p>Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.</p>
         </div>
       </div>
-      </div>
-    </section>
-
-    <section id="testimonials" class="testimonials section-tight-top flow-m">
-        <h3 class="section-title">What People Are Saying</h3>
-        <p class="testimonials-title">
-          A few things teammates and leaders have said about working with me:
-        </p>
-
-        <ul class="testimonial-grid">
-          <li class="testimonial-card">
-            <figure class="quote-figure quote-cyan">
-              <div class="quote-top">
-                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
-                <p class="quote-text">
-                  Mark consistently operated as a <span class="hl hl-blue hl--multi is-on a4">true product partner, not just a UX designer</span>. He connects workflow reality, stakeholder needs, and delivery constraints into a clear path forward.
-                </p>
-                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
-              </div>
-              <div class="quote-divider" aria-hidden="true"></div>
-              <div class="quote-cite">
-                <strong>Sean Colandrea</strong>
-                <h4 class="schedule-sub">Product Manager</h4>
-              </div>
-            </figure>
-          </li>
-
-          <li class="testimonial-card">
-            <figure class="quote-figure quote-teal">
-              <div class="quote-top">
-                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
-                <p class="quote-text">
-                  Mark takes initiative and <span class="hl hl-teal hl--multi is-on a1">really takes the time to understand user needs</span>. I was impressed with his ability to take complex feedback and simplify it into simple solutions in a timely manner.
-                </p>
-                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
-              </div>
-              <div class="quote-divider" aria-hidden="true"></div>
-              <div class="quote-cite">
-                <strong>Kai Mills</strong>
-                <h4 class="schedule-sub">UI Designer</h4>
-              </div>
-            </figure>
-          </li>
-
-          <li class="testimonial-card">
-            <figure class="quote-figure quote-purple">
-              <div class="quote-top">
-                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
-                <p class="quote-text">
-                  Mark <span class="hl hl-purple hl--multi is-on a3">makes the role of project manager a lot easier</span>, and listens and respects everyone on the team’s thoughts and opinions.
-                </p>
-                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
-              </div>
-              <div class="quote-divider" aria-hidden="true"></div>
-              <div class="quote-cite">
-                <strong>Michael McTavish</strong>
-                <h4 class="schedule-sub">Project Manager</h4>
-              </div>
-            </figure>
-          </li>
-
-          <li class="testimonial-card">
-            <figure class="quote-figure quote-amber">
-              <div class="quote-top">
-                <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
-                <p class="quote-text">
-                  Mark goes the extra step to ensure his design is thorough and truly addressing the users’ needs. He’s diligent in his research and <span class="hl hl-amber hl--multi is-on a2">backs up every decision with well constructed reasoning</span>.
-                </p>
-                <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
-              </div>
-              <div class="quote-divider" aria-hidden="true"></div>
-              <div class="quote-cite">
-                <strong>Alan Donth</strong>
-                <h4 class="schedule-sub">Product Design</h4>
-              </div>
-            </figure>
-          </li>
-        </ul>
       </div>
     </section>
 
@@ -5666,15 +5880,60 @@
 
         const lines = Array.from(headline.querySelectorAll(".hero-line"));
         if (!lines.length) return;
+        const heroHeader = headline.closest("header") || headline;
+        const finalLine = lines[lines.length - 1];
+        let clearFinalHighlightTimer = 0;
+        let finalLineScrollObserver = null;
+
+        const clearPendingFinalHighlightTimeout = () => {
+          if (!clearFinalHighlightTimer) return;
+          window.clearTimeout(clearFinalHighlightTimer);
+          clearFinalHighlightTimer = 0;
+        };
+
+        const armFinalLineClearOnScrollOut = () => {
+          if (!finalLine || finalLineScrollObserver) return;
+          if (!("IntersectionObserver" in window)){
+            clearFinalHighlightTimer = window.setTimeout(() => {
+              finalLine.classList.remove("is-active");
+              clearFinalHighlightTimer = 0;
+            }, 2000);
+            return;
+          }
+
+          finalLineScrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting){
+                clearPendingFinalHighlightTimeout();
+                return;
+              }
+
+              const scrolledAboveViewport = entry.boundingClientRect.bottom <= 0;
+              if (!scrolledAboveViewport) return;
+
+              clearPendingFinalHighlightTimeout();
+              clearFinalHighlightTimer = window.setTimeout(() => {
+                finalLine.classList.remove("is-active");
+                clearFinalHighlightTimer = 0;
+                if (finalLineScrollObserver){
+                  finalLineScrollObserver.disconnect();
+                  finalLineScrollObserver = null;
+                }
+              }, 2000);
+            });
+          }, { threshold: 0 });
+
+          finalLineScrollObserver.observe(heroHeader);
+        };
 
         const applyMarkerEdgeJitter = (line, index) => {
           const pxPerDeg = Math.max(1.2, (line.getBoundingClientRect().height || 56) * 0.035);
-          const randDeg = () => ((Math.random() * 4) - 2);
+          const randDeg = () => ((Math.random() * 8) - 4); // +/- 4deg
           const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
-          const baseInset = 2;
-          const maxInset = 6;
-          const leftShift = Math.tan((randDeg() * Math.PI) / 180) * pxPerDeg * 10;
-          const rightShift = Math.tan((randDeg() * Math.PI) / 180) * pxPerDeg * 10;
+          const baseInset = 30;
+          const maxInset = 50;
+          const leftShift = Math.tan((randDeg() * Math.PI) / 180) * pxPerDeg * 18;
+          const rightShift = Math.tan((randDeg() * Math.PI) / 180) * pxPerDeg * 18;
           const leftTop = clamp(baseInset + (leftShift / 2), 0, maxInset);
           const leftBottom = clamp(baseInset - (leftShift / 2), 0, maxInset);
           const rightTop = clamp(baseInset + (rightShift / 2), 0, maxInset);
@@ -5712,10 +5971,12 @@
           line.classList.add("is-active");
 
           window.setTimeout(() => {
-            line.classList.remove("is-active");
             if (index + 1 < lines.length){
+              line.classList.remove("is-active");
               window.setTimeout(() => runLine(index + 1), highlightFadeOutMs + interLineBeat);
+              return;
             }
+            armFinalLineClearOnScrollOut();
           }, hold);
         };
 
@@ -6230,7 +6491,12 @@
       const tablist = document.querySelector('.help-tabs');
       if (!tabs.length || !panels.length) return;
 
-      const HL_CLASSES = ['hl','hl--multi','bio-highlight','hl-amber','hl-blue','hl-teal','hl-purple','hl-green','hl-cyan','hl-lavender','hl-magenta'];
+      const HL_CLASSES = [
+        'hl','hl--multi','bio-highlight',
+        'hl-turquoise','hl-mint','hl-yellow','hl-peach','hl-pink','hl-lilac',
+        /* legacy aliases kept so tab re-highlighting cleans older class names too */
+        'hl-amber','hl-blue','hl-teal','hl-purple','hl-green','hl-cyan','hl-lavender','hl-magenta'
+      ];
 
       function setTabHighlight(tab, isActive){
         const span = tab.querySelector('.tab-highlight');
@@ -6238,7 +6504,7 @@
         HL_CLASSES.forEach(c => span.classList.remove(c));
         span.classList.remove('is-on');
         if (isActive){
-          const tone = span.dataset.hlClass || 'hl-amber';
+          const tone = span.dataset.hlClass || 'hl-yellow';
           span.classList.add('hl','hl--multi','bio-highlight', tone, 'is-on');
         }
       }
@@ -6482,6 +6748,100 @@
     })();
 
     /* ==========================================================
+       Process titles: highlight each step on its own scroll-in
+       ========================================================== */
+    (function initProcessTitleHighlights(){
+      const steps = Array.from(document.querySelectorAll("#approach .process-step"));
+      if (!steps.length) return;
+
+      const revealTitle = (step) => {
+        const title = step.querySelector(".process-title");
+        if (!title || title.dataset.processHlShown === "1") return;
+        title.dataset.processHlShown = "1";
+        title.classList.add("is-on");
+      };
+
+      if (!("IntersectionObserver" in window)){
+        steps.forEach(revealTitle);
+        return;
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          revealTitle(entry.target);
+          io.unobserve(entry.target);
+        });
+      }, {
+        threshold: 0.35,
+        rootMargin: "0px 0px -8% 0px"
+      });
+
+      steps.forEach((step) => io.observe(step));
+    })();
+
+    /* ==========================================================
+       Text highlights: subtle edge jitter (single-line only)
+       ========================================================== */
+    (function initHighlightEdgeJitter(){
+      const targets = Array.from(document.querySelectorAll(".hl--multi:not(.tab-highlight), .bio-highlight:not(.tab-highlight)"));
+      if (!targets.length) return;
+
+      const prefersReduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+      if (prefersReduce || coarse) return;
+
+      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+      function ensureJitterValues(el){
+        if (el.dataset.hlJitterInit === "1") return;
+        el.dataset.hlJitterInit = "1";
+
+        const rect = el.getBoundingClientRect();
+        const h = rect.height || 18;
+        const randDeg = () => ((Math.random() * 8) - 4); // +/- 4deg
+        const pxShiftFromDeg = (deg) => Math.tan((deg * Math.PI) / 180) * h;
+
+        // Keep offsets tiny so clipped text edges remain safe inside existing padding.
+        const baseInset = 0.55;
+        const maxInset = 1.8;
+        const leftShift = pxShiftFromDeg(randDeg());
+        const rightShift = pxShiftFromDeg(randDeg());
+
+        const leftTop = clamp(baseInset + (leftShift / 2), 0, maxInset);
+        const leftBottom = clamp(baseInset - (leftShift / 2), 0, maxInset);
+        const rightTop = clamp(baseInset + (rightShift / 2), 0, maxInset);
+        const rightBottom = clamp(baseInset - (rightShift / 2), 0, maxInset);
+
+        el.style.setProperty("--hl-edge-left-top-x", `${leftTop.toFixed(2)}px`);
+        el.style.setProperty("--hl-edge-left-bottom-x", `${leftBottom.toFixed(2)}px`);
+        el.style.setProperty("--hl-edge-right-top-x", `${rightTop.toFixed(2)}px`);
+        el.style.setProperty("--hl-edge-right-bottom-x", `${rightBottom.toFixed(2)}px`);
+      }
+
+      function syncEligibility(){
+        targets.forEach((el) => {
+          ensureJitterValues(el);
+          const rects = el.getClientRects();
+          const isSingleLine = rects && rects.length === 1;
+          el.classList.toggle("hl-edge-jitter", !!isSingleLine);
+        });
+      }
+
+      let rafId = 0;
+      function scheduleSync(){
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          rafId = 0;
+          syncEligibility();
+        });
+      }
+
+      scheduleSync();
+      window.addEventListener("resize", scheduleSync, { passive: true });
+    })();
+
+    /* ==========================================================
        Fortune cookie: small delight
        ========================================================== */
     (function initFortuneCookie(){
@@ -6651,6 +7011,9 @@
     (function initProcessTilt(){
       const cards = Array.from(document.querySelectorAll(".process-step"));
       if (!cards.length) return;
+      // Disabled: cards should feel stable, not reactive/wiggly.
+      const ENABLE_PROCESS_TILT = false;
+      if (!ENABLE_PROCESS_TILT) return;
 
       const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
 
