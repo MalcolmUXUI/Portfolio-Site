@@ -18,6 +18,9 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://we3.design/" />
   <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
 
   <style>
     @layer tokens, base, components, utilities;
@@ -1015,7 +1018,7 @@
     .hero-line:nth-child(1){ --hero-line-hl-angle: -0.6deg; }
     .hero-line:nth-child(2){ --hero-line-hl-angle: -0.2deg; }
     .hero-line:nth-child(3){ --hero-line-hl-angle: 0.4deg; }
-    @media (max-width: var(--bp-sm)){
+    @media (max-width: 960px){
       .hero-line{
         transition: background 180ms ease, box-shadow 180ms ease, filter 180ms ease;
       }
@@ -1154,24 +1157,20 @@
     .proof-quote{
       display: block;
       width: 100%;
-      max-width: min(860px, 100%);
       margin: var(--space-lg) auto;
     }
     .proof-quote .quote-figure{
       height: auto;
     }
     .proof-quote--work{
-      max-width: min(840px, 100%);
       margin-top: var(--space-sm);
       margin-bottom: var(--space-lg);
     }
     .proof-quote--help{
-      max-width: min(840px, 100%);
       margin-top: var(--space-sm);
       margin-bottom: var(--space-lg);
     }
     .proof-quote--process{
-      max-width: min(880px, 100%);
       margin-top: var(--space-sm);
       margin-bottom: var(--space-lg);
     }
@@ -1242,14 +1241,17 @@
       grid-template-columns: 40px 1fr 40px;
       align-items: center;
       min-width: 0;
+      max-width: min(840px, 85%);
+      margin:auto;
     }
 
     .quote-text{
       margin: var(--space-xs) 0  var(--space-xs) 0;
-      text-align: left;
+      text-align: center;
       font-style: italic;
       color: var(--text);
       line-height: 1.55;
+      text-wrap: balance !important;
     }
 
     .quote-divider{
@@ -1375,10 +1377,18 @@
 
     @media (max-width: 520px){
       .quote-figure{ padding: var(--space-md); }
-      .quote-top{ grid-template-columns: 32px 1fr 32px; }
+      .quote-top{
+        grid-template-columns: 32px 1fr 32px;
+        max-width: none !important; 
+      }
       .quote-mark{
         font-size: 36px;
         opacity: .42;
+      }
+    }
+    @media (max-width: 500px){
+      .quote-top{
+        max-width: none !important;
       }
     }
     @media (max-width: var(--bp-sm)){
@@ -1751,7 +1761,6 @@
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
       box-shadow: var(--shadow-card);
-
       background: linear-gradient(180deg,
         var(--card-top),
         var(--card-bottom));
@@ -3174,6 +3183,7 @@
       }
       .process-why{
         margin-top: 0;
+        text-wrap: pretty !important;
       }
       .process-out{
         margin-top: 0;
@@ -3216,9 +3226,21 @@
       display: block;
     }
 
-    /* Allow the headshot PNG to extend outside the card box */
+    /* Keep About bar motion out of sync with nested proof quotes */
     .aboutCard.surface{
-      overflow: visible;
+      --bar-speed: 31s;
+      overflow: hidden;
+    }
+    .aboutCard.surface::before{
+      animation-direction: reverse;
+    }
+    .aboutCard .proof-quote--about:nth-of-type(1) .quote-figure{
+      --bar-speed: 23s;
+      --bar-direction: normal;
+    }
+    .aboutCard .proof-quote--about:nth-of-type(2) .quote-figure{
+      --bar-speed: 27s;
+      --bar-direction: reverse;
     }
 
     /* Keep the card grain behind content so popout image doesn't get a hard seam at card edges */
@@ -3229,7 +3251,7 @@
     .aboutCard__body{
       min-width: 0;
       display: flow-root; /* contain floated media wrap cleanly */
-      overflow: visible;
+      overflow: hidden;
     }
 
     .aboutCard__copy{
@@ -3253,7 +3275,7 @@
         --about-media-mb: 0px;
         --about-media-ml: auto;
         padding-bottom: var(--space-md);
-        overflow:visible;
+        overflow:hidden;
       }
     }
 
@@ -3438,6 +3460,17 @@
         display: none;
       }
     }
+    /* ============================================================
+       11.5) Diagnostics
+       ============================================================ *
+
+
+
+
+
+
+
+
 
     /* ============================================================
        12) Help: Master-detail layout (desktop) + accordion (mobile)
@@ -3541,13 +3574,16 @@
     .help-tabs{
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-sm);
-      padding: 0;
-        overflow: visible;
+      column-gap: var(--space-sm);
+      row-gap: var(--space-sm);
+      padding:  var(--space-lg) 0 var(--space-md) 0;
+      overflow: visible;
       }
       .help-tab{
         justify-self: stretch;
         text-align: center;
+        padding-top: 0;
+        padding-bottom: 0;
       }
       .help-tab:hover{ transform: none; }
       .help-detail-cta{ display: none; }
@@ -3557,7 +3593,7 @@
       display: none;
       margin: 0;
       padding: 0;
-      border: 1px solid rgba(var(--tab-hl-rgb, 155,122,247), 0.10);
+      border: 1px solid var(--border);
       background: transparent;
       box-shadow: none;
       border-bottom: 0;
@@ -3565,7 +3601,7 @@
     .help-panel.is-active{
       display: block; 
       border-radius: var(--radius-sm);
-      border: 1px solid rgba(var(--tab-hl-rgb, 155,122,247), .4);
+      border: 0;
     }
 
     .help-detail{
@@ -3582,16 +3618,57 @@
       padding: var(--space-md);
       border-radius: var(--radius-md);
       background: var(--nested-card-panel-bg);
-      border: 1px solid rgba(var(--border, #DAD5CE), 0.6);
+      border: 1px solid var(--border);
       box-shadow: var(--nested-card-panel-shadow);
       margin: 0;
-      border-top: 0;
     }
 
     .help-detail-head h3{
       margin:0 0 6px;
       font-size: var(--type-h3);
       line-height: 1.3;
+    }
+    .help-panel__title{
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      padding: 0 .08em;
+      border-radius: var(--hl-corner-radius);
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      --help-title-hl-fill: linear-gradient(180deg,
+          rgba(var(--tab-hl-rgb, 155,122,247), .05) 0%,
+          rgba(var(--tab-hl-rgb, 155,122,247), .42) 22%,
+          rgba(var(--tab-hl-rgb, 155,122,247), .36) 78%,
+          rgba(var(--tab-hl-rgb, 155,122,247), .10) 100%);
+      --help-title-hl-texture:
+        radial-gradient(16px 10px at 4% 60%,
+          rgba(var(--tab-hl-rgb, 155,122,247), .45),
+          rgba(var(--tab-hl-rgb, 155,122,247), 0) 72%),
+        radial-gradient(18px 12px at 96% 60%,
+          rgba(var(--tab-hl-rgb, 155,122,247), .40),
+          rgba(var(--tab-hl-rgb, 155,122,247), 0) 74%);
+      background:
+        var(--help-title-hl-fill),
+        var(--help-title-hl-texture);
+      background-size:
+        0% 100%,
+        100% 100%;
+      background-position: 0 58%, 0 58%;
+      background-repeat: no-repeat, no-repeat;
+      box-shadow: none;
+      animation: none;
+    }
+    .help-panel.is-active .help-panel__title{
+      animation: hl-fill 780ms cubic-bezier(.2,.9,.2,1) forwards;
+      background-size:
+        100% 100%,
+        100% 100%;
+    }
+    @media (prefers-reduced-motion: reduce){
+      .help-panel.is-active .help-panel__title{
+        animation: none;
+      }
     }
 
     .help-detail-head .fine{
@@ -3647,6 +3724,267 @@
     @media (min-width: 900px){
       .help-split{ display:block; grid-template-columns: none; }
       .help-accordion{ display:none; }
+    }
+
+    /* ============================================================
+       Diagnostic Carousel
+       ============================================================ */
+    .diagnostic-inner{
+      display: grid;
+      padding: 0 !important;
+      gap: var(--space-sm);
+    }
+
+    .diagnostic-carousel{
+      --bar-colors: linear-gradient(90deg,
+        rgba(var(--hl-peach-rgb), 0.62) 0%,
+        rgba(var(--hl-lilac-rgb), 0.58) 34%,
+        rgba(var(--hl-turquoise-rgb), 0.56) 68%,
+        rgba(var(--hl-peach-rgb), 0.62) 100%);
+      --bar-speed: 24s;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--space-sm) var(--space-xs) var(--space-md) var(--space-xs) !important;
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .diagnostic-stage{
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      align-items: stretch;
+      min-height: clamp(220px, 28vw, 300px);
+    }
+
+    .diagnostic-slide{
+      --diagnostic-quote-lh: 1.5;
+      grid-area: 1 / 1;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translate3d(4px, 0, 0);
+      transition:
+        opacity 180ms ease,
+        transform 220ms cubic-bezier(.2,.7,.2,1),
+        visibility 0s linear 220ms;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(var(--text-rgb), 0.08);
+      background: var(--nested-card-panel-bg);
+      box-shadow: var(--nested-card-panel-shadow);
+      padding: clamp(18px, 2.4vw, 26px);
+      padding-inline: calc(clamp(18px, 2.4vw, 26px) + 46px);
+      padding-bottom: calc(clamp(18px, 2.4vw, 26px) + 34px);
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      row-gap: calc(var(--diagnostic-quote-lh) * 1em);
+      text-align: center;
+    }
+
+    .diagnostic-slide.is-active{
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0);
+      transition-delay: 0s;
+    }
+
+    .diagnostic-slide blockquote{
+      margin: 0;
+      color: var(--text);
+      font-family: "Gloria Hallelujah", cursive;
+      font-weight: 400;
+      font-style: normal;
+      line-height: var(--diagnostic-quote-lh);
+      letter-spacing: 0.01em;
+      font-size: clamp(32px, 4.8vw, 52px);
+      text-wrap: balance !important;
+    }
+
+    .diagnostic-controls{
+      position: absolute;
+      inset: clamp(12px, 2vw, 16px);
+      z-index: 3;
+      padding: var(--space-md)  var(--space-md) 0 var(--space-md);
+      pointer-events: none;
+      display: block;
+    }
+    .diagnostic-controls > *{
+      pointer-events: auto;
+    }
+
+    .diagnostic-nav{
+      position: absolute;
+      top: 50%;
+      inline-size: 40px;
+      block-size: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid rgba(var(--text-rgb), 0.14);
+      background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease;
+      transform: translateY(-50%);
+    }
+    .diagnostic-nav[data-dir="prev"]{
+      left: 0;
+    }
+    .diagnostic-nav[data-dir="next"]{
+      right: 0;
+    }
+    .diagnostic-nav[hidden]{
+      display: none;
+    }
+
+    .diagnostic-nav:hover{
+      transform: translateY(calc(-50% - 1px));
+      border-color: rgba(var(--text-rgb), 0.22);
+      box-shadow: var(--shadow-card);
+    }
+
+    .diagnostic-nav:active{
+      transform: translateY(-50%);
+    }
+
+    .diagnostic-status{
+      position: absolute;
+      left: 50%;
+      bottom: clamp(10px, 1.5vw, 14px);
+      transform: translateX(-50%);
+      margin: 0;
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.35;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 200;
+      font-style: normal;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .diagnostic-status__current{
+      min-width: 1ch;
+      text-align: right;
+    }
+
+    .diagnostic-status__sep,
+    .diagnostic-status__total{
+      text-align: left;
+    }
+
+    .diagnostic-followup{
+      margin: 0;
+      padding: var(--space-lg) var(--space-md) 0 var(--space-md);
+      border-top: 0;
+      text-align: right;
+      color: var(--text-muted);
+      font-size: var(--type-body);
+      line-height: 1.5;
+    }
+
+    .diagnostic-followup strong{
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    @media (max-width: 960px){
+      .diagnostic-carousel{
+        padding: var(--space-sm) var(--space-xs) var(--space-md) var(--space-xs) !important;
+      }
+      .diagnostic-stage{
+        min-height: 210px;
+        grid-template-rows: minmax(0, 1fr) auto;
+      }
+      .diagnostic-slide{
+        padding: var(--space-sm);
+        padding-inline: var(--space-sm);
+        padding-bottom: var(--space-sm);
+        --diagnostic-quote-lh: 1.7;
+      }
+      .diagnostic-slide blockquote{
+        font-size: clamp(30px, 6vw, 34px);
+        text-wrap: balance !important;
+      }
+      .diagnostic-controls{
+        position: static;
+        inset: auto;
+        grid-row: 2;
+        grid-column: 1;
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr) 40px;
+        grid-template-rows: 40px;
+        align-items: center;
+        column-gap: var(--space-sm);
+        min-height: 40px;
+      }
+      .diagnostic-nav{
+        position: relative;
+        top: auto;
+        bottom: auto;
+        left: auto;
+        right: auto;
+        transform: none;
+      }
+      .diagnostic-nav[data-dir="prev"]{
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+      }
+      .diagnostic-nav[data-dir="next"]{
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+      }
+      .diagnostic-nav[hidden]{
+        display: grid;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .diagnostic-status{
+        grid-column: 2;
+        grid-row: 1;
+        position: static;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        block-size: 40px;
+        line-height: 1;
+        justify-self: center;
+      }
+      .diagnostic-nav:hover,
+      .diagnostic-nav:active{
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .diagnostic-slide{
+        transition: none;
+        transform: none;
+      }
+      .diagnostic-nav{
+        transition: none;
+      }
     }
 
     /* ============================================================
@@ -4465,7 +4803,10 @@
 
       header,
       .hero-actions,
-      .subhead{ text-align: left; }
+      .subhead{ 
+        text-align: left; 
+        text-wrap: balance !important;
+      }
 
       .hero-theme-control{
         top: 0 !important;
@@ -4669,7 +5010,7 @@
         <span>Mark Malcolm</span>
         <span class="brand-meta" aria-hidden="true">
           <span class="brand-sep">•</span>
-          <span>Product Strategy, Visual Direction, Brand Styling</span>
+          <span>Product Strategist & UX Consultant</span>
         </span>
       </a>
 
@@ -5358,10 +5699,50 @@ but also memorable customer experiences and great team morale.
       </section>
     </section>
 
+    <section class="diagnostic-block section-pad-top-100 section-pad-bottom-100" aria-label="Common moments before teams call me">
+      <div class="diagnostic-inner wrap">
+        <h2 class="section-title">If This Sounds Familiar…</h2>
+
+        <div class="diagnostic-carousel surface no-hover" data-manual-only role="region" aria-roledescription="carousel" aria-label="Common diagnostic statements">
+          <div class="diagnostic-stage" aria-live="polite">
+            <div class="diagnostic-slide is-active" aria-hidden="false">
+              <blockquote>
+                “We like the direction.<br>We just can’t explain it clearly yet.”
+              </blockquote>
+            </div>
+
+            <div class="diagnostic-slide" aria-hidden="true">
+              <blockquote>
+                “It makes sense to us.<br>Why isn’t it landing?”
+              </blockquote>
+            </div>
+
+            <div class="diagnostic-slide" aria-hidden="true">
+              <blockquote>
+                “We keep moving forward,<br>but something feels slightly off.”
+              </blockquote>
+            </div>
+
+            <div class="diagnostic-controls">
+              <p class="diagnostic-status" aria-live="polite" aria-atomic="true">
+                <span class="diagnostic-status__current">1</span><span class="diagnostic-status__sep" aria-hidden="true"> / </span><span class="diagnostic-status__total">3</span>
+              </p>
+              <button class="diagnostic-nav" type="button" data-dir="prev" aria-label="Previous statement">‹</button>
+              <button class="diagnostic-nav" type="button" data-dir="next" aria-label="Next statement">›</button>
+            </div>
+          </div>
+
+          <p class="diagnostic-followup">
+            ...that’s usually when I step in.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <section id="help" class="section-pad-top-100">
       <h2 class="section-title">How I Can Help</h2>
       <p class="section-lede">
-        These are the ways I typically support teams when the work is complex, cross-functional, or starting to feel fragile as it grows.
+        These are the ways I step in when ambitious teams need to slow down just enough to clarify their thinking before moving forward.
       </p>
 
       <aside class="proof-quote proof-quote--help" aria-label="Proof quote from Cassandra Mobley">
@@ -5369,9 +5750,7 @@ but also memorable customer experiences and great team morale.
           <div class="quote-top">
             <div class="quote-mark quote-mark--open" aria-hidden="true">“</div>
             <p class="quote-text">
-Mark is one of the most phenomenal project managers I’ve worked with. His
-<span class="hl hl-mint hl--multi is-on a1">unwavering work ethic and organization is undeniable from the moment a project begins</span>.
-He understands the intended user and helps create products that feel delightful and intuitive.
+Mark is one of the most phenomenal project managers I’ve worked with... <span class="hl hl-mint hl--multi is-on a1">When it comes to User Research, Mark is there with a full understanding of the intended user.</span>
 </p>
             <div class="quote-mark quote-mark--close" aria-hidden="true">”</div>
           </div>
@@ -5398,7 +5777,7 @@ He understands the intended user and helps create products that feel delightful 
                 <div class="help-detail-head">
                   <h3 class="help-panel__title">UX Strategy for Complex Workflows</h3>
                   <p class="section-lede">
-                    When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.
+                    When teams keep asking the same questions, it usually means the thinking isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.
                   </p>
                 </div>
                 <ul class="receipt-list">
@@ -5420,7 +5799,7 @@ He understands the intended user and helps create products that feel delightful 
                 <div class="help-detail-head">
                   <h3 class="help-panel__title">Design Systems and UI Architecture</h3>
                   <p class="section-lede">
-                    If your interface depends on who designed it that week, you don’t have a system yet. I build the components and rules that keep everything aligned.
+                    If your interface depends on who designed it that week, you don’t have a system yet. I define the structure and rules that keep everything aligned, so quality doesn’t depend on memory or mood.
                   </p>
                 </div>
 
@@ -5444,7 +5823,7 @@ He understands the intended user and helps create products that feel delightful 
                 <div class="help-detail-head">
                   <h3 class="help-panel__title">Brand Strategy, Copywriting, and Visual Design</h3>
                   <p class="section-lede">
-                    If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging to make the brand feel cohesive and trustworthy.
+                    If you sound different in every deck, page, and email, people can’t form a clear picture of you. I align voice, visuals, and messaging so customers immediately understand who you are and why you matter.
                   </p>
                 </div>
 
@@ -5571,60 +5950,58 @@ Mark goes the extra step to ensure his design is thorough and truly addresses us
         <ol class="process" aria-label="Project process steps">
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Define the Target</h3>
+              <h3 class="process-title">Align on the Real Decision</h3>
               <p class="fine process-why">
-                We agree on the real problem, the users involved, and what success looks like. This prevents solving the wrong thing elegantly.
+                We define the actual decision being made, who it affects, and what success means. This prevents solving the wrong problem elegantly.
               </p>
               <p class="meta-line process-out">
-                <strong>Output:</strong> a short problem statement, success criteria, and constraints.
+                Output: shared problem framing, success criteria, constraints.
               </p>
             </div>
           </li>
 
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Map the Reality</h3>
+              <h3 class="process-title">Expose the Current Reality</h3>
               <p class="fine process-why">
-                We document the current workflow and handoffs, then mark where people get stuck, repeat questions, or make avoidable mistakes.
+We map how the system actually works today, including handoffs, workarounds, and unspoken assumptions. We mark where confusion, repetition, or quiet friction show up.              </p>
+              <p class="meta-line process-out">
+Output: workflow map, friction audit, structural gaps.              </p>
+            </div>
+          </li>
+
+          <li class="process-step">
+            <div class="process-body">
+              <h3 class="process-title">Clarify the Path Forward</h3>
+              <p class="fine process-why">
+We design a clearer structure with roles, steps, and guardrails so the next action is obvious at each point. The goal isn’t decoration. It’s decision clarity.
               </p>
               <p class="meta-line process-out">
-                <strong>Output:</strong> workflow map, friction points, and priority opportunities.
+Output: proposed flow, interaction structure, content logic, edge cases.
               </p>
             </div>
           </li>
 
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Design the Next Version</h3>
+              <h3 class="process-title">De-Risk Before You Build</h3>
               <p class="fine process-why">
-                We propose a clearer path with roles, steps, and guardrails, then make the next action obvious at every decision point.
+We test the direction early using lightweight prototypes or structured reviews so engineering effort isn’t spent validating assumptions.
               </p>
               <p class="meta-line process-out">
-                <strong>Output:</strong> proposed flow, UI structure, content guidelines, and edge cases.
+Output: validated changes, resolved questions, committed direction.
               </p>
             </div>
           </li>
 
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Validate Before You Build</h3>
+              <h3 class="process-title">Ship, Observe, Tighten</h3>
               <p class="fine process-why">
-                We test the direction early, using lightweight prototypes or structured reviews, so you don’t pay engineering costs for assumptions.
+Once live, we watch for repeated questions, support load, or breakdowns in the flow. Then we refine the system so it strengthens over time instead of decaying.
               </p>
               <p class="meta-line process-out">
-                <strong>Output:</strong> validated changes, notes, and final decisions.
-              </p>
-            </div>
-          </li>
-
-          <li class="process-step">
-            <div class="process-body">
-              <h3 class="process-title">Ship, Learn, Tighten</h3>
-              <p class="fine process-why">
-                Once it’s live, we watch for repeat questions, missed steps, and support load, then tighten the system so it holds up over time.
-              </p>
-              <p class="meta-line process-out">
-                <strong>Output:</strong> iteration list, updated standards, and next improvements.
+Output: iteration plan, tightened standards, updated documentation.
               </p>
             </div>
           </li>
@@ -5632,8 +6009,12 @@ Mark goes the extra step to ensure his design is thorough and truly addresses us
         <div class="case-top">
         <h3 class="h3 ">Why I work this way</h3>
         <div class="section-lede case-top__copy para-stack">
-          <p>I came up through hospitality and high-touch customer experience, so I’m tuned for clarity, trust, and decision-making under pressure. If someone has to ask “what do I do next” twice, the process is the problem, not the person.</p>
-          <p>Today I bring that same mindset to complex products, internal tools, and brands: reduce confusion, tighten handoffs, and build systems that hold up when the team grows, the stakes rise, and the work gets busy.</p>
+          <p>
+            I came up through hospitality and high-touch customer experience, where clarity, trust, and steady decision-making matter under pressure. If someone has to ask “what do I do next?” twice, the system needs attention.
+          </p>
+          <p>
+Today I bring that same discipline to complex products and brands. I embed with teams, reduce ambiguity, and help the work hold up when the team grows, the stakes rise, and the deadlines tighten.
+          </p>
         </div>
       </div>
       </div>
@@ -6793,6 +7174,125 @@ Mark goes the extra step to ensure his design is thorough and truly addresses us
 
       // Activate first tab by default
       activate(tabs.find(t => t.classList.contains('is-active')) || tabs[0]);
+    })();
+
+    /* ==========================================================
+       Diagnostic quotes: simple carousel (manual by default)
+       ========================================================== */
+    (function initDiagnosticCarousel(){
+      const carousels = Array.from(document.querySelectorAll(".diagnostic-carousel"));
+      if (!carousels.length) return;
+
+      const prefersReduced =
+        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      carousels.forEach((carousel, carouselIdx) => {
+        const stage = carousel.querySelector(".diagnostic-stage");
+        const slides = Array.from(carousel.querySelectorAll(".diagnostic-slide"));
+        const statusRoot = carousel.querySelector(".diagnostic-controls .diagnostic-status");
+        const statusCurrent = statusRoot ? statusRoot.querySelector(".diagnostic-status__current") : null;
+        const statusTotal = statusRoot ? statusRoot.querySelector(".diagnostic-status__total") : null;
+        const prevBtn =
+          carousel.querySelector(".diagnostic-nav[data-dir='prev']") ||
+          carousel.querySelector(".diagnostic-nav[aria-label^='Previous']");
+        const nextBtn =
+          carousel.querySelector(".diagnostic-nav[data-dir='next']") ||
+          carousel.querySelector(".diagnostic-nav[aria-label^='Next']");
+        if (!stage || slides.length < 2 || !prevBtn || !nextBtn) return;
+
+        if (!stage.id){
+          stage.id = `diagnosticStage-${carouselIdx + 1}`;
+        }
+        prevBtn.setAttribute("aria-controls", stage.id);
+        nextBtn.setAttribute("aria-controls", stage.id);
+
+        slides.forEach((slide, idx) => {
+          slide.setAttribute("role", "group");
+          slide.setAttribute("aria-roledescription", "slide");
+          slide.setAttribute("aria-label", `Statement ${idx + 1} of ${slides.length}`);
+        });
+        if (statusTotal) statusTotal.textContent = String(slides.length);
+
+        let index = slides.findIndex((slide) => slide.classList.contains("is-active"));
+        if (index < 0) index = 0;
+        let autoTimer = 0;
+        const manualOnly = carousel.hasAttribute("data-manual-only");
+        const autoDelay = 5200;
+
+        const render = (nextIndex) => {
+          index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+          slides.forEach((slide, idx) => {
+            const isActive = idx === index;
+            slide.classList.toggle("is-active", isActive);
+            slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+          });
+          if (statusCurrent){
+            statusCurrent.textContent = String(index + 1);
+          } else if (statusRoot){
+            statusRoot.textContent = `${index + 1} / ${slides.length}`;
+          }
+          const atStart = index === 0;
+          const atEnd = index === slides.length - 1;
+          prevBtn.hidden = atStart;
+          prevBtn.disabled = atStart;
+          nextBtn.hidden = atEnd;
+          nextBtn.disabled = atEnd;
+        };
+
+        const stopAuto = () => {
+          if (!autoTimer) return;
+          window.clearInterval(autoTimer);
+          autoTimer = 0;
+        };
+
+        const startAuto = () => {
+          if (manualOnly || prefersReduced || autoTimer) return;
+          autoTimer = window.setInterval(() => {
+            const nextIndex = index >= slides.length - 1 ? 0 : index + 1;
+            render(nextIndex);
+          }, autoDelay);
+        };
+
+        const restartAuto = () => {
+          stopAuto();
+          startAuto();
+        };
+
+        prevBtn.addEventListener("click", () => {
+          render(index - 1);
+          restartAuto();
+        });
+
+        nextBtn.addEventListener("click", () => {
+          render(index + 1);
+          restartAuto();
+        });
+
+        carousel.addEventListener("mouseenter", stopAuto);
+        carousel.addEventListener("mouseleave", startAuto);
+        carousel.addEventListener("focusin", stopAuto);
+        carousel.addEventListener("focusout", (e) => {
+          if (e.relatedTarget && carousel.contains(e.relatedTarget)) return;
+          startAuto();
+        });
+
+        carousel.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowLeft"){
+            e.preventDefault();
+            render(index - 1);
+            restartAuto();
+            return;
+          }
+          if (e.key === "ArrowRight"){
+            e.preventDefault();
+            render(index + 1);
+            restartAuto();
+          }
+        });
+
+        render(index);
+        startAuto();
+      });
     })();
 
     /* ==========================================================
