@@ -436,7 +436,7 @@
     .fine{
       font-size: var(--type-body);
       line-height: var(--lh-body);
-      color: var(--text-muted);
+      color: var(--text);
     }
       .no-italic{ font-style: normal; }
 
@@ -956,7 +956,7 @@
       right:-0.08em;
       top: 56%;
       height: 1.18em;
-      transform: translateY(-50%) rotate(var(--hero-line-hl-angle, -0.4deg)) scaleX(0.02);
+      transform: translateY(-50%) rotate(var(--hero-line-hl-angle, -0.7deg)) scaleX(0.02);
       transform-origin: left center;
       z-index: -1;
       border-radius: 10px;
@@ -1540,22 +1540,16 @@
       background-size: 100% .3em;
     }
     html[data-theme="dark"] .help-tab .tab-highlight.hl--multi{
-      background-image:
-        linear-gradient(180deg,
-          rgba(var(--hl-rgb, 245,158,11), .12) 0%,
-          rgba(var(--hl-rgb, 245,158,11), .52) 36%,
-          rgba(var(--hl-rgb, 245,158,11), .44) 100%);
-      padding: 0 .12em .10em;
-      background-size: 0% .3em;
-      text-shadow: none;
-      transition: color 140ms ease, opacity 200ms ease, background-size 220ms cubic-bezier(.2,.9,.2,1), text-shadow 220ms ease;
+      background-image: var(--title-hl-dark-underline-image);
+      background-position: 0 var(--title-hl-dark-underline-pos);
+      padding: var(--title-hl-dark-underline-pad);
+      background-size: 0% var(--title-hl-dark-underline-size);
+      text-shadow: var(--title-hl-dark-glow-off);
+      transition: var(--title-hl-dark-underline-transition);
     }
     html[data-theme="dark"] .help-tab .tab-highlight.hl--multi.is-on{
-      background-size: 100% .3em;
-      text-shadow:
-        0 0 .12em rgba(var(--hl-rgb, 245,158,11), .28),
-        0 0 .42em rgba(var(--hl-rgb, 245,158,11), .24),
-        0 0 .8em rgba(var(--hl-rgb, 245,158,11), .16);
+      background-size: 100% var(--title-hl-dark-underline-size);
+      text-shadow: var(--title-hl-dark-glow-on);
     }
     html[data-theme="dark"] .quote-figure{
       --quote-mark-color: var(--quote-accent-color);
@@ -1588,22 +1582,16 @@
         background-size: 100% .3em;
       }
       html:not([data-theme]) .help-tab .tab-highlight.hl--multi{
-        background-image:
-          linear-gradient(180deg,
-            rgba(var(--hl-rgb, 245,158,11), .12) 0%,
-            rgba(var(--hl-rgb, 245,158,11), .52) 36%,
-            rgba(var(--hl-rgb, 245,158,11), .44) 100%);
-        padding: 0 .12em .10em;
-        background-size: 0% .3em;
-        text-shadow: none;
-        transition: color 140ms ease, opacity 200ms ease, background-size 220ms cubic-bezier(.2,.9,.2,1), text-shadow 220ms ease;
+        background-image: var(--title-hl-dark-underline-image);
+        background-position: 0 var(--title-hl-dark-underline-pos);
+        padding: var(--title-hl-dark-underline-pad);
+        background-size: 0% var(--title-hl-dark-underline-size);
+        text-shadow: var(--title-hl-dark-glow-off);
+        transition: var(--title-hl-dark-underline-transition);
       }
       html:not([data-theme]) .help-tab .tab-highlight.hl--multi.is-on{
-        background-size: 100% .3em;
-        text-shadow:
-          0 0 .12em rgba(var(--hl-rgb, 245,158,11), .28),
-          0 0 .42em rgba(var(--hl-rgb, 245,158,11), .24),
-          0 0 .8em rgba(var(--hl-rgb, 245,158,11), .16);
+        background-size: 100% var(--title-hl-dark-underline-size);
+        text-shadow: var(--title-hl-dark-glow-on);
       }
       html:not([data-theme]) .quote-figure{
         --quote-mark-color: var(--quote-accent-color);
@@ -3048,56 +3036,241 @@
     .process-title::before{
       content: counter(step) ". ";
       color: inherit;
-      font-weight: 700;
+      font-weight: inherit;
       margin-right: 2px;
     }
 
-    .process-title{
+    /* Shared title highlight base (process titles + active help tab labels + help panel titles) */
+    .process-title,
+    .help-tab .tab-highlight.hl--multi,
+    .help-panel__title{
+      --title-hl-rgb-source: var(--hl-rgb, 245,158,11);
+      --title-hl-radius: var(--hl-corner-radius);
+      --title-hl-fill-duration: 750ms;
+      --title-hl-skew: 8deg;
+      --title-hl-shift-x: -4px;
+      --title-hl-left-top-x: 0px;
+      --title-hl-left-bottom-x: 0px;
+      --title-hl-right-top-x: 0px;
+      --title-hl-right-bottom-x: 0px;
+      --title-hl-band-height: 1.5em;
+      --title-hl-band-y: 50%;
+      --title-hl-cap-width: 1.05em;
+      --title-hl-cap-height: 118%;
+      --title-hl-cap-overlap: .14em;
+      --title-hl-fill-x: calc(var(--title-hl-cap-width) - var(--title-hl-cap-overlap));
+      /* Angled stroke ends (outer edge slants, center stays fuller) */
+      --title-hl-cap-left: linear-gradient(10deg,
+          rgba(var(--title-hl-rgb-source), 0) 18%,
+          rgba(var(--title-hl-rgb-source), .28) 34%,
+          rgba(var(--title-hl-rgb-source), .56) 58%,
+          rgba(var(--title-hl-rgb-source), .72) 100%);
+      --title-hl-cap-right: linear-gradient(-10deg,
+          rgba(var(--title-hl-rgb-source), .72) 0%,
+          rgba(var(--title-hl-rgb-source), .56) 42%,
+          rgba(var(--title-hl-rgb-source), .28) 66%,
+          rgba(var(--title-hl-rgb-source), 0) 82%);
+      --title-hl-fill: linear-gradient(180deg,
+          rgba(var(--title-hl-rgb-source), .05) 0%,
+          rgba(var(--title-hl-rgb-source), .42) 22%,
+          rgba(var(--title-hl-rgb-source), .36) 78%,
+          rgba(var(--title-hl-rgb-source), .10) 100%);
+      /* Slightly darker ink pool at the stopping edge (right side) */
+      --title-hl-end-bleed:
+        radial-gradient(26px 14px at 99% 58%,
+          rgba(var(--title-hl-rgb-source), .26) 0%,
+          rgba(var(--title-hl-rgb-source), .18) 42%,
+          rgba(var(--title-hl-rgb-source), .08) 62%,
+          rgba(var(--title-hl-rgb-source), .04) 82%,
+          rgba(var(--title-hl-rgb-source), 0) 100%);
+      --title-hl-texture:
+        radial-gradient(16px 10px at 4% 60%,
+          rgba(var(--title-hl-rgb-source), .45),
+          rgba(var(--title-hl-rgb-source), 0) 72%),
+        radial-gradient(18px 12px at 96% 60%,
+          rgba(var(--title-hl-rgb-source), .40),
+          rgba(var(--title-hl-rgb-source), 0) 74%);
+      --title-hl-size-off:
+        0% var(--title-hl-cap-height),
+        0% var(--title-hl-cap-height),
+        0% 100%,
+        0% 100%,
+        0% 100%;
+      --title-hl-size-mid:
+        var(--title-hl-cap-width) var(--title-hl-cap-height),
+        0% var(--title-hl-cap-height),
+        calc(100% - var(--title-hl-cap-width) + var(--title-hl-cap-overlap)) 100%,
+        0% 100%,
+        0% 100%;
+      --title-hl-size-on:
+        var(--title-hl-cap-width) var(--title-hl-cap-height),
+        var(--title-hl-cap-width) var(--title-hl-cap-height),
+        calc(100% - (var(--title-hl-cap-width) * 2) + (var(--title-hl-cap-overlap) * 2)) 100%,
+        100% 100%,
+        100% 100%;
+      border-radius: var(--title-hl-radius);
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      background:
+        var(--title-hl-cap-left),
+        var(--title-hl-cap-right),
+        var(--title-hl-fill),
+        var(--title-hl-texture);
+      background-size: var(--title-hl-size-off);
+      background-position:
+        0 58%,
+        100% 58%,
+        var(--title-hl-fill-x) 58%,
+        0 58%,
+        0 58%;
+      background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+      box-shadow: none;
+      animation: none;
       position: relative;
+      isolation: isolate;
+      z-index: 0;
+      background: none;
+    }
+
+    .process-title::after,
+    .help-tab .tab-highlight.hl--multi::after,
+    .help-panel__title::after{
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: var(--title-hl-band-y);
+      height: var(--title-hl-band-height);
+      pointer-events: none;
+      z-index: -1;
+      border-radius: var(--title-hl-radius);
+      -webkit-clip-path: polygon(
+        var(--title-hl-left-top-x) 0%,
+        calc(100% - var(--title-hl-right-top-x)) 0%,
+        calc(100% - var(--title-hl-right-bottom-x)) 100%,
+        var(--title-hl-left-bottom-x) 100%
+      );
+      clip-path: polygon(
+        var(--title-hl-left-top-x) 0%,
+        calc(100% - var(--title-hl-right-top-x)) 0%,
+        calc(100% - var(--title-hl-right-bottom-x)) 100%,
+        var(--title-hl-left-bottom-x) 100%
+      );
+      background:
+        var(--title-hl-fill),
+        var(--title-hl-end-bleed),
+        var(--title-hl-texture);
+      background-size: 100% 100%, 100% 100%, 100% 100%;
+      background-position: 0 58%, 0 58%, 0 58%;
+      background-repeat: no-repeat, no-repeat, no-repeat;
+      opacity: 0;
+      transform-origin: left center;
+      transform: translateX(var(--title-hl-shift-x)) translateY(-55%) scaleX(0) skewX(var(--title-hl-skew));
+      will-change: transform, opacity;
+    }
+
+    @keyframes title-hl-swipe-shape{
+      0%{
+        opacity: 0;
+        transform: translateX(var(--title-hl-shift-x)) translateY(-55%) scaleX(0) skewX(var(--title-hl-skew));
+        filter: saturate(1.05);
+      }
+      6%{
+        opacity: 1;
+      }
+      70%{
+        opacity: 1;
+        transform: translateX(var(--title-hl-shift-x)) translateY(-60%) scaleX(1.03) skewX(var(--title-hl-skew));
+      }
+      100%{
+        opacity: 1;
+        transform: translateX(var(--title-hl-shift-x)) translateY(-60%) scaleX(1.03) skewX(var(--title-hl-skew));
+        filter: saturate(1);
+      }
+    }
+
+    .process-title{
       justify-self: start;
       width: fit-content;
       max-width: 100%;
       padding: 0 .08em;
+      font-family: "Gloria Hallelujah", cursive;
+      font-weight: 400;
+      font-style: normal;
       font-size: var(--type-h3);
       line-height: 1.18;
-      letter-spacing: -.2px;
-      color: var(--text-muted);
+      letter-spacing: 0.01em;
+      color: var(--text);
       margin: 0; /* Tight, predictable margins (no surprise whitespace) */
-      --process-title-hl-fill: linear-gradient(180deg,
-          rgba(var(--step-highlight-rgb, 245,158,11), .05) 0%,
-          rgba(var(--step-highlight-rgb, 245,158,11), .42) 22%,
-          rgba(var(--step-highlight-rgb, 245,158,11), .36) 78%,
-          rgba(var(--step-highlight-rgb, 245,158,11), .10) 100%);
-      --process-title-hl-texture:
-        radial-gradient(16px 10px at 4% 60%,
-          rgba(var(--step-highlight-rgb, 245,158,11), .45),
-          rgba(var(--step-highlight-rgb, 245,158,11), 0) 72%),
-        radial-gradient(18px 12px at 96% 60%,
-          rgba(var(--step-highlight-rgb, 245,158,11), .40),
-          rgba(var(--step-highlight-rgb, 245,158,11), 0) 74%);
-      background:
-        var(--process-title-hl-fill),
-        var(--process-title-hl-texture);
-      background-size:
-        0% 100%,
-        100% 100%;
-      background-position: 0 58%, 0 58%;
-      background-repeat: no-repeat, no-repeat;
-      border-radius: var(--hl-corner-radius);
-      -webkit-box-decoration-break: clone;
-      box-decoration-break: clone;
-      box-shadow: none;
-      animation: none;
+      --title-hl-rgb-source: var(--step-highlight-rgb, 245,158,11);
+      --title-hl-cap-width: 1.18em;
     }
-    .process-title.is-on{
-      animation: hl-fill 780ms cubic-bezier(.2,.9,.2,1) forwards;
-      background-size:
-        100% 100%,
-        100% 100%;
+    .help-tab .tab-highlight.hl--multi{
+      --title-hl-rgb-source: var(--hl-rgb, var(--tab-hl-rgb, 155,122,247));
+      --title-hl-radius: 8px;
+      --title-hl-fill-duration: 520ms;
+      --title-hl-skew: -6deg;
+      --title-hl-cap-width: .82em;
+      --title-hl-dark-underline-image: linear-gradient(180deg,
+          rgba(var(--hl-rgb, 245,158,11), .12) 0%,
+          rgba(var(--hl-rgb, 245,158,11), .52) 36%,
+          rgba(var(--hl-rgb, 245,158,11), .44) 100%);
+      --title-hl-dark-underline-size: .3em;
+      --title-hl-dark-underline-pos: 80%;
+      --title-hl-dark-underline-pad: 0 .12em .10em;
+      --title-hl-dark-glow-off: none;
+      --title-hl-dark-glow-on:
+        0 0 .12em rgba(var(--hl-rgb, 245,158,11), .28),
+        0 0 .42em rgba(var(--hl-rgb, 245,158,11), .24),
+        0 0 .8em rgba(var(--hl-rgb, 245,158,11), .16);
+      --title-hl-dark-underline-transition: color 140ms ease, opacity 200ms ease, background-size 220ms cubic-bezier(.2,.9,.2,1), text-shadow 220ms ease;
+      display: inline-block;
+      padding: 0 .12em;
+      white-space: nowrap;
+      background-repeat: no-repeat, no-repeat;
+      transition: color 140ms ease, opacity 200ms ease, background-size 220ms cubic-bezier(.2,.9,.2,1);
+    }
+    .help-panel__title{
+      --title-hl-rgb-source: var(--tab-hl-rgb, 155,122,247);
+      --title-hl-fill-duration: 780ms;
+      --title-hl-cap-width: .98em;
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      padding: 0 .08em;
+    }
+    .process-title.is-on,
+    .help-tab .tab-highlight.hl--multi.is-on,
+    .help-panel.is-active .help-panel__title{
+      animation: none;
+      background-size: auto;
+    }
+    .process-title.is-on::after,
+    .help-tab .tab-highlight.hl--multi.is-on::after,
+    .help-panel.is-active .help-panel__title::after{
+      animation: title-hl-swipe-shape var(--title-hl-fill-duration) cubic-bezier(.2,.9,.2,1) forwards;
     }
     @media (prefers-reduced-motion: reduce){
-      .process-title.is-on{
+      .process-title.is-on,
+      .help-tab .tab-highlight.hl--multi.is-on,
+      .help-panel.is-active .help-panel__title{
         animation: none;
+      }
+      .process-title.is-on::after,
+      .help-tab .tab-highlight.hl--multi.is-on::after,
+      .help-panel.is-active .help-panel__title::after{
+        animation: none;
+        opacity: 1;
+        transform: translateX(var(--title-hl-shift-x)) translateY(-50%) scaleX(1) skewX(var(--title-hl-skew));
+      }
+    }
+
+    html[data-theme="dark"] .help-tab .tab-highlight.hl--multi::after{
+      content: none;
+    }
+    @media (prefers-color-scheme: dark){
+      html:not([data-theme]) .help-tab .tab-highlight.hl--multi::after{
+        content: none;
       }
     }
 
@@ -3175,7 +3348,7 @@
       .process-title::before{
         content: counter(step) ". ";
         color: inherit;
-        font-weight: 800;
+        font-weight: inherit;
         margin-right: 8px;
       }
       .process-title.is-on{
@@ -3629,46 +3802,7 @@
       line-height: 1.3;
     }
     .help-panel__title{
-      position: relative;
-      display: inline-block;
-      max-width: 100%;
-      padding: 0 .08em;
-      border-radius: var(--hl-corner-radius);
-      -webkit-box-decoration-break: clone;
-      box-decoration-break: clone;
-      --help-title-hl-fill: linear-gradient(180deg,
-          rgba(var(--tab-hl-rgb, 155,122,247), .05) 0%,
-          rgba(var(--tab-hl-rgb, 155,122,247), .42) 22%,
-          rgba(var(--tab-hl-rgb, 155,122,247), .36) 78%,
-          rgba(var(--tab-hl-rgb, 155,122,247), .10) 100%);
-      --help-title-hl-texture:
-        radial-gradient(16px 10px at 4% 60%,
-          rgba(var(--tab-hl-rgb, 155,122,247), .45),
-          rgba(var(--tab-hl-rgb, 155,122,247), 0) 72%),
-        radial-gradient(18px 12px at 96% 60%,
-          rgba(var(--tab-hl-rgb, 155,122,247), .40),
-          rgba(var(--tab-hl-rgb, 155,122,247), 0) 74%);
-      background:
-        var(--help-title-hl-fill),
-        var(--help-title-hl-texture);
-      background-size:
-        0% 100%,
-        100% 100%;
-      background-position: 0 58%, 0 58%;
-      background-repeat: no-repeat, no-repeat;
-      box-shadow: none;
-      animation: none;
-    }
-    .help-panel.is-active .help-panel__title{
-      animation: hl-fill 780ms cubic-bezier(.2,.9,.2,1) forwards;
-      background-size:
-        100% 100%,
-        100% 100%;
-    }
-    @media (prefers-reduced-motion: reduce){
-      .help-panel.is-active .help-panel__title{
-        animation: none;
-      }
+      line-height: 1.15;
     }
 
     .help-detail-head .fine{
@@ -5950,7 +6084,7 @@ Mark goes the extra step to ensure his design is thorough and truly addresses us
         <ol class="process" aria-label="Project process steps">
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Align on the Real Decision</h3>
+              <h3 class="process-title">Align on the Real Decision </h3>
               <p class="fine process-why">
                 We define the actual decision being made, who it affects, and what success means. This prevents solving the wrong problem elegantly.
               </p>
@@ -5962,7 +6096,7 @@ Mark goes the extra step to ensure his design is thorough and truly addresses us
 
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Expose the Current Reality</h3>
+              <h3 class="process-title">Expose the Current Reality </h3>
               <p class="fine process-why">
 We map how the system actually works today, including handoffs, workarounds, and unspoken assumptions. We mark where confusion, repetition, or quiet friction show up.              </p>
               <p class="meta-line process-out">
@@ -5972,7 +6106,7 @@ Output: workflow map, friction audit, structural gaps.              </p>
 
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Clarify the Path Forward</h3>
+              <h3 class="process-title">Clarify the Path Forward </h3>
               <p class="fine process-why">
 We design a clearer structure with roles, steps, and guardrails so the next action is obvious at each point. The goal isn’t decoration. It’s decision clarity.
               </p>
@@ -5984,7 +6118,7 @@ Output: proposed flow, interaction structure, content logic, edge cases.
 
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">De-Risk Before You Build</h3>
+              <h3 class="process-title">De-Risk Before You Build </h3>
               <p class="fine process-why">
 We test the direction early using lightweight prototypes or structured reviews so engineering effort isn’t spent validating assumptions.
               </p>
@@ -5996,7 +6130,7 @@ Output: validated changes, resolved questions, committed direction.
 
           <li class="process-step">
             <div class="process-body">
-              <h3 class="process-title">Ship, Observe, Tighten</h3>
+              <h3 class="process-title">Ship, Observe, Tighten </h3>
               <p class="fine process-why">
 Once live, we watch for repeated questions, support load, or breakdowns in the flow. Then we refine the system so it strengthens over time instead of decaying.
               </p>
@@ -7469,6 +7603,38 @@ Today I bring that same discipline to complex products and brands. I embed with 
     })();
 
     /* ==========================================================
+       Title highlights: one-time skew jitter (shared title highlight system)
+       ========================================================== */
+    (function initTitleHighlightSkewJitter(){
+      const titles = Array.from(document.querySelectorAll(
+        ".process-title, .help-tab .tab-highlight.hl--multi, .help-panel__title"
+      ));
+      if (!titles.length) return;
+
+      titles.forEach((el) => {
+        if (el.dataset.titleSkewJitter === "1") return;
+        el.dataset.titleSkewJitter = "1";
+
+        // Randomize within [12deg, 4deg] so every marker swipe feels slightly different.
+        const skew = (1 + Math.random() * 8);
+        el.style.setProperty("--title-hl-skew", `${skew.toFixed(2)}deg`);
+
+        // Tiny horizontal offset jitter so each swipe lands a bit left/right (±4-6px).
+        const shiftMag = 4 + Math.random() * 2;
+        const shiftDir = Math.random() < 0.5 ? -1 : 1;
+        const shift = shiftDir * shiftMag;
+        el.style.setProperty("--title-hl-shift-x", `${shift.toFixed(2)}px`);
+
+        // Subtle slanted-end jitter (safe range to avoid clipping too much text)
+        const edgePx = () => (2 + Math.random() * 4).toFixed(2) + "px"; // 7-11px
+        el.style.setProperty("--title-hl-left-top-x", edgePx());
+        el.style.setProperty("--title-hl-left-bottom-x", edgePx());
+        el.style.setProperty("--title-hl-right-top-x", edgePx());
+        el.style.setProperty("--title-hl-right-bottom-x", edgePx());
+      });
+    })();
+
+    /* ==========================================================
        Process titles: highlight each step on its own scroll-in
        ========================================================== */
     (function initProcessTitleHighlights(){
@@ -7721,10 +7887,21 @@ Today I bring that same discipline to complex products and brands. I embed with 
         }
       }
 
+      function triggerCookieHaptic(){
+        try{
+          if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function"){
+            navigator.vibrate([10, 18, 14]);
+          }
+        }catch(_err){
+          /* ignore unsupported haptics */
+        }
+      }
+
       function openCookie(){
-        if (cookieBtn.classList.contains("is-open")) return;
+        if (cookieBtn.classList.contains("is-open")) return false;
         cookieBtn.classList.add("is-open");
         spawnCrumbs();
+        return true;
       }
 
       function closeAndReset(){
@@ -7737,7 +7914,11 @@ Today I bring that same discipline to complex products and brands. I embed with 
 
       cookieBtn.addEventListener("mouseenter", openCookie);
       cookieBtn.addEventListener("focus", openCookie);
-      cookieBtn.addEventListener("click", openCookie);
+      cookieBtn.addEventListener("click", () => {
+        if (openCookie()){
+          triggerCookieHaptic();
+        }
+      });
 
       const io = new IntersectionObserver((entries) => {
         for (const entry of entries){
