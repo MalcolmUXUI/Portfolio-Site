@@ -29,11 +29,12 @@
 			 1) Tokens (palette + semantics)
 			 ============================================================ */
 		@layer tokens {
-	:root{
+		:root{
 				/* Layout */
 				--max: 1050px;
 				--stack-max: 680px;
 				--gutter: clamp(16px, 4vw, 32px);
+				--layout-edge-inline: 40px;
 				/* Overlay sizing */
 				--overlay-width: min(92vw, 1200px);
 				--overlay-height: min(92vh, 900px);
@@ -45,7 +46,7 @@
 				--shadow-surface-base: 0 14px 40px rgba(17,20,24,.10);
 				--shadow-surface-soft: 0 10px 24px rgba(17,20,24,.08);
 				--shadow-surface-strong: 0 18px 48px rgba(17,20,24,.14);
-				--shadow-interactive-base: var(--shadow-surface-base);
+				--shadow-interactive-base: var(--nested-card-panel-shadow);
 				--shadow-cutout-lg: drop-shadow(0 18px 34px rgba(0,0,0,.18));
 				--shadow-cutout-md: drop-shadow(0 10px 22px rgba(0,0,0,.18));
 				--shadow-cutout-sm: drop-shadow(0 4px 12px rgba(0,0,0,.18));
@@ -252,9 +253,9 @@
 				--glass-shadow-hover: 0 22px 44px rgba(17,20,24,.18);
 				--glass-shadow-press: 0 12px 24px rgba(17,20,24,.12);
 				--glass-inner: inset 0 1px 0 rgba(255,255,255,.65);
-				--toggle-hit: 44px;
-				--toggle-visual: calc(var(--toggle-hit) * 0.7);
-				--toggle-inset: calc((var(--toggle-hit) - var(--toggle-visual)) / 2);
+					--toggle-hit: 36px;
+					--toggle-visual: 36px;
+					--toggle-inset: calc((var(--toggle-hit) - var(--toggle-visual)) / 2);
 				--hero-title-size: clamp(42px, 6vw, 68px);
 				/* Type scale (keep it simple) */
 				--type-h1: clamp(36px, 5.5vw, 64px);
@@ -560,6 +561,9 @@
 			margin-top: 0;
 			z-index: 50;
 			width: 100%;
+			--nav-edge-inline: var(--layout-edge-inline);
+			--nav-bar-height: 64px;
+			padding-inline: var(--nav-edge-inline);
 			background: rgba(var(--surface-card-rgb), 0.82);
 			-webkit-backdrop-filter: saturate(180%) blur(10px);
 			backdrop-filter: saturate(180%) blur(10px);
@@ -571,19 +575,27 @@
 			transform: translateY(-110%);
 		}
 
-		.nav-inner{
-			max-width: var(--max);
-			width: 100%;
-			margin: 0 auto;
-			padding: 14px var(--space-lg);
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 16px;
-			background: transparent;
-			border: 0;
-			box-shadow: none;
-		}
+				.nav-inner{
+					width: 100%;
+					max-width: none;
+					margin: 0;
+					min-block-size: var(--nav-bar-height);
+					padding: 0;
+					box-sizing: border-box;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					gap: var(--space-sm);
+					background: transparent;
+					border: 0;
+					box-shadow: none;
+				}
+			.nav-actions{
+				display: flex;
+				align-items: center;
+				gap: var(--space-sm);
+				flex: 0 0 auto;
+			}
 		.nav-toggle,
 		.mobile-nav-close{
 			--nav-control-size: 40px;
@@ -718,15 +730,18 @@
 			overflow: hidden;
 		}
 
-		.brand{
-			display:flex;
-			align-items:center;
-			gap: var(--space-sm);
-			font-weight:700;
-			letter-spacing:.2px;
-			text-decoration: none;
-			color: inherit;
-		}
+			.brand{
+				display:flex;
+				align-items:center;
+				gap: var(--space-sm);
+				font-weight:700;
+				letter-spacing:.2px;
+				text-decoration: none;
+				color: inherit;
+			}
+			.brand > span:first-of-type{
+				white-space: nowrap;
+			}
 
 		.brand:hover{ opacity: .92; }
 
@@ -750,13 +765,13 @@
 			opacity:.5;
 		}
 
-		.nav-links{
-			display:flex;
-			align-items:center;
-			gap: 0;
-		}
+			.nav-links{
+				display:flex;
+				align-items:center;
+				gap: 0;
+			}
 
-		.nav-links a:not(.btn){
+			.nav-links a:not(.btn){
 			display: inline-flex;
 			align-items: center;
 			padding: 0 var(--space-sm);
@@ -768,25 +783,48 @@
 			text-shadow: none;
 			transition: color .2s ease, text-shadow .22s ease, filter .22s ease;
 			position: relative;
-			text-decoration: none;
-		}
-		@media (max-width: 1140px){
-			.nav-links{ display: none; }
-			.nav-toggle{
-				display: inline-grid;
+				text-decoration: none;
 			}
-			.nav{ padding: 8px 12px; }
-			.nav-inner{ gap: var(--space-sm); padding: 10px var(--space-md); }
-			.brand{
-				flex-wrap: nowrap;
-				align-items: center;
-				gap: 6px;
-			}
-			.brand > span:first-of-type{
-				white-space: nowrap;
-			}
-			.brand-meta{ display:none; }
-		}
+					@media (min-width: 1140px){
+						:root{
+							--layout-edge-inline: 60px;
+						}
+					}
+					@media (max-width: 1279px){
+						.brand-meta{
+							display: none;
+						}
+					}
+					@media (max-width: 1023px){
+						.nav-links .nav-link-optional{
+							display: none;
+						}
+						.nav-links a:not(.btn){
+							padding: 0 var(--space-xs);
+						}
+					}
+					@media (max-width: 900px){
+						:root{
+							--layout-edge-inline: 12px;
+						}
+						.nav-links{
+							display: none;
+						}
+					.nav-toggle{
+						display: inline-grid;
+					}
+					.brand{
+						flex-wrap: nowrap;
+						align-items: center;
+						gap: 6px;
+					}
+					.brand > span:first-of-type{
+						white-space: nowrap;
+					}
+					.brand-meta{
+						display: none;
+					}
+				}
 
 		.nav-links a:not(.btn):hover{
 			color: var(--text);
@@ -838,9 +876,7 @@
 				box-shadow .25s ease,
 				filter .25s ease;
 			will-change: transform;
-			box-shadow:
-				var(--shadow),
-				inset 0 1px 0 rgba(255,255,255,.55);
+			box-shadow: var(--shadow-interactive-base);
 			text-shadow: none;
 		}
 
@@ -915,9 +951,7 @@
 					var(--card-bottom));
 			color: var(--text);
 			text-decoration: none;
-			box-shadow:
-				0 10px 20px rgba(17,20,24,.08),
-				inset 0 1px 0 rgba(255,255,255,.55);
+			box-shadow: var(--shadow-interactive-base);
 		}
 
 		.ghost:not(.ticker-btn):hover{
@@ -1479,7 +1513,7 @@
 			justify-content:center;
 		}
 		.hero-actions .hero-book-cta{
-			box-shadow: var(--shadow);
+			box-shadow: var(--shadow-interactive-base);
 			filter: none;
 		}
 		.hero-actions .hero-book-cta::after{
@@ -1489,7 +1523,7 @@
 			opacity: .22;
 		}
 		.hero-actions .hero-book-cta:hover{
-			box-shadow: var(--shadow);
+			box-shadow: var(--shadow-interactive-base);
 			filter: none;
 		}
 		.hero-actions .hero-book-cta:hover::before{
@@ -1510,9 +1544,7 @@
 				linear-gradient(180deg,
 					rgba(var(--surface-card-rgb), .90),
 					rgba(var(--surface-card-rgb), .78));
-			--ui-btn-rest-shadow:
-				0 0 0 1px rgba(255,255,255,.05) inset,
-				0 10px 24px rgba(0,0,0,.22);
+			--ui-btn-rest-shadow: var(--shadow-interactive-base);
 			--ui-btn-rest-filter: none;
 
 			--ui-btn-hover-text: #07122D;
@@ -1661,9 +1693,7 @@
 					linear-gradient(180deg,
 						rgba(var(--surface-card-rgb), .90),
 						rgba(var(--surface-card-rgb), .78));
-				--ui-btn-rest-shadow:
-					0 0 0 1px rgba(255,255,255,.05) inset,
-					0 10px 24px rgba(0,0,0,.22);
+				--ui-btn-rest-shadow: var(--shadow-interactive-base);
 				--ui-btn-rest-filter: none;
 
 				--ui-btn-hover-text: #07122D;
@@ -1803,12 +1833,7 @@
 		html[data-theme="dark"] :is(.hero-actions, .help-detail-cta, .chat-float__cta) .btn:not(.ghost):not(.ticker-btn):not(.shot-hide):not(:hover):not(:focus-visible):not(:active){
 			color: var(--cta-neutral-text);
 			border-color: rgba(255,255,255,.28);
-			box-shadow:
-				0 0 0 1px rgba(255,255,255,.08) inset,
-				0 0 12px rgba(255,255,255,.14),
-				0 0 28px rgba(255,255,255,.10),
-				0 0 46px rgba(255,255,255,.06),
-				0 10px 24px rgba(0,0,0,.22);
+			box-shadow: var(--shadow-interactive-base);
 			text-shadow:
 				0 0 8px rgba(255,255,255,.15),
 				0 0 16px rgba(255,255,255,.08);
@@ -1826,12 +1851,7 @@
 			html:not([data-theme]) :is(.hero-actions, .help-detail-cta, .chat-float__cta) .btn:not(.ghost):not(.ticker-btn):not(.shot-hide):not(:hover):not(:focus-visible):not(:active){
 				color: var(--cta-neutral-text);
 				border-color: rgba(255,255,255,.28);
-				box-shadow:
-					0 0 0 1px rgba(255,255,255,.08) inset,
-					0 0 12px rgba(255,255,255,.14),
-					0 0 28px rgba(255,255,255,.10),
-					0 0 46px rgba(255,255,255,.06),
-					0 10px 24px rgba(0,0,0,.22);
+				box-shadow: var(--shadow-interactive-base);
 				text-shadow:
 					0 0 8px rgba(255,255,255,.15),
 					0 0 16px rgba(255,255,255,.08);
@@ -1874,6 +1894,9 @@
 			border-top: 1px solid transparent;
 			border-bottom: 1px solid transparent;
 		}
+		main > header{
+			margin-bottom: var(--section-gap);
+		}
 		section:first-of-type{
 			margin-top: 0;
 			border-top: 0;
@@ -1884,45 +1907,24 @@
 			position: relative;
 		}
 
-		#work{
-			padding-top: 100px;
-			margin-top: 0;
-		}
-
-		@media (max-width: var(--bp-md)){
-			#work{
-				padding-top: 60px;
+			.section-title{
+				margin: 0;
+				font-size: var(--type-h2);
+				line-height: 1.05;
+				letter-spacing:-.3px;
+				position:relative;
+				display:inline-block;
+				--section-title-glow-rgb: 255,255,255;
+				text-shadow: none;
+				filter: none;
+				transition: text-shadow .24s ease, filter .24s ease;
 			}
-		}
 
-		.section-title{
-			margin:0 0 8px;
-			font-size: var(--type-h2);
-			line-height: 1.05;
-			letter-spacing:-.3px;
-			position:relative;
-			display:inline-block;
-			--bar-scale: 1;
-			--section-title-glow-rgb: 255,255,255;
-			text-shadow: none;
-			filter: none;
-			transition: text-shadow .24s ease, filter .24s ease;
-		}
-
-		/* Small “brand bar” under section titles */
-		.section-title::after{
-			content:"";
-			display:block;
-			height:3px;
-			margin-top:8px;
-			border-radius:999px;
-			background: var(--grad-underline);
-			opacity:.55;
-			width: 100%;
-			transform-origin: left center;
-			transform: scaleX(var(--bar-scale));
-			transition: transform .5s ease, opacity .24s ease, box-shadow .24s ease, background .24s ease;
-		}
+			/* Section title underline removed */
+			.section-title::after{
+				content: none;
+				display: none;
+			}
 		html[data-theme="dark"] .section-title{
 			text-shadow:
 				0 0 8px rgba(255,255,255,.10),
@@ -1980,11 +1982,58 @@
 			}
 		}
 
-		.section-lede{
-			margin:0 0 16px;
+			.section-lede{
+				margin: var(--space-sm) 0 var(--space-sm) var(--space-xs);
+				color: var(--text-muted);
+				line-height: 1.65;
+				text-align: left;
+			}
+		.section-kicker{
+			margin: 0;
 			color: var(--text-muted);
-			line-height: 1.65;
-			text-align: left;
+			font-family: "Gloria Hallelujah", cursive;
+			font-size: var(--type-h3);
+			font-weight: 400;
+			font-style: normal;
+			letter-spacing: 0.01em;
+			line-height: 1.18;
+		}
+				.section-head{
+					display: flex;
+					align-items: baseline;
+					gap: var(--space-lg);
+					flex-wrap: wrap;
+					margin: 0;
+				}
+			.section-head .section-title{
+				margin: 0;
+				white-space: nowrap;
+			}
+			section > .section-head + .section-lede,
+			section > .section-title + .section-lede{
+				margin-top: var(--space-md);
+			}
+				.section-head .section-kicker{
+					white-space: nowrap;
+					max-width: 100%;
+				}
+		.section-head .section-kicker::before{
+			content: "(";
+		}
+		.section-head .section-kicker::after{
+			content: ")";
+		}
+				@media (max-width: var(--bp-lg)){
+					.section-head{
+						display: block;
+						margin: 0;
+					}
+				.section-head .section-kicker{
+				display: block;
+				margin-top: var(--space-lg);
+				white-space: normal;
+				max-width: 26ch;
+			}
 		}
 
 		/* ============================================================
@@ -2111,34 +2160,34 @@
 			display: block;
 		}
 
-		.quote-cite h4{
-			margin: 0;
-			font-size: 14px;
-			line-height: 1.35;
-			text-transform: uppercase;
+			.quote-cite .schedule-sub{
+				margin: 0;
+				font-size: 14px;
+				line-height: 1.35;
+				text-transform: uppercase;
 			letter-spacing: 0.06em;
 			font-weight: 200 !important;
 			font-style: normal;
 			color: var(--text-muted);
 		}
-		.quote-cite h4.schedule-sub{
-			display: inline-flex;
-			flex-wrap: wrap;
-			align-items: baseline;
-			justify-content: center;
-			gap: .25ch;
-		}
-		.quote-cite h4.schedule-sub .quote-role,
-		.quote-cite h4.schedule-sub .quote-company{
-			display: inline;
-			font: inherit;
-			letter-spacing: inherit;
-			text-transform: inherit;
-			color: inherit;
-		}
-		.quote-cite h4.schedule-sub .quote-company{
-			white-space: nowrap;
-		}
+			.quote-cite .schedule-sub{
+				display: inline-flex;
+				flex-wrap: wrap;
+				align-items: baseline;
+				justify-content: center;
+				gap: .25ch;
+			}
+			.quote-cite .schedule-sub .quote-role,
+			.quote-cite .schedule-sub .quote-company{
+				display: inline;
+				font: inherit;
+				letter-spacing: inherit;
+				text-transform: inherit;
+				color: inherit;
+			}
+			.quote-cite .schedule-sub .quote-company{
+				white-space: nowrap;
+			}
 
 		.quote-mark{
 			font-weight: 800;
@@ -2254,17 +2303,17 @@
 			}
 		}
 		@media (max-width: var(--bp-sm)){
-			.quote-cite h4.schedule-sub{
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				gap: 0;
+				.quote-cite .schedule-sub{
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					gap: 0;
+				}
+				.quote-cite .schedule-sub .quote-role,
+				.quote-cite .schedule-sub .quote-company{
+					display: block;
+				}
 			}
-			.quote-cite h4.schedule-sub .quote-role,
-			.quote-cite h4.schedule-sub .quote-company{
-				display: block;
-			}
-		}
 
 		/* Bio highlights: human marker feel + staggered reveal */
 		.hl{
@@ -3372,14 +3421,14 @@
 			position: relative;
 			z-index: 2;
 		}
-		.case-item h4{
+		.case-item .case-head :is(h3, h4){
 			margin: 0;
 			font-size: var(--type-h4, 20px);
 			font-weight: 700;
 		}
-		.case-item .quote-cite h4.schedule-sub{
-			font-size: 14px;
-		}
+			.case-item .quote-cite .schedule-sub{
+				font-size: 14px;
+			}
 		.case-type{
 			display: inline-flex;
 			align-items: center;
@@ -3577,6 +3626,451 @@
 		@media (max-width: var(--bp-sm)){
 			.case-preview{
 				width: min(260px, 100%);
+			}
+		}
+
+		/* ============================================================
+			 Research Library
+			 ============================================================ */
+		#research{
+			scroll-margin-top: 110px;
+		}
+		.research-intro{
+			max-width: 76ch;
+		}
+		.research-library{
+			display: grid;
+			gap: var(--space-sm);
+		}
+		.research-group{
+			margin: 0;
+			border: 1px solid var(--border);
+			border-radius: var(--radius-md);
+			background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+			box-shadow: var(--nested-card-panel-shadow);
+			overflow: hidden;
+		}
+		.research-group > summary{
+			list-style: none;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: var(--space-sm);
+			padding: var(--space-md) var(--space-lg);
+		}
+		.research-group > summary::-webkit-details-marker{
+			display: none;
+		}
+		.research-group > summary::marker{
+			content: "";
+		}
+		.research-title{
+			display: flex;
+			flex-wrap: wrap;
+			align-items: baseline;
+			gap: .55rem;
+			font-family: "Gloria Hallelujah", cursive;
+			font-weight: 400;
+			font-style: normal;
+			font-size: var(--type-h3);
+			line-height: 1.18;
+			letter-spacing: 0.01em;
+			color: var(--text);
+		}
+		.research-caret{
+			display: inline-block;
+			font-size: 28px;
+			line-height: 1;
+			color: var(--text-muted);
+			transform: rotate(0deg);
+			transform-origin: center;
+			transition: transform .2s ease, color .2s ease;
+		}
+		.research-group[open] .research-caret{
+			color: var(--text);
+			transform: rotate(90deg);
+		}
+		.research-panel{
+			padding: var(--space-xs);
+			display: grid;
+			gap: var(--space-xs);
+		}
+		.research-item{
+			position: relative;
+			border: 1px solid var(--border);
+			border-radius: var(--radius-sm);
+			background: var(--nested-card-panel-bg);
+			box-shadow: var(--nested-card-panel-shadow);
+			padding: var(--space-md);
+			--format-accent: var(--text-rgb);
+			transition: border-color .18s ease, background .18s ease;
+		}
+		.research-item::before{
+			content: "";
+			position: absolute;
+			left: 10px;
+			top: 14px;
+			bottom: 14px;
+			width: 3px;
+			border-radius: var(--radius-pill);
+			background: rgba(var(--format-accent), .28);
+			opacity: .72;
+		}
+		.research-item[data-format="book"]{
+			--format-accent: var(--hl-amber-rgb);
+			--book-cover-w: clamp(96px, 16vw, 160px);
+		}
+		.research-item[data-format="reference-site"]{ --format-accent: var(--hl-cyan-rgb); }
+		.research-item[data-format="blog-site"]{ --format-accent: var(--hl-blue-rgb); }
+		.research-item[data-format="article-library"]{ --format-accent: var(--hl-teal-rgb); }
+		.research-item[data-format="classic-article"]{ --format-accent: var(--hl-blue-rgb); }
+		.research-item[data-format="blog-article"]{ --format-accent: var(--hl-magenta-rgb); }
+		.research-item[data-format="article"]{ --format-accent: var(--hl-blue-rgb); }
+		.research-item[data-format="newsletter"]{ --format-accent: var(--hl-teal-rgb); }
+		.research-item[data-format="video-library"],
+		.research-item[data-format="videos"]{ --format-accent: var(--hl-magenta-rgb); }
+		.research-item[data-format="podcast"]{ --format-accent: var(--hl-lime-rgb); }
+		.research-item[data-format="essays"]{ --format-accent: var(--hl-amber-rgb); }
+		.research-item:hover{
+			border-color: rgba(var(--text-rgb), 0.14);
+			background: color-mix(in oklab, var(--nested-card-panel-bg) 90%, white 10%);
+		}
+		.research-item__top{
+			display: grid;
+			gap: var(--space-xs);
+		}
+		.research-item[data-format="book"] .research-item__top{
+			grid-template-columns: 1fr;
+		}
+		.research-item__media{
+			max-width: 160px;
+      min-width: 88px;
+      height: auto;
+		}
+		.research-item[data-format="book"] .research-item__media{
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
+		.research-cover{
+			display: block;
+			max-width: 160px;
+      min-width: 88px;
+      height:auto;
+			object-fit: cover;
+			border-radius: var(--radius-xs);
+			border: 1px solid rgba(var(--text-rgb), 0.14);
+			box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+		}
+		.research-item__text{
+			min-width: 0;
+			display: grid;
+			gap: var(--space-xs);
+		}
+		.research-item[data-format="book"] .research-item__text{
+			grid-template-columns: auto minmax(0, 1fr);
+			column-gap: var(--space-xs);
+			row-gap: var(--space-xs);
+			align-items: start;
+			padding-right: calc(var(--book-cover-w) + var(--space-lg));
+		}
+		.research-item[data-format="book"] .research-item__media{
+			position: absolute;
+			top: var(--space-md);
+			bottom: var(--space-md);
+			right: var(--space-md);
+			width: var(--book-cover-w);
+			display: flex;
+			align-items: flex-start;
+			justify-content: flex-end;
+			margin: 0;
+			overflow: hidden;
+			border-radius: var(--radius-xs);
+			max-width: none;
+			min-width: 0;
+			height: auto;
+		}
+		.research-item[data-format="book"] .research-cover{
+			width: auto;
+			height: auto;
+			max-width: 100%;
+			max-height: 100%;
+			min-width: 0;
+			object-fit: contain;
+			object-position: center;
+			border-radius: var(--radius-xs);
+		}
+		.research-item[data-format="book"] .research-item__headline,
+		.research-item[data-format="book"] .research-item__desc{
+			grid-column: 1 / -1;
+		}
+		.research-item[data-format="book"] .research-sources-label,
+		.research-item[data-format="book"] .research-tags-label{
+			grid-column: 1;
+			margin: 0;
+			align-self: center;
+		}
+		.research-item[data-format="book"] .research-sources,
+		.research-item[data-format="book"] .research-tags{
+			grid-column: 2;
+			margin: 0;
+		}
+		.research-item[data-format="book"][data-no-cover="true"] .research-item__media{
+			display: none;
+		}
+		.research-item[data-format="book"][data-no-cover="true"] .research-item__text{
+			padding-right: 0;
+		}
+		.research-item:not([data-format="book"]) .research-item__top{
+			grid-template-columns: auto minmax(0, 1fr);
+			column-gap: var(--space-xs);
+			row-gap: var(--space-xs);
+			align-items: start;
+		}
+		.research-item:not([data-format="book"]) .research-item__headline,
+		.research-item:not([data-format="book"]) .research-item__desc{
+			grid-column: 1 / -1;
+		}
+		.research-item:not([data-format="book"]) .research-sources-label,
+		.research-item:not([data-format="book"]) .research-tags-label{
+			grid-column: 1;
+			margin: 0;
+			align-self: center;
+			white-space: nowrap;
+		}
+		.research-item:not([data-format="book"]) .research-sources,
+		.research-item:not([data-format="book"]) .research-tags{
+			grid-column: 2;
+			margin: 0;
+		}
+		.research-item__headline{
+			display: flex;
+			flex-wrap: wrap;
+			align-items: baseline;
+			justify-content: space-between;
+			gap: var(--space-xs) var(--space-sm);
+		}
+			.research-item__title{
+				margin: 0;
+				color: var(--text);
+				font-size: var(--type-body-lg);
+				font-weight: 700;
+				text-underline-offset: 2px;
+				text-decoration-thickness: 1.5px;
+			}
+			.research-item__title a{
+				color: inherit;
+				text-decoration: none;
+				text-underline-offset: 2px;
+				text-decoration-thickness: 1.5px;
+			}
+			.research-item__title:hover,
+			.research-item__title:focus-visible,
+			.research-item__title a:hover,
+			.research-item__title a:focus-visible{
+				color: var(--primary);
+			}
+		.research-item__meta{
+			color: var(--text-muted);
+			font-size: var(--type-meta);
+			line-height: var(--lh-body);
+		}
+		.research-item__desc{
+			margin: 0;
+			color: var(--text-muted);
+		}
+		.research-sources-label,
+		.research-tags-label{
+			display: inline-flex;
+			align-items: center;
+			padding: 4px 10px;
+			border-radius: var(--radius-pill);
+			border: 1px solid transparent;
+			background: transparent;
+			box-shadow: none;
+			filter: none;
+			margin: 0;
+			font-size: 12px;
+			line-height: 1.2;
+			font-weight: 700;
+			letter-spacing: 0.01em;
+			color: var(--text-muted);
+			white-space: nowrap;
+		}
+		/* Labels are rendered as first-class pills via list pseudo-elements,
+		   so we avoid separate label-column spacing logic. */
+		.research-sources-label,
+		.research-tags-label{
+			position: absolute !important;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
+		}
+		.research-sources{
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		.research-sources li{
+			display: inline-flex;
+			align-items: center;
+			font-size: 12px;
+			opacity: .72;
+		}
+		.research-sources a{
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 4px 10px;
+			border-radius: var(--radius-pill);
+			border: 1px solid rgba(var(--text-rgb), 0.08);
+			background: rgba(var(--text-rgb), 0.02);
+			color: var(--text-muted);
+			font-size: 12px;
+			line-height: 1.2;
+			font-weight: 600;
+			text-decoration: none;
+		}
+		.research-sources a:hover,
+		.research-sources a:focus-visible{
+			border-color: rgba(var(--text-rgb), 0.12);
+			background: rgba(var(--text-rgb), 0.03);
+			color: var(--text);
+			text-decoration: none;
+		}
+		.research-sources a::before{
+			content: "↗";
+			font-size: 11px;
+			opacity: .45;
+		}
+		.research-tags{
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		.research-item .research-sources,
+		.research-item .research-tags{
+			grid-column: 1 / -1 !important;
+			align-items: center;
+		}
+		.research-item .research-sources::before,
+		.research-item .research-tags::before{
+			display: inline-flex;
+			align-items: center;
+			padding: 4px 10px;
+			border-radius: var(--radius-pill);
+			border: 1px solid transparent;
+			background: transparent;
+			box-shadow: none;
+			filter: none;
+			margin: 0;
+			font-size: 12px;
+			line-height: 1.2;
+			font-weight: 700;
+			letter-spacing: 0.01em;
+			color: var(--text-muted);
+			white-space: nowrap;
+		}
+		.research-item .research-sources::before{
+			content: "Sources:";
+		}
+		.research-item .research-tags::before{
+			content: "Key Ideas:";
+		}
+		.research-tags li{
+			display: inline-flex;
+			align-items: center;
+			padding: 4px 10px;
+			border-radius: var(--radius-pill);
+			border: 1px solid rgba(var(--text-rgb), 0.08);
+			background: rgba(var(--text-rgb), 0.02);
+			color: var(--text-muted);
+			font-size: 12px;
+			line-height: 1.2;
+			white-space: nowrap;
+			opacity: .85;
+			font-weight: 400;
+			text-transform: capitalize;
+		}
+		/* Format pill */
+		.format{
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 12px;
+			line-height: 1;
+			padding: 3px 8px;
+			border-radius: var(--radius-pill);
+			border: 1px solid rgba(var(--format-accent, var(--text-rgb)), 0.22);
+			background: rgba(var(--format-accent, var(--text-rgb)), 0.10);
+			color: var(--text-muted);
+			white-space: nowrap;
+			font-weight: 500;
+		}
+		.format::before{
+			content: "";
+			width: 6px;
+			height: 6px;
+			border-radius: var(--radius-pill);
+			background: rgba(var(--format-accent, var(--text-rgb)), 0.60);
+		}
+		.research-footer{
+			margin: var(--space-md) 0 0;
+			color: var(--text-muted);
+		}
+		@media (max-width: var(--bp-sm)){
+			.research-group > summary{
+				padding: var(--space-sm) var(--space-md);
+			}
+			.research-panel{
+				padding: 0 var(--space-md) var(--space-md);
+			}
+			.research-item[data-format="book"] .research-item__top{
+				grid-template-columns: 1fr;
+			}
+			.research-item[data-format="book"] .research-item__text{
+				grid-template-columns: 1fr;
+				column-gap: 0;
+				padding-right: 0;
+				position: static;
+			}
+			.research-item[data-format="book"] .research-item__media,
+			.research-item[data-format="book"] .research-sources-label,
+			.research-item[data-format="book"] .research-sources,
+			.research-item[data-format="book"] .research-tags-label,
+			.research-item[data-format="book"] .research-tags{
+				grid-column: 1;
+				grid-row: auto;
+			}
+			.research-item[data-format="book"] .research-item__media{
+				position: static;
+				width: auto;
+				overflow: visible;
+				margin-top: 2px;
+				margin-bottom: 2px;
+			}
+			.research-item[data-format="book"] .research-cover{
+				width: auto;
+				height: auto;
+				max-width: 160px;
+				min-width: 88px;
+				border-radius: var(--radius-xs);
+			}
+		}
+		@media (prefers-reduced-motion: reduce){
+			.research-item{
+				transition: none;
 			}
 		}
 		/* Unified meta/label line */
@@ -3945,11 +4439,10 @@
 		}
 
 		@media (prefers-reduced-motion: reduce){
-			#tickerTape{ transform: none !important; }
+			.ticker-section{ display: none !important; }
 		}
 
 		.ticker-section{
-			margin: -60px 0 -60px 0;
 			padding: 0;
 			border-radius: 0;
 			border: 0;
@@ -3966,6 +4459,28 @@
 		}
 		.callout > h3{ margin:0 0 8px; }
 		.callout > p{ margin:0; }
+		#design-partner .callout{
+			padding: var(--space-lg);
+		}
+		#design-partner .callout > p,
+		#design-partner .callout > ul,
+		#design-partner .callout > li{
+			font-size: var(--type-body);
+			line-height: var(--lh-body);
+			color: var(--text-muted);
+			font-weight: var(--fw-body);
+		}
+		#design-partner .callout ul{
+			margin: 0;
+			padding-left: var(--space-lg);
+		}
+		#design-partner .callout li{
+			margin: 0;
+		}
+		#design-partner .callout strong{
+			color: var(--text);
+			font-weight: var(--fw-strong);
+		}
 
 		.link-accent{
 			color: var(--link);
@@ -4991,7 +5506,6 @@
 		.chat-float{
 			position: fixed;
 			/* Floating chat CTA tuning tokens (layout + motion) */
-			--chat-float-offset: 10px;
 			--chat-float-frame-size: 60px;
 			--chat-hover-hit-pad: 12px;
 			--chat-headshot-size: 48px;
@@ -4999,6 +5513,9 @@
 			--chat-headshot-base-scale: 0.3333333;
 			--chat-headshot-raster-size: calc(var(--chat-headshot-size) * var(--chat-headshot-hover-scale));
 			--chat-headshot-inset: calc((var(--chat-float-frame-size) - var(--chat-headshot-size)) / 2);
+			/* Align headshot centerline to theme-toggle centerline */
+			--chat-align-nudge: calc(var(--chat-headshot-inset) + ((var(--chat-headshot-size) - var(--toggle-visual)) / 2));
+			--chat-float-offset: calc(var(--layout-edge-inline) - var(--chat-align-nudge));
 			--chat-cta-tuck-x: -8px;
 			--chat-cta-base-scale: 0.34;
 			--chat-cta-reveal-gap: 4px;
@@ -5013,7 +5530,7 @@
 			--chat-cta-hint-nudge-2: -16px;
 			--chat-cta-hint-nudge-3: -8px;
 			--chat-headshot-neon-opacity: 0;
-			right: max(var(--chat-float-offset), calc(env(safe-area-inset-right) + var(--chat-float-offset)));
+			right: max(0px, var(--chat-float-offset), calc(env(safe-area-inset-right) + var(--chat-float-offset)));
 			bottom: max(var(--chat-float-offset), calc(env(safe-area-inset-bottom) + var(--chat-float-offset)));
 			inline-size: var(--chat-float-frame-size);
 			block-size: var(--chat-float-frame-size);
@@ -5022,10 +5539,10 @@
 			border-radius: 999px;
 			z-index: 145;
 			pointer-events: none;
-			margin-bottom:var(--space-md);
-			margin-right: var(--space-md);
+			margin: 0;
 			overflow: visible !important;
 			isolation: isolate;
+      transform: 4px;
 		}
 
 		.chat-float::before{
@@ -5244,9 +5761,9 @@
 		}
 		@media (hover: none) and (pointer: coarse){
 			.chat-float{
-				--chat-float-offset: 8px;
+				--chat-float-offset: calc(var(--layout-edge-inline) - var(--chat-align-nudge));
 				margin-bottom: var(--space-sm);
-				margin-right: var(--space-sm);
+				margin-right: 0;
 			}
 			.chat-float__cta{
 				display: none;
@@ -5593,7 +6110,7 @@
 			font-size: 22px;
 			line-height: 1;
 			cursor: pointer;
-			box-shadow: var(--shadow);
+			box-shadow: var(--shadow-interactive-base);
 			transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease;
 			transform: translateY(-50%);
 		}
@@ -6423,6 +6940,7 @@
 		}
 
 		.schedule-sub{
+			display: block;
 			margin: 6px 0 6px;
 			color: var(--text-muted);
 			font-size: 14px;
@@ -6433,6 +6951,7 @@
 		}
 
 		.schedule-desc{
+			display: block;
 			margin: 0;
 			color: var(--text-muted);
 			font-size: var(--type-body);
@@ -6453,9 +6972,7 @@
 					rgba(255,255,255,0.65),
 					rgba(255,255,255,0) 60%),
 				linear-gradient(180deg, var(--card-top), var(--card-bottom));
-			--ui-btn-rest-shadow:
-				var(--shadow),
-				inset 0 1px 0 rgba(255,255,255,0.7);
+			--ui-btn-rest-shadow: var(--shadow-interactive-base);
 			--ui-btn-rest-filter: none;
 			--ui-btn-hover-text: var(--text);
 			--ui-btn-hover-fill:
@@ -6611,19 +7128,22 @@
 			}
 		}
 
-		/* ============================================================
-			 14) Coachmarks / Tooltips (Accessible Popovers)
-			 ============================================================ */
-		.hero-theme-control{
-			position: absolute;
-			right: 0;
-			top: 0;
-			display:flex;
-			align-items:center;
-			gap: var(--space-sm);
-			overflow: visible;
-			pointer-events: none;
-		}
+			/* ============================================================
+				 14) Coachmarks / Tooltips (Accessible Popovers)
+				 ============================================================ */
+			.nav-theme-control{
+				position: relative;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				inline-size: var(--toggle-visual);
+				block-size: var(--toggle-visual);
+				flex: 0 0 auto;
+				overflow: visible;
+			}
+				.nav-theme-control .theme-toggle{
+					margin: 0 !important;
+				}
 		.theme-toggle{
 			position: relative;
 			width: var(--toggle-visual);
@@ -6904,14 +7424,8 @@
 				text-wrap: balance !important;
 			}
 
-			.hero-theme-control{
-				top: 0 !important;
-				right: 0 !important;
-				margin: 0 !important;
-			}
-
-			.subhead{
-				max-width: 96%;
+				.subhead{
+					max-width: 96%;
 				padding: 0 var(--space-1);
 				margin: calc(var(--hero-title-size) / 3) 0 var(--hero-title-size);
 				font-size: clamp(var(--type-body), 3.8vw, 18px);
@@ -6927,7 +7441,6 @@
 			.schedule-card{ padding: var(--space-lg)}
 			.tape-track{ font-size: 12.5px; gap: 12px; }
 			.tape-run{ gap: var(--space-xs); padding-right: var(--space-xs); }
-			.ticker-section{ margin: var(--space-xl) 0; }
 		}
 
 		/* SM: Mobile landscape / small */
@@ -6949,8 +7462,6 @@
 			}
 
 			.schedule-grid{ gap: var(--space-md); }
-
-			.ticker-section{ margin: var(--space-xl) 0; }
 		}
 
 		@media (max-width: 600px){
@@ -7004,9 +7515,6 @@
 		@media (min-width: var(--bp-xl)){
 			:root{ --max: 1200px; }
 
-			section{ margin: 120px 0; }
-			.wrap > header{ margin-bottom: 120px; }
-
 			.section-lede{ max-width: 72ch; }
 			.subhead{ max-width: 55%; }
 		:root{ --section-gap: calc(var(--space-3xl) + 44px); }
@@ -7034,9 +7542,6 @@
 			.flow-s > * + *{ margin-top: var(--space-sm); }
 			.flow-m > * + *{ margin-top: var(--space-md); }
 			.flow-l > * + *{ margin-top: var(--space-lg); }
-			.section-pad-bottom-100{ margin-bottom:0; padding-bottom:100px; }
-			.section-pad-top-100{ margin-top:0; padding-top:100px; }
-			.section-tight-top{ margin:0 0 100px 0; padding-top:100px; }
 			/* Tulip footer strip */
 			.tulip-strip{
 				margin-top: var(--space-lg);
@@ -7092,7 +7597,7 @@
 			<div class="nav">
 				<div class="nav-inner">
 					<a class="brand" href="#top" aria-label="Go to top of page">
-						<svg class="brand-logo" aria-hidden="true" viewBox="0 0 64 64" role="img">
+						<svg class="brand-logo" aria-hidden="true" viewBox="0 0 64 64">
 							<g fill="none" stroke="var(--primary)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
 								<circle cx="32" cy="32" r="28" />
 								<circle cx="20" cy="22" r="6" />
@@ -7112,25 +7617,37 @@
 						</span>
 					</a>
 
+					<div class="nav-actions">
 					<nav class="nav-links" aria-label="Primary navigation">
-						<a href="#work">Work</a>
+						<a href="#work">Case Studies</a>
 						<a href="#about">About</a>
-						<a href="#help">How I Can Help</a>
+						<a class="nav-link-optional" href="#help">Services</a>
 						<a class="btn" href="#contact">Book a Call</a>
 					</nav>
-					<button class="nav-toggle" type="button" aria-controls="mobileNavPanel" aria-expanded="false">
-						<span class="sr-only">Open navigation</span>
-						<span aria-hidden="true">☰</span>
-					</button>
-				</div>
+							<button class="nav-toggle" type="button" aria-controls="mobileNavPanel" aria-expanded="false">
+								<span class="sr-only">Open navigation</span>
+								<span aria-hidden="true">☰</span>
+							</button>
+							<div class="nav-theme-control" aria-live="polite">
+								<span class="sky-stars-wrap" aria-hidden="true">
+									<span class="sky-stars">
+										<span></span><span></span><span></span><span></span><span></span><span></span>
+									</span>
+								</span>
+								<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Toggle theme" title="Toggle theme">
+									<span class="theme-toggle__glow" aria-hidden="true"></span>
+								</button>
+							</div>
+						</div>
+					</div>
 				<div class="mobile-nav-panel" id="mobileNavPanel" aria-hidden="true">
 					<button class="mobile-nav-close" type="button" aria-label="Close navigation">
 						<span class="sr-only">Close navigation</span>
 						<span aria-hidden="true">✕</span>
 					</button>
-					<a href="#work">Work</a>
+					<a href="#work">Case Studies</a>
 					<a href="#about">About</a>
-					<a href="#help">How I Can Help</a>
+					<a href="#help">Services</a>
 					<a href="#contact">Book a Call</a>
 				</div>
 			</div>
@@ -7156,17 +7673,6 @@
 						<span>Recent Work: BigIron Auctions, Cedar Bluff Technologies, & Moss Rock Ranch.<br /><em>Intro calls are 15 minutes, no prep.</em>
 							<a class="hero-meta__link" href="mailto:mark@we3.design?subject=Hey%20Mark%2C%20let%27s%20chat%21">Prefer email first?</a></span>
 					</div>
-					<div class="hero-theme-control" aria-live="polite">
-						<span class="sr-only" aria-hidden="true" hidden></span>
-						<span class="sky-stars-wrap" aria-hidden="true">
-							<span class="sky-stars">
-								<span></span><span></span><span></span><span></span><span></span><span></span>
-							</span>
-						</span>
-						<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Toggle theme" title="Toggle theme">
-							<span class="theme-toggle__glow" aria-hidden="true"></span>
-						</button>
-					</div>
 				</header>
 
 
@@ -7186,8 +7692,78 @@
 
 
 
+				<section class="ticker-section" aria-label="Skills ticker">
+					<!-- ==========================================================
+					Ticker Tape (full-bleed, analog)
+					========================================================== -->
+					<p class="fine ticker-label" id="tickerLabel">Skills I tap into...</p>
+					<div class="ticker-bleed" role="region" aria-labelledby="tickerLabel" aria-describedby="tickerA11y">
+						<span class="sr-only" id="tickerA11y">
+							Opportunity framing, clearer bets. Insight synthesis, decisions grounded. Service design, smoother journeys.
+							Systems thinking, fewer breakpoints. Cross-functional facilitation, faster alignment. Experiment planning, de-risked delivery.
+						</span>
+						<div class="ticker-clip" aria-hidden="true">
+							<div id="tickerTape">
+								<div class="tape-edge top" aria-hidden="true"></div>
+								<div class="tape-edge bottom" aria-hidden="true"></div>
+
+								<div class="tape-track" id="tickerTrack">
+									<div class="tape-run">
+										<span class="tape-item"><span class="tape-key">Opportunity framing</span><span class="tape-sep"> = </span><span class="tape-val">clearer bets</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Insight synthesis</span><span class="tape-sep"> = </span><span class="tape-val">decisions grounded</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Service design</span><span class="tape-sep"> = </span><span class="tape-val">smoother journeys</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Systems thinking</span><span class="tape-sep"> = </span><span class="tape-val">fewer breakpoints</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Cross-functional facilitation</span><span class="tape-sep"> = </span><span class="tape-val">faster alignment</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Experiment planning</span><span class="tape-sep"> = </span><span class="tape-val">de-risked delivery</span></span>
+									</div>
+
+									<div class="tape-run" aria-hidden="true">
+										<span class="tape-item"><span class="tape-key">Opportunity framing</span><span class="tape-sep"> = </span><span class="tape-val">clearer bets</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Insight synthesis</span><span class="tape-sep"> = </span><span class="tape-val">decisions grounded</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Service design</span><span class="tape-sep"> = </span><span class="tape-val">smoother journeys</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Systems thinking</span><span class="tape-sep"> = </span><span class="tape-val">fewer breakpoints</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Cross-functional facilitation</span><span class="tape-sep"> = </span><span class="tape-val">faster alignment</span></span><span class="tape-pipe"> | </span>
+										<span class="tape-item"><span class="tape-key">Experiment planning</span><span class="tape-sep"> = </span><span class="tape-val">de-risked delivery</span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ticker-controls-row">
+						<div class="ticker-controls" role="group" aria-label="Ticker controls">
+							<button class="btn ghost ticker-btn ticker-btn--speed ticker-btn--slower" type="button" data-speed="0.55" aria-pressed="false" aria-label="Slow ticker">
+								<span class="speed-label speed-label--left" aria-hidden="true">Slower</span>
+								<svg class="ticker-icon" viewBox="0 0 24 24" aria-hidden="true">
+									<circle cx="10" cy="12" r="5"></circle>
+									<circle cx="16.8" cy="12" r="2"></circle>
+									<path d="M7 17v2M11 17v2"></path>
+									<path d="M6 7v-2M10 7v-2"></path>
+									<path d="M4 12h-2"></path>
+								</svg>
+							</button>
+							<button class="btn ticker-btn" type="button" id="tickerToggle" aria-pressed="false" aria-label="Pause motion">⏸</button>
+							<button class="btn ghost ticker-btn ticker-btn--speed ticker-btn--faster" type="button" data-speed="1.15" aria-pressed="false" aria-label="Speed up ticker">
+								<svg class="ticker-icon" viewBox="0 0 24 24" aria-hidden="true">
+									<circle cx="12" cy="13" r="4"></circle>
+									<path d="M10 3v6M14 3v6"></path>
+									<path d="M8 16c2 2 6 2 8 0"></path>
+								</svg>
+								<span class="speed-label speed-label--right" aria-hidden="true">Faster</span>
+							</button>
+						</div>
+
+						<div class="ticker-helper fine" id="tickerHelper">
+							<em>Tip: Click <span class="no-italic">⏸</span> to stop motion.</em>
+						</div>
+					</div>
+				</section>
+
 				<section id="work">
-					<h2 class="section-title">Here’s What That Looks Like in Real Life</h2>
+					<div class="section-head">
+						<h2 class="section-title">Case Studies</h2>
+						<span class="section-kicker">Strategy made visible.</span>
+					</div>
 					<p class="section-lede">
 						A few examples of real projects where I helped teams clarify the problem, align stakeholders, and deliver systems that scaled beyond individual screens.
 					</p>
@@ -7206,7 +7782,7 @@
 							<div class="quote-divider" aria-hidden="true"></div>
 							<div class="quote-cite">
 								<strong>Sean Colandrea</strong>
-								<h4 class="schedule-sub"><span class="quote-role">Product Manager,</span> <span class="quote-company">BigIron Auctions</span></h4>
+								<p class="schedule-sub"><span class="quote-role">Product Manager,</span> <span class="quote-company">BigIron Auctions</span></p>
 							</div>
 						</figure>
 					</aside>
@@ -7290,7 +7866,7 @@
 									</div>
 								</div>
 
-								<div class="shot-stack" id="shotStack" data-shot-stack aria-label="Product screenshots" style="display:none;">
+								<div class="shot-stack" id="shotStack" data-shot-stack style="display:none;">
 									<div class="shot-card">
 										<img src="assets/work/bigiron-stack-1.jpg" alt="Company snapshot and profile form screen" loading="lazy">
 									</div>
@@ -7307,7 +7883,7 @@
 										<img src="assets/work/bigiron-stack-5.jpg" alt="Logistics locations screen" loading="lazy">
 									</div>
 									<div class="shot-card is-cap">
-										<img data-shot-cap-img src="" alt="" loading="lazy">
+										<img data-shot-cap-img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" loading="lazy">
 										<button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
 									</div>
 								</div>
@@ -7392,7 +7968,7 @@
 					<div class="case-grid">
 						<div class="case-item" data-case-card>
 							<header class="case-head">
-								<h4>Octagon Wildlife Sanctuary</h4>
+								<h3>Octagon Wildlife Sanctuary</h3>
 								<span class="case-type">UX Strategy</span><span class="case-type">Conversion Architecture</span>
 								<p class="meta-line">Reframed the site around a trust-first visitor journey instead of internal content priorities.</p>
 							</header>
@@ -7440,14 +8016,14 @@
 								<div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-15.jpg" alt=""></div>
 								<div class="shot-card"><img src="assets/case_studies/wildlife/wildlife-stack-16.jpg" alt=""></div>
 								<div class="shot-card is-cap">
-									<img data-shot-cap-img src="" alt="" loading="lazy">
+									<img data-shot-cap-img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" loading="lazy">
 									<button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
 								</div>
 							</div>
 						</div>
 						<div class="case-item" data-case-card>
 							<header class="case-head">
-								<h4>Flix &amp; Feast</h4>
+								<h3>Flix &amp; Feast</h3>
 								<span class="case-type">Product Framing</span><span class="case-type">Behavioral Flow Design</span>
 								<p class="meta-line">Shifted the concept from “recommendations” to shared alignment — a structural reframing of the core value.</p>
 							</header>
@@ -7503,14 +8079,14 @@
 								<div class="shot-card"><img src="assets/case_studies/flix/flix-stack-41.jpg" alt=""></div>
 								<div class="shot-card"><img src="assets/case_studies/flix/flix-stack-42.jpg" alt=""></div>
 								<div class="shot-card is-cap">
-									<img data-shot-cap-img src="" alt="" loading="lazy">
+									<img data-shot-cap-img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" loading="lazy">
 									<button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
 								</div>
 							</div>
 						</div>
 						<div class="case-item" data-case-card>
 							<header class="case-head">
-								<h4>FL Urban Agriculture</h4>
+								<h3>FL Urban Agriculture</h3>
 								<span class="case-type">Brand Strategy</span><span class="case-type">Information Architecture</span>
 								<p class="meta-line">Unified brand and web into a single narrative system that could scale.</p>
 							</header>
@@ -7553,7 +8129,7 @@
 							<div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-51.jpg" alt=""></div>
 							<div class="shot-card"><img src="assets/case_studies/flagr/flagr-stack-52.jpg" alt=""></div>
 							<div class="shot-card is-cap">
-								<img data-shot-cap-img src="" alt="" loading="lazy">
+								<img data-shot-cap-img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" loading="lazy">
 								<button class="shot-hide btn ghost" type="button" aria-label="Hide this stack">Hide Stack</button>
 							</div>
 						</div>
@@ -7574,90 +8150,23 @@
 					<div class="quote-divider" aria-hidden="true"></div>
 					<div class="quote-cite">
 						<strong>Kai Mills</strong>
-						<h4 class="schedule-sub"><span class="quote-role">Visual Designer,</span> <span class="quote-company">Freelance</span></h4>
+						<p class="schedule-sub"><span class="quote-role">Visual Designer,</span> <span class="quote-company">Freelance</span></p>
 					</div>
 				</figure>
 			</aside>
-		</div>
-	</section>
+		</section>
 
 
-	<section class="ticker-section" aria-label="Skills ticker">
-		<!-- ==========================================================
-		Ticker Tape (full-bleed, analog)
-		========================================================== -->
-		<p class="fine ticker-label" id="tickerLabel">Skills I tap into...</p>
-		<div class="ticker-bleed" role="region" aria-labelledby="tickerLabel" aria-describedby="tickerA11y">
-			<span class="sr-only" id="tickerA11y">
-				Outcome-first UX, clearer workflows. Design systems, consistent UI. Workflow mapping, fewer mistakes.
-				Requirements, less ambiguity. Handoff clarity, faster delivery. Brand systems, cohesive output. Alignment, less rework.
-			</span>
-			<div class="ticker-clip" aria-hidden="true">
-				<div id="tickerTape">
-					<div class="tape-edge top" aria-hidden="true"></div>
-					<div class="tape-edge bottom" aria-hidden="true"></div>
-
-					<div class="tape-track" id="tickerTrack">
-						<div class="tape-run">
-							<span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep"> = </span><span class="tape-val">clearer workflows</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep"> = </span><span class="tape-val">consistent UI</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep"> = </span><span class="tape-val">fewer mistakes</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep"> = </span><span class="tape-val">less ambiguity</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep"> = </span><span class="tape-val">faster delivery</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep"> = </span><span class="tape-val">cohesive output</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep"> = </span><span class="tape-val">less rework</span></span>
-						</div>
-
-						<div class="tape-run" aria-hidden="true">
-							<span class="tape-item"><span class="tape-key">Outcome-first UX</span><span class="tape-sep"> = </span><span class="tape-val">clearer workflows</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Design systems</span><span class="tape-sep"> = </span><span class="tape-val">consistent UI</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Workflow mapping</span><span class="tape-sep"> = </span><span class="tape-val">fewer mistakes</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Requirements</span><span class="tape-sep"> = </span><span class="tape-val">less ambiguity</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Handoff clarity</span><span class="tape-sep"> = </span><span class="tape-val">faster delivery</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Brand systems</span><span class="tape-sep"> = </span><span class="tape-val">cohesive output</span></span><span class="tape-pipe"> | </span>
-							<span class="tape-item"><span class="tape-key">Alignment</span><span class="tape-sep"> = </span><span class="tape-val">less rework</span></span>
-						</div>
-					</div>
-				</div>
+		<section id="about">
+			<div class="section-head">
+				<h2 class="section-title">About</h2>
+				<span class="section-kicker">I surface what teams assume.</span>
 			</div>
-		</div>
+			<p class="section-lede">
+				I blend product strategy and UX to help expert teams clarify what they are building, why it matters, and what needs to be true to ship with confidence.
+			</p>
 
-		<div class="ticker-controls-row">
-			<div class="ticker-controls" role="group" aria-label="Ticker controls">
-				<button class="btn ghost ticker-btn ticker-btn--speed ticker-btn--slower" type="button" data-speed="0.55" aria-pressed="false" aria-label="Slow ticker">
-					<span class="speed-label speed-label--left" aria-hidden="true">Slower</span>
-					<svg class="ticker-icon" viewBox="0 0 24 24" aria-hidden="true">
-						<circle cx="10" cy="12" r="5"></circle>
-						<circle cx="16.8" cy="12" r="2"></circle>
-						<path d="M7 17v2M11 17v2"></path>
-						<path d="M6 7v-2M10 7v-2"></path>
-						<path d="M4 12h-2"></path>
-					</svg>
-				</button>
-				<button class="btn ticker-btn" type="button" id="tickerToggle" aria-pressed="false" aria-label="Pause motion">⏸</button>
-				<button class="btn ghost ticker-btn ticker-btn--speed ticker-btn--faster" type="button" data-speed="1.15" aria-pressed="false" aria-label="Speed up ticker">
-					<svg class="ticker-icon" viewBox="0 0 24 24" aria-hidden="true">
-						<circle cx="12" cy="13" r="4"></circle>
-						<path d="M10 3v6M14 3v6"></path>
-						<path d="M8 16c2 2 6 2 8 0"></path>
-					</svg>
-					<span class="speed-label speed-label--right" aria-hidden="true">Faster</span>
-				</button>
-			</div>
-
-			<div class="ticker-helper fine" id="tickerHelper">
-				<em>Tip: Click <span class="no-italic">⏸</span> to stop motion.</em>
-			</div>
-		</div>
-	</section>
-
-	<section id="about" class="section-pad-bottom-100">
-		<h2 class="section-title">About Me</h2>
-		<p class="section-lede">
-			I blend product strategy and UX to help expert teams clarify what they are building, why it matters, and what needs to be true to ship with confidence.
-		</p>
-
-		<section class="aboutCard surface stack-tight">
+			<div class="aboutCard surface stack-tight">
 
 			<div class="aboutCard__body">
 				<div class="fine aboutCard__copy para-stack">
@@ -7679,7 +8188,7 @@
 							<div class="quote-divider" aria-hidden="true"></div>
 							<div class="quote-cite">
 								<strong>Michael McTavish</strong>
-								<h4 class="schedule-sub"><span class="quote-role">Project Manager,</span> <span class="quote-company">DevBlue Research</span></h4>
+								<p class="schedule-sub"><span class="quote-role">Project Manager,</span> <span class="quote-company">DevBlue Research</span></p>
 							</div>
 						</figure>
 					</aside>
@@ -7710,7 +8219,7 @@
 							<div class="quote-divider" aria-hidden="true"></div>
 							<div class="quote-cite">
 								<strong>Linda Rose</strong>
-								<h4 class="schedule-sub"><span class="quote-role">Senior Manager,</span> <span class="quote-company">Expedia Local Expert</span></h4>
+								<p class="schedule-sub"><span class="quote-role">Senior Manager,</span> <span class="quote-company">Expedia Local Expert</span></p>
 							</div>
 						</figure>
 					</aside>
@@ -7723,32 +8232,45 @@
 
 			</div>
 
-		</section>
+			</div>
 	</section>
 
-	<section class="diagnostic-block section-pad-top-100 section-pad-bottom-100" aria-label="Common moments before teams call me">
+	<section class="diagnostic-block">
 		<div class="diagnostic-inner wrap">
-			<h2 class="section-title">If This Sounds Familiar…</h2>
+			<div class="section-head">
+				<h2 class="section-title">Common Triggers</h2>
+				<span class="section-kicker">When direction feels unclear.</span>
+			</div>
 
 			<div class="diagnostic-carousel surface no-hover" data-manual-only role="region" aria-roledescription="carousel" aria-label="Common diagnostic statements">
 				<div class="diagnostic-stage" aria-live="polite">
-					<div class="diagnostic-slide is-active" aria-hidden="false">
-						<blockquote>
-							“We like the direction.<br>We just can’t explain it clearly yet.”
-						</blockquote>
-					</div>
+<div class="diagnostic-slide is-active" aria-hidden="false" role="group" aria-roledescription="slide" aria-label="Statement 1 of 4">
+	<blockquote>
+		“We’re about to invest heavily.<br>
+		What if we’re solving the wrong thing?”
+	</blockquote>
+</div>
 
-					<div class="diagnostic-slide" aria-hidden="true">
-						<blockquote>
-							“It makes sense to us.<br>Why isn’t it landing?”
-						</blockquote>
-					</div>
+<div class="diagnostic-slide" aria-hidden="true" role="group" aria-roledescription="slide" aria-label="Statement 2 of 4">
+	<blockquote>
+		“Everyone is working hard.<br>
+		Why does alignment still feel fragile?”
+	</blockquote>
+</div>
 
-					<div class="diagnostic-slide" aria-hidden="true">
-						<blockquote>
-							“We keep moving forward,<br>but something feels slightly off.”
-						</blockquote>
-					</div>
+<div class="diagnostic-slide" aria-hidden="true" role="group" aria-roledescription="slide" aria-label="Statement 3 of 4">
+	<blockquote>
+		“We like the direction.<br>
+		We just can’t explain it clearly yet.”
+	</blockquote>
+</div>
+
+<div class="diagnostic-slide" aria-hidden="true" role="group" aria-roledescription="slide" aria-label="Statement 4 of 4">
+	<blockquote>
+		“It makes sense internally.<br>
+		Why isn’t it landing externally?”
+	</blockquote>
+</div>
 
 					<div class="diagnostic-controls">
 						<p class="diagnostic-status" aria-live="polite" aria-atomic="true">
@@ -7760,14 +8282,17 @@
 				</div>
 
 				<p class="diagnostic-followup">
-					...that’s usually when I step in.
+					...that’s usually when senior direction matters most.
 				</p>
 			</div>
 		</div>
 	</section>
 
-	<section id="help" class="section-pad-top-100">
-		<h2 class="section-title">How I Can Help</h2>
+		<section id="help">
+		<div class="section-head">
+			<h2 class="section-title">Services</h2>
+			<span class="section-kicker">Decisions before execution.</span>
+		</div>
 		<p class="section-lede">
 			These are the ways I step in when ambitious teams need to slow down just enough to clarify their thinking before moving forward.
 		</p>
@@ -7784,12 +8309,12 @@
 				<div class="quote-divider" aria-hidden="true"></div>
 				<div class="quote-cite">
 					<strong>Cassandra Mobley</strong>
-					<h4 class="schedule-sub"><span class="quote-role">UX Engineer,</span> <span class="quote-company">Cadmot</span></h4>
+					<p class="schedule-sub"><span class="quote-role">UX Engineer,</span> <span class="quote-company">Cadmot</span></p>
 				</div>
 			</figure>
 		</aside>
 
-		<div class="help-split" aria-label="Services list with expanded details">
+		<div class="help-split">
 			<div class="help-card">
 				<div class="help-tabs" role="tablist" aria-label="How I can help">
 					<button class="help-tab" role="tab" id="tab-ux" aria-selected="true" aria-controls="panel-ux" tabindex="0" type="button" data-hl-rgb="152,251,225"><span class="tab-highlight" data-hl-class="hl-mint">UX Strategy</span></button>
@@ -7896,7 +8421,7 @@
 			</div>
 		</div>
 
-		<div class="help-accordion" aria-label="Service details (mobile)">
+		<div class="help-accordion">
 			<details open class="flow-s">
 				<summary>UX Strategy for Complex Workflows</summary>
 				<p class="section-lede">When people keep asking the same questions, the process isn’t clear enough yet. I turn tribal knowledge into clear workflows, tighten the handoffs, and make the next step obvious.</p>
@@ -7945,12 +8470,29 @@
 				</ul>
 			</details>
 		</div>
-	</section>
+		</section>
 
-	<section id="approach" class="section-pad-bottom-100">
-		<h2 class="section-title">
-			How We’ll Tackle It
-		</h2>
+		<section id="founders-note">
+			<h2 class="section-title">A Quick Note For Founders</h2>
+			<p class="section-lede">
+				Sometimes the real bottleneck is not design or code. It is that two smart people are holding two different versions of the product.
+			</p>
+			<div class="callout surface no-hover flow-m">
+				<p><strong>This shows up when:</strong></p>
+				<ul class="receipt-list">
+					<li>one founder is optimizing for craft and brand</li>
+					<li>another is optimizing for operations and sales</li>
+					<li>both are right, and the product needs a shared decision system</li>
+				</ul>
+				<p>My job is to turn that tension into clarity, then translate it into a plan your team can actually execute.</p>
+			</div>
+		</section>
+
+		<section id="approach">
+		<div class="section-head">
+			<h2 class="section-title">Process</h2>
+			<span class="section-kicker">Clarify. Then commit.</span>
+		</div>
 		<p class="section-lede">
 			Before we design anything, we clarify the decision we’re actually making. I use a repeatable framework that keeps decisions grounded and reduces rework as we go, but I’m not precious about it. We’ll adjust to fit real constraints, timelines, and stakeholders.
 		</p>
@@ -7968,7 +8510,7 @@
 				<div class="quote-divider" aria-hidden="true"></div>
 				<div class="quote-cite">
 					<strong>Alan Donth</strong>
-					<h4 class="schedule-sub"><span class="quote-role">Product Design,</span> <span class="quote-company">Accenture</span></h4>
+					<p class="schedule-sub"><span class="quote-role">Product Design,</span> <span class="quote-company">Accenture</span></p>
 				</div>
 			</figure>
 		</aside>
@@ -8047,348 +8589,379 @@
 		</div>
 	</section>
 
-	<section id="contact">
-		<h2 class="section-title">Let’s Talk</h2>
-		<p class="section-lede">If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.</p>
-		<span class="sr-only" id="calendlyHint">Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.</span>
-		<div class="schedule-grid" aria-label="Calendly scheduling options">
+<section id="design-partner">
+	<div class="section-head">
+		<h2 class="section-title">Brand Foundations</h2>
+		<span class="section-kicker">When the story isn’t settled.</span>
+	</div>
+	<p class="section-lede">
+		If you're building fast and don’t have an in-house design department, I can operate as one.
+	</p>
 
-			<button
-			class="schedule-card surface"
-			type="button"
-			data-sched-url="https://calendly.com/mark-w3m/15-min-chat"
-			data-sched-title="15 Min Chat"
-			aria-haspopup="dialog"
-			aria-label="Book a 15 minute chat"
-			aria-describedby="calendlyHint"
-			>
-			<div class="schedule-body flow-m">
-				<div class="schedule-top">
-					<div>
-						<h3 class="schedule-title">15 Min Chat</h3>
-						<h4 class="schedule-sub">Quick clarity and next steps</h4>
-					</div>
-				</div>
+	<div class="callout surface no-hover flow-m">
+		<p>
+			I work directly with founders and early-stage teams who need senior-level design leadership without hiring a full team. That means I can help you clarify your brand, prototype new ideas quickly, shape product UX, and craft messaging that reflects the value you’re building - all under one cohesive strategy.
+		</p>
 
-				<p class="schedule-desc">
-					Best for a quick intro, one focused question, or a fast direction check.
-					We’ll name what’s stuck, what “good” looks like, and the next best step.
-				</p>
-			</div>
+		<p>
+			Instead of juggling freelancers or delaying momentum until you make your first design hire, you get focused direction, consistent execution, and work that actually moves the product forward.
+		</p>
 
-			<div class="schedule-footer">
-				<div class="schedule-cta">Book 15 Minutes</div>
-				<div class="schedule-clock" aria-hidden="true">
-					<div class="clock desktop">
-						<svg
-						viewBox="0 0 256 256"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						aria-hidden="true"
-						>
-						<defs>
-							<clipPath id="bell-clip-15" clipPathUnits="userSpaceOnUse">
-								<rect x="0" y="0" width="256" height="48" />
-							</clipPath>
-						</defs>
+		<ul>
+			<li><strong>Brand strategy & visual identity systems</strong></li>
+			<li><strong>Rapid prototyping & concept validation</strong></li>
+			<li><strong>Product UX & interaction design</strong></li>
+			<li><strong>Website & landing page design</strong></li>
+			<li><strong>Messaging, positioning & UX copywriting</strong></li>
+			<li><strong>Design systems built for scale</strong></li>
+		</ul>
 
-						<ellipse
-						cx="76"
-						cy="40"
-						rx="26"
-						ry="19"
-						transform="rotate(-30 76 40)"
-						fill="currentColor"
-						clip-path="url(#bell-clip-15)"
-						/>
-						<ellipse
-						cx="180"
-						cy="40"
-						rx="26"
-						ry="19"
-						transform="rotate(30 180 40)"
-						fill="currentColor"
-						clip-path="url(#bell-clip-15)"
-						/>
-
-						<circle
-						cx="128"
-						cy="30"
-						r="6"
-						stroke="currentColor"
-						stroke-width="8"
-						fill="currentColor"
-						/>
-
-						<circle
-						cx="128"
-						cy="132"
-						r="86"
-						stroke="currentColor"
-						stroke-width="20"
-						fill="none"
-						/>
-
-						<circle
-						cx="128"
-						cy="132"
-						r="10"
-						fill="currentColor"
-						/>
-
-						<rect
-						x="86"
-						y="204"
-						width="24"
-						height="40"
-						rx="12"
-						transform="rotate(25 86 204)"
-						fill="currentColor"
-						/>
-						<rect
-						x="146"
-						y="212"
-						width="24"
-						height="40"
-						rx="12"
-						transform="rotate(-25 146 204)"
-						fill="currentColor"
-						/>
-					</svg>
-
-					<div class="pomodoro">
-						<div class="arc" data-segments="6" style="--clock-accent: rgb(var(--schedule-accent-rgb));"></div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-	</button>
-
-	<button
-	class="schedule-card surface"
-	type="button"
-	data-sched-url="https://calendly.com/mark-w3m/30-min-alignment"
-	data-sched-title="30 Min Sync"
-	aria-haspopup="dialog"
-	aria-label="Book a 30 minute meeting"
-	aria-describedby="calendlyHint"
-	>
-	<div class="schedule-body flow-m">
-		<div class="schedule-top">
-			<div>
-				<h3 class="schedule-title">30 Min Sync</h3>
-				<h4 class="schedule-sub">Align, decide, unblock</h4>
-			</div>
-		</div>
-
-		<p class="schedule-desc">
-			Great for reviewing work in progress, clarifying requirements, or mapping a workflow.
-			We’ll surface tradeoffs, make a clear decision, and define who does what next.
+		<p>
+			Think of it as embedded design leadership - without the overhead of building a department before you’re ready.
 		</p>
 	</div>
+</section>
 
-	<div class="schedule-footer">
-		<div class="schedule-cta">Book 30 Minutes</div>
-		<div class="schedule-clock" aria-hidden="true">
-			<div class="clock desktop">
-				<svg
-				viewBox="0 0 256 256"
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				aria-hidden="true"
-				>
-				<defs>
-					<clipPath id="bell-clip-30" clipPathUnits="userSpaceOnUse">
-						<rect x="0" y="0" width="256" height="48" />
-					</clipPath>
-				</defs>
-
-				<ellipse
-				cx="76"
-				cy="40"
-				rx="26"
-				ry="19"
-				transform="rotate(-30 76 40)"
-				fill="currentColor"
-				clip-path="url(#bell-clip-30)"
-				/>
-				<ellipse
-				cx="180"
-				cy="40"
-				rx="26"
-				ry="19"
-				transform="rotate(30 180 40)"
-				fill="currentColor"
-				clip-path="url(#bell-clip-30)"
-				/>
-
-				<circle
-				cx="128"
-				cy="30"
-				r="6"
-				stroke="currentColor"
-				stroke-width="8"
-				fill="currentColor"
-				/>
-
-				<circle
-				cx="128"
-				cy="132"
-				r="86"
-				stroke="currentColor"
-				stroke-width="20"
-				fill="none"
-				/>
-
-				<circle
-				cx="128"
-				cy="132"
-				r="10"
-				fill="currentColor"
-				/>
-
-				<rect
-				x="86"
-				y="204"
-				width="24"
-				height="40"
-				rx="12"
-				transform="rotate(25 86 204)"
-				fill="currentColor"
-				/>
-				<rect
-				x="146"
-				y="212"
-				width="24"
-				height="40"
-				rx="12"
-				transform="rotate(-25 146 204)"
-				fill="currentColor"
-				/>
-			</svg>
-
-			<div class="pomodoro">
-				<div class="arc" data-segments="12" style="--clock-accent: rgb(var(--schedule-accent-rgb));"></div>
-			</div>
-
+<section id="contact">
+		<div class="section-head">
+			<h2 class="section-title">Engagement Model</h2>
+			<span class="section-kicker">The right moment to intervene.</span>
 		</div>
-	</div>
-</div>
-</button>
+		<p class="section-lede">If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.</p>
+		<span class="sr-only" id="calendlyHint">Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.</span>
+				<div class="schedule-grid">
+					<button
+					type="button"
+					class="schedule-card surface"
+					data-sched-url="https://calendly.com/mark-w3m/15-min-chat"
+					data-sched-title="15 Min Chat"
+					aria-haspopup="dialog"
+					aria-label="Book a 15 minute chat"
+					aria-describedby="calendlyHint"
+					>
+						<span class="schedule-body flow-m">
+							<span class="schedule-top">
+								<span class="schedule-headings">
+									<span class="schedule-title">15 Min Chat</span>
+									<span class="schedule-sub">Quick clarity and next steps</span>
+								</span>
+							</span>
+							<span class="schedule-desc">
+								Best for a quick intro, one focused question, or a fast direction check.
+								We’ll name what’s stuck, what “good” looks like, and the next best step.
+							</span>
+						</span>
 
-<button
-class="schedule-card surface"
-type="button"
-data-sched-url="https://calendly.com/mark-w3m/60-min-consult"
-data-sched-title="60 Min Consult"
-aria-haspopup="dialog"
-aria-label="Book a 60 minute consult"
-aria-describedby="calendlyHint"
->
-<div class="schedule-body flow-m">
-	<div class="schedule-top">
-		<div>
-			<h3 class="schedule-title">60 Min Consult</h3>
-			<h4 class="schedule-sub">Deep Dive and Strategize</h4>
-		</div>
-	</div>
+						<span class="schedule-footer">
+							<span class="schedule-cta">Book 15 Minutes</span>
+							<span class="schedule-clock" aria-hidden="true">
+								<span class="clock desktop">
+									<svg
+									viewBox="0 0 256 256"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									aria-hidden="true"
+									>
+										<defs>
+											<clipPath id="bell-clip-15" clipPathUnits="userSpaceOnUse">
+												<rect x="0" y="0" width="256" height="48" />
+											</clipPath>
+										</defs>
 
-	<p class="schedule-desc">
-		Ideal when the problem is messy or the stakes are high. We’ll map the situation clearly,
-		identify root causes, and leave with a practical plan you can act on right away.
-	</p>
-</div>
+										<ellipse
+										cx="76"
+										cy="40"
+										rx="26"
+										ry="19"
+										transform="rotate(-30 76 40)"
+										fill="currentColor"
+										clip-path="url(#bell-clip-15)"
+										/>
+										<ellipse
+										cx="180"
+										cy="40"
+										rx="26"
+										ry="19"
+										transform="rotate(30 180 40)"
+										fill="currentColor"
+										clip-path="url(#bell-clip-15)"
+										/>
 
-<div class="schedule-footer">
-	<div class="schedule-cta">Book 60 Minutes</div>
-	<div class="schedule-clock" aria-hidden="true">
-		<div class="clock desktop">
-			<svg
-			viewBox="0 0 256 256"
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			aria-hidden="true"
-			>
-			<defs>
-				<clipPath id="bell-clip-60" clipPathUnits="userSpaceOnUse">
-					<rect x="0" y="0" width="256" height="48" />
-				</clipPath>
-			</defs>
+										<circle
+										cx="128"
+										cy="30"
+										r="6"
+										stroke="currentColor"
+										stroke-width="8"
+										fill="currentColor"
+										/>
 
-			<ellipse
-			cx="76"
-			cy="40"
-			rx="26"
-			ry="19"
-			transform="rotate(-30 76 40)"
-			fill="currentColor"
-			clip-path="url(#bell-clip-60)"
-			/>
-			<ellipse
-			cx="180"
-			cy="40"
-			rx="26"
-			ry="19"
-			transform="rotate(30 180 40)"
-			fill="currentColor"
-			clip-path="url(#bell-clip-60)"
-			/>
+										<circle
+										cx="128"
+										cy="132"
+										r="86"
+										stroke="currentColor"
+										stroke-width="20"
+										fill="none"
+										/>
 
-			<circle
-			cx="128"
-			cy="30"
-			r="6"
-			stroke="currentColor"
-			stroke-width="8"
-			fill="currentColor"
-			/>
+										<circle
+										cx="128"
+										cy="132"
+										r="10"
+										fill="currentColor"
+										/>
 
-			<circle
-			cx="128"
-			cy="132"
-			r="86"
-			stroke="currentColor"
-			stroke-width="20"
-			fill="none"
-			/>
+										<rect
+										x="86"
+										y="204"
+										width="24"
+										height="40"
+										rx="12"
+										transform="rotate(25 86 204)"
+										fill="currentColor"
+										/>
+										<rect
+										x="146"
+										y="212"
+										width="24"
+										height="40"
+										rx="12"
+										transform="rotate(-25 146 204)"
+										fill="currentColor"
+										/>
+									</svg>
 
-			<circle
-			cx="128"
-			cy="132"
-			r="10"
-			fill="currentColor"
-			/>
+									<span class="pomodoro">
+										<span class="arc" data-segments="6" style="--clock-accent: rgb(var(--schedule-accent-rgb));"></span>
+									</span>
+								</span>
+							</span>
+						</span>
+					</button>
 
-			<rect
-			x="86"
-			y="204"
-			width="24"
-			height="40"
-			rx="12"
-			transform="rotate(25 86 204)"
-			fill="currentColor"
-			/>
-			<rect
-			x="146"
-			y="212"
-			width="24"
-			height="40"
-			rx="12"
-			transform="rotate(-25 146 204)"
-			fill="currentColor"
-			/>
-		</svg>
+					<button
+					type="button"
+					class="schedule-card surface"
+					data-sched-url="https://calendly.com/mark-w3m/30-min-alignment"
+					data-sched-title="30 Min Sync"
+					aria-haspopup="dialog"
+					aria-label="Book a 30 minute meeting"
+					aria-describedby="calendlyHint"
+					>
+						<span class="schedule-body flow-m">
+							<span class="schedule-top">
+								<span class="schedule-headings">
+									<span class="schedule-title">30 Min Sync</span>
+									<span class="schedule-sub">Align, decide, unblock</span>
+								</span>
+							</span>
 
-		<div class="pomodoro">
-			<div class="arc" data-segments="24" style="--clock-accent: rgb(var(--schedule-accent-rgb));"></div>
-		</div>
+							<span class="schedule-desc">
+								Great for reviewing work in progress, clarifying requirements, or mapping a workflow.
+								We’ll surface tradeoffs, make a clear decision, and define who does what next.
+							</span>
+						</span>
 
-	</div>
-</div>
-</div>
-</button>
-</div>
+						<span class="schedule-footer">
+							<span class="schedule-cta">Book 30 Minutes</span>
+							<span class="schedule-clock" aria-hidden="true">
+								<span class="clock desktop">
+									<svg
+									viewBox="0 0 256 256"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									aria-hidden="true"
+									>
+										<defs>
+											<clipPath id="bell-clip-30" clipPathUnits="userSpaceOnUse">
+												<rect x="0" y="0" width="256" height="48" />
+											</clipPath>
+										</defs>
+
+										<ellipse
+										cx="76"
+										cy="40"
+										rx="26"
+										ry="19"
+										transform="rotate(-30 76 40)"
+										fill="currentColor"
+										clip-path="url(#bell-clip-30)"
+										/>
+										<ellipse
+										cx="180"
+										cy="40"
+										rx="26"
+										ry="19"
+										transform="rotate(30 180 40)"
+										fill="currentColor"
+										clip-path="url(#bell-clip-30)"
+										/>
+
+										<circle
+										cx="128"
+										cy="30"
+										r="6"
+										stroke="currentColor"
+										stroke-width="8"
+										fill="currentColor"
+										/>
+
+										<circle
+										cx="128"
+										cy="132"
+										r="86"
+										stroke="currentColor"
+										stroke-width="20"
+										fill="none"
+										/>
+
+										<circle
+										cx="128"
+										cy="132"
+										r="10"
+										fill="currentColor"
+										/>
+
+										<rect
+										x="86"
+										y="204"
+										width="24"
+										height="40"
+										rx="12"
+										transform="rotate(25 86 204)"
+										fill="currentColor"
+										/>
+										<rect
+										x="146"
+										y="212"
+										width="24"
+										height="40"
+										rx="12"
+										transform="rotate(-25 146 204)"
+										fill="currentColor"
+										/>
+									</svg>
+
+									<span class="pomodoro">
+										<span class="arc" data-segments="12" style="--clock-accent: rgb(var(--schedule-accent-rgb));"></span>
+									</span>
+								</span>
+							</span>
+						</span>
+					</button>
+
+					<button
+					type="button"
+					class="schedule-card surface"
+					data-sched-url="https://calendly.com/mark-w3m/60-min-consult"
+					data-sched-title="60 Min Consult"
+					aria-haspopup="dialog"
+					aria-label="Book a 60 minute consult"
+					aria-describedby="calendlyHint"
+					>
+						<span class="schedule-body flow-m">
+							<span class="schedule-top">
+								<span class="schedule-headings">
+									<span class="schedule-title">60 Min Consult</span>
+									<span class="schedule-sub">Deep Dive and Strategize</span>
+								</span>
+							</span>
+
+							<span class="schedule-desc">
+								Ideal when the problem is messy or the stakes are high. We’ll map the situation clearly,
+								identify root causes, and leave with a practical plan you can act on right away.
+							</span>
+						</span>
+
+						<span class="schedule-footer">
+							<span class="schedule-cta">Book 60 Minutes</span>
+							<span class="schedule-clock" aria-hidden="true">
+								<span class="clock desktop">
+									<svg
+									viewBox="0 0 256 256"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									aria-hidden="true"
+									>
+										<defs>
+											<clipPath id="bell-clip-60" clipPathUnits="userSpaceOnUse">
+												<rect x="0" y="0" width="256" height="48" />
+											</clipPath>
+										</defs>
+
+										<ellipse
+										cx="76"
+										cy="40"
+										rx="26"
+										ry="19"
+										transform="rotate(-30 76 40)"
+										fill="currentColor"
+										clip-path="url(#bell-clip-60)"
+										/>
+										<ellipse
+										cx="180"
+										cy="40"
+										rx="26"
+										ry="19"
+										transform="rotate(30 180 40)"
+										fill="currentColor"
+										clip-path="url(#bell-clip-60)"
+										/>
+
+										<circle
+										cx="128"
+										cy="30"
+										r="6"
+										stroke="currentColor"
+										stroke-width="8"
+										fill="currentColor"
+										/>
+
+										<circle
+										cx="128"
+										cy="132"
+										r="86"
+										stroke="currentColor"
+										stroke-width="20"
+										fill="none"
+										/>
+
+										<circle
+										cx="128"
+										cy="132"
+										r="10"
+										fill="currentColor"
+										/>
+
+										<rect
+										x="86"
+										y="204"
+										width="24"
+										height="40"
+										rx="12"
+										transform="rotate(25 86 204)"
+										fill="currentColor"
+										/>
+										<rect
+										x="146"
+										y="212"
+										width="24"
+										height="40"
+										rx="12"
+										transform="rotate(-25 146 204)"
+										fill="currentColor"
+										/>
+									</svg>
+
+									<span class="pomodoro">
+										<span class="arc" data-segments="24" style="--clock-accent: rgb(var(--schedule-accent-rgb));"></span>
+									</span>
+								</span>
+							</span>
+						</span>
+					</button>
+				</div>
 
 <!-- Overlay for Calendly embed -->
 <div class="overlay-backdrop schedule-overlay" id="scheduleOverlay" role="dialog" aria-modal="true" aria-labelledby="scheduleOverlayTitle" aria-hidden="true">
@@ -8425,6 +8998,519 @@ aria-describedby="calendlyHint"
 </div>
 </section>
 
+<section id="research" aria-labelledby="research-title">
+	<h2 class="section-title" id="research-title">Reference Library</h2>
+	<p class="section-lede research-intro">
+		A small, high-signal set of references that shape how I approach product strategy, product design, and decision-making. This is here for clients who want to go deeper, without getting lost in noise.
+	</p>
+
+	<div class="research-library">
+		<details class="research-group">
+			<summary>
+				<span class="research-title">Foundations</span>
+				<span class="research-caret" aria-hidden="true">›</span>
+			</summary>
+			<div class="research-panel">
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Don't Make Me Think</h3>
+								<span class="research-item__meta">Steve Krug · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A practical primer on making interfaces feel obvious. If customers need a walkthrough to use something, this book helps explain why that happens and what to simplify first.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/0321344758-M.jpg?default=false" alt="Cover of Don't Make Me Think" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://www.sensible.com/dmmt.html" target="_blank" rel="noopener noreferrer">Author page</a></li>
+								<li><a href="https://www.amazon.com/Dont-Make-Me-Think-Usability/dp/0321344758" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Reducing confusion</li><li>Simplifying interfaces</li><li>Improving usability</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">The Design of Everyday Things</h3>
+								<span class="research-item__meta">Don Norman · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A foundation for understanding why people get stuck, make mistakes, or miss what seems "obvious." It reframes usability as a design responsibility, not a user problem.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/0465050654-M.jpg?default=false" alt="Cover of The Design of Everyday Things" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://www.hachettebookgroup.com/titles/don-norman/the-design-of-everyday-things/9780465050659/" target="_blank" rel="noopener noreferrer">Publisher page</a></li>
+								<li><a href="https://www.strandbooks.com/the-design-of-everyday-things-9780465050659.html" target="_blank" rel="noopener noreferrer">Bookstore page</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Understanding user behavior</li><li>Designing clear feedback</li><li>Preventing user errors</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="reference-site">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://lawsofux.com/" target="_blank" rel="noopener noreferrer">Laws of UX</a></h3>
+							<span class="research-item__meta">Jon Yablonski · <span class="format format--site">Reference Site</span></span>
+						</div>
+						<p class="research-item__desc">
+							A clear, visual reference for design principles that show up across products and industries. It is helpful when you want the "why" behind a decision, without turning it into a debate about taste.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Applying design principles</li><li>Explaining design choices</li><li>Anticipating user behavior</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="article-library">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://www.nngroup.com/articles/" target="_blank" rel="noopener noreferrer">Nielsen Norman Group Articles</a></h3>
+							<span class="research-item__meta">NN/g · <span class="format format--articles">Article Library</span></span>
+						</div>
+						<p class="research-item__desc">
+							A long-running, research-backed library on usability, IA, and UX methods. If you want evidence and examples instead of opinions, this is one of the most dependable places to start.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Improving usability</li><li>Strengthening information architecture</li><li>Grounding decisions in research</li>
+						</ul>
+					</div>
+				</article>
+			</div>
+		</details>
+
+		<details class="research-group">
+			<summary>
+				<span class="research-title">Strategy &amp; Decision Quality</span>
+				<span class="research-caret" aria-hidden="true">›</span>
+			</summary>
+			<div class="research-panel">
+				<article class="research-item" data-format="blog-site">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://stratechery.com/" target="_blank" rel="noopener noreferrer">Stratechery</a></h3>
+							<span class="research-item__meta">Ben Thompson · <span class="format format--site">Blog Site</span></span>
+						</div>
+						<p class="research-item__desc">
+							A strong way to understand business models, incentives, and why "obvious" product moves can backfire. This is most useful when you want to connect product decisions to market structure.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Analyzing business models</li><li>Understanding competitive dynamics</li><li>Anticipating platform shifts</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">The Crux</h3>
+								<span class="research-item__meta">Richard Rumelt · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A practical way to identify the one challenge that actually determines success. It helps cut through "nice to have" priorities and focus effort where it has leverage.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/1541701240-M.jpg?default=false" alt="Cover of The Crux" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://thecruxbook.com/the-crux-how-leaders-become-strategists/" target="_blank" rel="noopener noreferrer">Author page</a></li>
+								<li><a href="https://www.amazon.com/Crux-Leaders-Become-Strategists/dp/1541701240" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Clarifying core problems</li><li>Making strategic tradeoffs</li><li>Focusing organizational effort</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="classic-article">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=3652" target="_blank" rel="noopener noreferrer">What Is Strategy?</a></h3>
+							<span class="research-item__meta">Michael Porter · <span class="format format--article">Classic Article</span></span>
+						</div>
+						<p class="research-item__desc">
+							A clear explanation of positioning and tradeoffs. It is useful when a team is busy improving execution, but has not agreed on what they are choosing to be, and not be.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Defining positioning</li><li>Choosing what not to do</li><li>Building competitive advantage</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="blog-article">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://medium.com/@vincelaw/wtf-is-strategy-8ed3e9e3a9d8" target="_blank" rel="noopener noreferrer">WTF Is Strategy?</a></h3>
+							<span class="research-item__meta">Vince Law · <span class="format format--article">Blog Article</span></span>
+						</div>
+						<p class="research-item__desc">
+							A blunt reset on what strategy actually is: making choices that create a coherent approach. It is especially useful if your team has a vision, but the plan does not force real prioritization.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Forcing real prioritization</li><li>Making coherent choices</li><li>Aligning around tradeoffs</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Playing to Win</h3>
+								<span class="research-item__meta">A.G. Lafley, Roger Martin · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A practical way to turn strategy into decisions you can test: where to play, how to win, and what has to be true. It helps teams move from ambition to clarity.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/142218739X-M.jpg?default=false" alt="Cover of Playing to Win" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://rogerlmartin.com/lets-read/playing-to-win" target="_blank" rel="noopener noreferrer">Author page</a></li>
+								<li><a href="https://www.amazon.com/Playing-Win-Really-Works-Strategy/dp/142218739X" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Choosing where to compete</li><li>Defining how to win</li><li>Aligning capabilities</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Stories Sell</h3>
+								<span class="research-item__meta">Matthew Dicks · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A structured approach to telling stories that people remember. This is useful if your team has real insight, but it is not landing clearly with stakeholders or customers.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/1608689042-M.jpg?default=false" alt="Cover of Stories Sell" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://matthewdicks.com/Books/stories-sell-storyworthy-strategies-to-grow-your-business-and-brand/" target="_blank" rel="noopener noreferrer">Author page</a></li>
+								<li><a href="https://www.amazon.com/Stories-Sell-Storyworthy-Strategies-Business/dp/1608689042" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Framing compelling narratives</li><li>Persuading stakeholders</li><li>Communicating strategic ideas</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="podcast">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://exponent.fm/" target="_blank" rel="noopener noreferrer">Exponent</a></h3>
+							<span class="research-item__meta">Ben Thompson, James Allworth · <span class="format format--podcast">Podcast</span></span>
+						</div>
+						<p class="research-item__desc">
+							Conversations about strategy, platforms, and incentives that shape modern tech. This is helpful when you want to understand the economic forces underneath product decisions.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Understanding tech incentives</li><li>Analyzing platform strategy</li><li>Connecting product to economics</li>
+						</ul>
+					</div>
+				</article>
+			</div>
+		</details>
+
+		<details class="research-group">
+			<summary>
+				<span class="research-title">Discovery &amp; Product Practice</span>
+				<span class="research-caret" aria-hidden="true">›</span>
+			</summary>
+			<div class="research-panel">
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Inspired</h3>
+								<span class="research-item__meta">Marty Cagan · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A clear look at how strong product teams operate, especially around discovery and ownership. This is useful if your roadmap is busy, but learning is thin.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/1119387507-M.jpg?default=false" alt="Cover of Inspired" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://www.svpg.com/books/inspired-how-to-create-tech-products-customers-love-2nd-edition/" target="_blank" rel="noopener noreferrer">Author page</a></li>
+								<li><a href="https://www.wiley.com/en-us/INSPIRED%3A%2BHow%2Bto%2BCreate%2BTech%2BProducts%2BCustomers%2BLove%2C%2B2nd%2BEdition-p-9781119387503" target="_blank" rel="noopener noreferrer">Publisher page</a></li>
+								<li><a href="https://www.amazon.com/INSPIRED-Create-Tech-Products-Customers/dp/1119387507" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Strengthening product ownership</li><li>Running effective discovery</li><li>Building empowered teams</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Escaping the Build Trap</h3>
+								<span class="research-item__meta">Melissa Perri · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A practical argument for outcomes over output, with clear guidance on how to make that real. This is useful if your team ships constantly, but results are inconsistent.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/149197379X-M.jpg?default=false" alt="Cover of Escaping the Build Trap" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://www.oreilly.com/library/view/escaping-the-build/9781491973783/" target="_blank" rel="noopener noreferrer">Publisher page</a></li>
+								<li><a href="https://www.amazon.com/Escaping-Build-Trap-Effective-Management/dp/149197379X" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Shifting to outcomes</li><li>Measuring real impact</li><li>Avoiding output traps</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="reference-site">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://basecamp.com/shapeup" target="_blank" rel="noopener noreferrer">Shape Up</a></h3>
+							<span class="research-item__meta">Basecamp · <span class="format format--site">Reference Site</span></span>
+						</div>
+						<p class="research-item__desc">
+							A practical system for defining work before it enters delivery. This is helpful if your team struggles with endless scope drift or too many "almost done" projects.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Shaping product bets</li><li>Scoping realistic work</li><li>Increasing delivery focus</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Continuous Discovery Habits</h3>
+								<span class="research-item__meta">Teresa Torres · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A realistic approach to discovery that fits into weekly rhythms. This is useful if you want customer truth, but you do not want discovery to become a separate department.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/1736633309-M.jpg?default=false" alt="Cover of Continuous Discovery Habits" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://www.producttalk.org/continuous-discovery-habits/" target="_blank" rel="noopener noreferrer">Author page</a></li>
+								<li><a href="https://www.amazon.com/Continuous-Discovery-Habits-Discover-Products/dp/1736633309" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Building weekly discovery</li><li>Learning from customers</li><li>Reducing decision risk</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+			</div>
+		</details>
+
+		<details class="research-group">
+			<summary>
+				<span class="research-title">Measurement &amp; Growth</span>
+				<span class="research-caret" aria-hidden="true">›</span>
+			</summary>
+			<div class="research-panel">
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Hacking Growth</h3>
+								<span class="research-item__meta">Sean Ellis, Morgan Brown · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A structured introduction to experimentation-driven growth. This is useful when you want a shared language for hypotheses, test design, and learning loops without chasing vanity metrics.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/045149721X-M.jpg?default=false" alt="Cover of Hacking Growth" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://www.penguinrandomhouse.com/books/545936/hacking-growth-by-sean-ellis-founder-of-growthhackerscom-and-morgan-brown/" target="_blank" rel="noopener noreferrer">Publisher page</a></li>
+								<li><a href="https://www.amazon.com/Hacking-Growth-Fastest-Growing-Companies-Breakout/dp/045149721X" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Testing growth ideas</li><li>Improving user retention</li><li>Running structured experiments</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="blog-article">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://500hats.typepad.com/500blogs/2007/06/internet-market.html" target="_blank" rel="noopener noreferrer">Product Strategy for Pirates</a></h3>
+							<span class="research-item__meta">Dave McClure · <span class="format format--article">Blog Article</span></span>
+						</div>
+						<p class="research-item__desc">
+							A simple diagnostic lens for thinking about acquisition, activation, retention, referral, and revenue. This is helpful when you want to identify what is actually broken before redesigning everything.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Diagnosing funnel gaps</li><li>Improving activation rates</li><li>Measuring lifecycle performance</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="article">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://amplitude.com/blog/north-star-metric" target="_blank" rel="noopener noreferrer">North Star Metric</a></h3>
+							<span class="research-item__meta">Amplitude · <span class="format format--article">Article</span></span>
+						</div>
+						<p class="research-item__desc">
+							A clear explanation of why one guiding metric can reduce thrash. This is useful when you have dashboards everywhere, but no shared definition of progress.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Defining success metrics</li><li>Aligning around impact</li><li>Reducing metric overload</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="newsletter">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://www.lennysnewsletter.com/" target="_blank" rel="noopener noreferrer">Lenny’s Newsletter</a></h3>
+							<span class="research-item__meta">Lenny Rachitsky · <span class="format format--newsletter">Newsletter</span></span>
+						</div>
+						<p class="research-item__desc">
+							A deep archive of practical product and growth playbooks. It is best used as a targeted search tool when you want examples, tactics, and real-world patterns.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Learning tactical playbooks</li><li>Studying growth examples</li><li>Improving product operations</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="video-library">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://www.youtube.com/c/YCombinator" target="_blank" rel="noopener noreferrer">Y Combinator Startup Library</a></h3>
+							<span class="research-item__meta">Y Combinator · <span class="format format--videos">Video Library</span></span>
+						</div>
+						<p class="research-item__desc">
+							High-signal talks on product, growth, and founder decision-making. This is useful when you want practical answers to common problems, without the motivational fluff.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Learning founder fundamentals</li><li>Strengthening product thinking</li><li>Avoiding common mistakes</li>
+						</ul>
+					</div>
+				</article>
+			</div>
+		</details>
+
+		<details class="research-group">
+			<summary>
+				<span class="research-title">Systems &amp; Org Design</span>
+				<span class="research-caret" aria-hidden="true">›</span>
+			</summary>
+			<div class="research-panel">
+				<article class="research-item" data-format="essays">
+					<div class="research-item__top">
+						<div class="research-item__headline">
+							<h3 class="research-item__title"><a href="https://500ish.com/the-whale-38c3cfa2cc3e?gi=6b8eb6d4be53" target="_blank" rel="noopener noreferrer">The Whale, The Leviathan, The Squid</a></h3>
+							<span class="research-item__meta">M.G. Siegler · <span class="format format--essays">Essays</span></span>
+						</div>
+						<p class="research-item__desc">
+							A set of metaphors for how organizations concentrate power, coordinate work, and handle complexity. This is helpful when a team keeps repeating the same dysfunction, even with smart people and good intentions.
+						</p>
+						<p class="research-item__desc">
+							Read order:
+							<a href="https://500ish.com/the-whale-38c3cfa2cc3e?gi=6b8eb6d4be53" target="_blank" rel="noopener noreferrer">The Whale</a>,
+							<a href="https://500ish.com/the-squid-218be9939cdf" target="_blank" rel="noopener noreferrer">The Squid</a>,
+							<a href="https://500ish.com/the-leviathan-cdcd0cfd7f59" target="_blank" rel="noopener noreferrer">The Leviathan</a>,
+							<a href="https://500ish.com/the-squid-the-whale-revisited-ecfd0acc2f64" target="_blank" rel="noopener noreferrer">The Squid &amp; the Whale, Revisited</a>.
+						</p>
+						<p class="research-tags-label">Key Ideas:</p>
+						<ul class="research-tags">
+							<li>Understanding power structures</li><li>Diagnosing coordination issues</li><li>Recognizing org patterns</li>
+						</ul>
+					</div>
+				</article>
+
+				<article class="research-item" data-format="book">
+					<div class="research-item__top">
+						<div class="research-item__text">
+							<div class="research-item__headline">
+								<h3 class="research-item__title">Team Topologies</h3>
+								<span class="research-item__meta">Matthew Skelton, Manuel Pais · <span class="format format--book">Book</span></span>
+							</div>
+							<p class="research-item__desc">
+								A practical way to think about team boundaries and interaction modes. This is useful when adding more meetings is not fixing coordination, and the real issue is structure.
+							</p>
+							<div class="research-item__media" aria-hidden="true">
+							<img class="research-cover" src="https://covers.openlibrary.org/b/isbn/1942788819-M.jpg?default=false" alt="Cover of Team Topologies" loading="lazy" width="96" height="144" />
+						</div>
+						<p class="research-sources-label">Sources:</p>
+							<ul class="research-sources">
+								<li><a href="https://teamtopologies.com/book" target="_blank" rel="noopener noreferrer">Author page</a></li>
+								<li><a href="https://www.amazon.com/Team-Topologies-Organizing-Business-Technology/dp/1942788819" target="_blank" rel="noopener noreferrer">Amazon listing</a></li>
+							</ul>
+							<p class="research-tags-label">Key Ideas:</p>
+							<ul class="research-tags">
+								<li>Designing effective teams</li><li>Reducing cognitive load</li><li>Clarifying team boundaries</li>
+							</ul>
+						</div>
+					</div>
+				</article>
+			</div>
+		</details>
+	</div>
+
+	<p class="research-footer">
+		This library stays intentionally small. I only add something when it earns a spot, and when I trust it to hold up in real work.
+	</p>
+</section>
+	
 </main>
 
 <!-- ==========================================================
@@ -8453,13 +9539,13 @@ Fortune Cookie Delight (optional, small)
 <!-- ==========================================================
 Footer
 ========================================================== -->
-<footer class="wrap">
-	<nav class="footer-nav" aria-label="Footer navigation">
-		<a href="#work">Work</a>
-		<a href="#about">About</a>
-		<a href="#help">How I Can Help</a>
-		<a href="#contact">Contact</a>
-	</nav>
+	<footer class="wrap">
+		<nav class="footer-nav" aria-label="Footer navigation">
+			<a href="#work">Case Studies</a>
+			<a href="#about">About</a>
+			<a href="#help">Services</a>
+			<a href="#contact">Engagement Model</a>
+		</nav>
 	<p class="fine footer-meta">© <span id="y"></span> Mark Malcolm. Temporary site, full portfolio in progress.</p>
 	<div class="tulip-strip" aria-hidden="true">
 		<canvas id="tulipCanvas"></canvas>
@@ -8835,17 +9921,17 @@ Footer
 				}, { once: true });
 			}
 
-			schedButtons.forEach(btn => {
-				const prewarm = () => warmCalendlyOrigins();
-				btn.addEventListener("pointerenter", prewarm, { once: true, passive: true });
-				btn.addEventListener("focus", prewarm, { once: true });
-				btn.addEventListener("touchstart", prewarm, { once: true, passive: true });
-				btn.addEventListener("click", (e) => {
-					e.preventDefault();
-					lastTrigger = btn;
-					open(btn.dataset.schedUrl, btn.dataset.schedTitle);
+				schedButtons.forEach(btn => {
+					const prewarm = () => warmCalendlyOrigins();
+					btn.addEventListener("pointerenter", prewarm, { once: true, passive: true });
+					btn.addEventListener("focus", prewarm, { once: true });
+					btn.addEventListener("touchstart", prewarm, { once: true, passive: true });
+					btn.addEventListener("click", (e) => {
+						e.preventDefault();
+						lastTrigger = btn;
+						open(btn.dataset.schedUrl, btn.dataset.schedTitle);
+					});
 				});
-			});
 
 			closeBtn.addEventListener("click", close);
 			overlay.addEventListener("click", (e) => {
@@ -10596,9 +11682,9 @@ Footer
 		})();
 
 		/* Case preview stack: reuse top image for blurred back layers */
-		(function initCasePreviewStackImages(){
-			const previews = Array.from(document.querySelectorAll(".case-preview"));
-			if (!previews.length) return;
+			(function initCasePreviewStackImages(){
+				const previews = Array.from(document.querySelectorAll(".case-preview"));
+				if (!previews.length) return;
 
 			previews.forEach((preview) => {
 				const img = preview.querySelector(".case-preview__stack img");
@@ -10615,13 +11701,65 @@ Footer
 					applyImage();
 				} else {
 					img.addEventListener("load", applyImage, { once: true });
+					}
+				});
+			})();
+
+			(function initResearchCoverFallbacks(){
+				const covers = Array.from(document.querySelectorAll("#research .research-cover"));
+				if (!covers.length) return;
+
+				function getIsbnFromSrc(src){
+					const match = String(src || "").match(/\/isbn\/([0-9X]+)-/i);
+					return match ? match[1] : "";
 				}
-			});
-		})();
+
+				function hideCoverColumn(img){
+					const bookCard = img.closest('.research-item[data-format="book"]');
+					if (!bookCard) return;
+					bookCard.setAttribute("data-no-cover", "true");
+				}
+
+				covers.forEach((img) => {
+					const isbn = getIsbnFromSrc(img.currentSrc || img.src);
+					const fallbacks = isbn
+						? [
+							`https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1&source=gbs_api`,
+							`https://images-na.ssl-images-amazon.com/images/P/${isbn}.01.LZZZZZZZ.jpg`
+						]
+						: [];
+
+					let idx = 0;
+					let exhausted = false;
+					function tryNextSource(){
+						if (exhausted) return;
+						if (idx < fallbacks.length){
+							const nextSrc = fallbacks[idx++];
+							if (img.src !== nextSrc){
+								img.src = nextSrc;
+								return;
+							}
+						}
+						exhausted = true;
+						hideCoverColumn(img);
+					}
+
+					img.addEventListener("error", tryNextSource);
+					img.addEventListener("load", () => {
+						if ((img.naturalWidth || 0) <= 1 || (img.naturalHeight || 0) <= 1){
+							tryNextSource();
+						}
+					});
+
+					if (img.complete && ((img.naturalWidth || 0) === 0 || (img.naturalHeight || 0) === 0)){
+						tryNextSource();
+					}
+				});
+			})();
 
 
-		(function initShotStacks(){
-			const stacks = Array.from(document.querySelectorAll(".shot-stack"));
+			(function initShotStacks(){
+				const stacks = Array.from(document.querySelectorAll(".shot-stack"));
 			stacks.forEach((stack) => {
 				const imgs = Array.from(stack.querySelectorAll(".shot-card img")).filter(img => !img.closest(".is-cap"));
 				if (!imgs.length) return;
