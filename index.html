@@ -5100,6 +5100,19 @@
 			--step-highlight-rgb: var(--hl-lime-rgb);
 		}
 
+		/* Weekly rhythm block: make dt/dd scan better */
+.callout dl { margin: 0; }
+.callout dt { display: block; }
+.callout dd { margin: 0; }
+
+.callout dt.fine.strong {
+	letter-spacing: 0.01em;
+}
+
+.callout dd.fine {
+	opacity: 0.92;
+}
+
 		/* Small screens */
 		@media (max-width: 520px){
 			.process-step{
@@ -8496,7 +8509,44 @@
 		<p class="section-lede">
 			Before we design anything, we clarify the decision we’re actually making. I use a repeatable framework that keeps decisions grounded and reduces rework as we go, but I’m not precious about it. We’ll adjust to fit real constraints, timelines, and stakeholders.
 		</p>
+<section aria-labelledby="weekly-rhythm-title" class="mt-16">
+	<div class="callout surface no-hover flow-m">
+		<h3 class="h3" id="weekly-rhythm-title">Weekly rhythm and artifacts</h3>
 
+		<p class="fine">
+			This is the operating model when I’m embedded. Each week ends with decisions locked in writing and a short list of next actions.
+		</p>
+
+		<dl class="flow-m">
+			<div class="flow-s">
+				<dt class="fine strong">Cadence</dt>
+				<dd class="fine m-0">
+					One working session to unblock decisions, plus async follow-up to tighten language and remove ambiguity.
+				</dd>
+			</div>
+
+			<div class="flow-s">
+	<dt class="fine strong">Artifacts</dt>
+	<dd class="fine m-0">
+		<ul class="fine m-0">
+			<li>Decision summary (what we chose, why, owner)</li>
+			<li>Workflow map updates</li>
+			<li>Requirements and acceptance criteria</li>
+			<li>Edge cases and states</li>
+			<li>Handoff notes the team can execute from</li>
+		</ul>
+	</dd>
+</div>
+
+			<div class="flow-s">
+				<dt class="fine strong">Decision lock</dt>
+				<dd class="fine m-0">
+					We record the tradeoff, the owner, and what “done” means, then the plan is clear enough for product, engineering, and go-to-market to move in sync.
+				</dd>
+			</div>
+		</dl>
+	</div>
+</section>
 		<aside class="proof-quote proof-quote--process" aria-label="Proof quote from Alan Donth">
 			<figure class="quote-figure quote-yellow">
 				<div class="quote-top">
@@ -8627,8 +8677,14 @@
 			<h2 class="section-title">Engagement Model</h2>
 			<span class="section-kicker">The right moment to intervene.</span>
 		</div>
-		<p class="section-lede">If you’re exploring a role, scoping a project, or just need a sounding board, I’m happy to talk it through.</p>
-		<span class="sr-only" id="calendlyHint">Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.</span>
+<!-- Engagement Model -->
+<p class="section-lede">
+	Book a short session to get unstuck, align on the decision, and leave with clear next steps.
+</p>
+<p class="fine">
+	Each session ends with a written decision summary: what we chose, why, what changed, and who owns the next step.
+</p>
+<span class="sr-only" id="calendlyHint">Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a time.</span>
 				<div class="schedule-grid">
 					<button
 					type="button"
