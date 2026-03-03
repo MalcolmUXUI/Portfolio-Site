@@ -658,7 +658,7 @@
         .nav-actions {
           display: flex;
           align-items: center;
-          gap: var(--space-sm);
+          gap: var(--space-lg);
           flex: 0 0 auto;
           position: relative;
         }
@@ -812,7 +812,7 @@
           border-radius: 999px;
           outline-offset: 2px;
         }
-        body.nav-open {
+        body.scroll-locked {
           overflow: hidden;
         }
 
@@ -3784,6 +3784,29 @@
           align-items: center;
           justify-content: center;
         }
+        /* Keep schedule overlay controls clean and legible, separate from global neon button treatment. */
+        .schedule-overlay .overlay-actions .btn {
+          background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+          border-color: rgba(var(--text-rgb), 0.18);
+          box-shadow: none;
+          filter: none;
+          text-shadow: none;
+        }
+        .schedule-overlay .overlay-actions .btn::before,
+        .schedule-overlay .overlay-actions .btn::after {
+          content: none;
+        }
+        .schedule-overlay .overlay-actions .btn:hover,
+        .schedule-overlay .overlay-actions .btn:active,
+        .schedule-overlay .overlay-actions .btn:focus-visible {
+          transform: none;
+          box-shadow: none;
+          filter: none;
+        }
+        .schedule-overlay .overlay-actions .btn:focus-visible {
+          outline: none;
+          outline-offset: 0;
+        }
         .overlay-nav {
           width: 44px;
           height: 44px;
@@ -3854,6 +3877,42 @@
           height: 100%;
           border: 0;
           max-width: 100%;
+        }
+        html[data-theme='dark'] .schedule-overlay .overlay-frame {
+          background: var(--surface-card);
+        }
+        html[data-theme='dark'] .schedule-overlay .overlay-frame::after {
+          background: transparent;
+        }
+        html[data-theme='dark'] .schedule-overlay .overlay-chrome {
+          background: linear-gradient(
+            180deg,
+            rgba(var(--surface-card-rgb), 0.98),
+            rgba(var(--surface-card-rgb), 0.92)
+          );
+          border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        }
+        html[data-theme='dark'] .schedule-overlay .overlay-title {
+          color: rgba(255, 255, 255, 0.96);
+        }
+        @media (prefers-color-scheme: dark) {
+          html:not([data-theme]) .schedule-overlay .overlay-frame {
+            background: var(--surface-card);
+          }
+          html:not([data-theme]) .schedule-overlay .overlay-frame::after {
+            background: transparent;
+          }
+          html:not([data-theme]) .schedule-overlay .overlay-chrome {
+            background: linear-gradient(
+              180deg,
+              rgba(var(--surface-card-rgb), 0.98),
+              rgba(var(--surface-card-rgb), 0.92)
+            );
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+          }
+          html:not([data-theme]) .schedule-overlay .overlay-title {
+            color: rgba(255, 255, 255, 0.96);
+          }
         }
         .work-see-more {
           position: static;
@@ -8922,7 +8981,7 @@
           <span>Mark Malcolm</span>
           <span class="brand-meta" aria-hidden="true">
             <span class="brand-sep">•</span>
-            <span>Product Strategist & UX Consultant</span>
+            <span>Decision clarity for founders</span>
           </span>
         </a>
 
@@ -8931,7 +8990,7 @@
             <a href="#case-studies">Case Studies</a>
             <a href="#about-me">About Me</a>
             <a class="nav-link-optional" href="#services">Services</a>
-            <a class="btn" href="#engagement-model">Book a Call</a>
+            <a class="btn" href="#engagement-model">Book a Clarity Call</a>
           </nav>
           <button
             class="nav-toggle"
@@ -8969,7 +9028,7 @@
         <a href="#case-studies">Case Studies</a>
         <a href="#about-me">About Me</a>
         <a href="#services">Services</a>
-        <a href="#engagement-model">Book a Call</a>
+        <a href="#engagement-model">Book a Clarity Call</a>
       </div>
     </div>
 
@@ -8989,19 +9048,19 @@
           narrative, and leave with decisions your team can execute.
         </p>
         <div class="hero-actions">
-          <a class="btn" href="#engagement-model">Book a 15-min clarity call</a>
+          <a class="btn" href="#engagement-model">Book a Clarity Call</a>
           <a class="btn ghost hero-book-cta" href="#approach">See how I work</a>
         </div>
         <div class="hero-meta">
           <span
             >Recent Work: BigIron Auctions, Cedar Bluff Technologies, &amp; Moss Rock Ranch.<br /><em
-              >Intro calls are 15 minutes, no prep.</em
+              >Clarity Calls are 15 minutes, no prep.</em
             >
-            We’ll name what’s stuck, surface the tradeoffs, and leave with a next step your team can
-            execute.
+            We’ll identify the decision that’s stuck, surface the tradeoffs, and leave with a next
+            step your team can execute.
             <a
               class="hero-meta__link"
-              href="mailto:mark@we3.design?subject=Hey%20Mark%2C%20let%27s%20chat%21"
+              href="mailto:mark@we3.design?subject=Hey%20Mark%2C%20Clarity%20Call%20question"
               >Prefer email first?</a
             ></span
           >
@@ -9142,8 +9201,8 @@
           <span class="section-kicker">strategy made visible</span>
         </div>
         <p class="section-lede">
-          A few examples of real projects where I helped teams clarify the problem, align
-          stakeholders, and deliver systems that scaled beyond individual screens.
+          A few examples of work where I helped leaders lock direction, surface tradeoffs, and
+          translate decisions into systems the team could actually build.
         </p>
         <div class="section-card-stack">
           <aside class="proof-quote proof-quote--work" aria-label="Proof quote from Sean Colandrea">
@@ -9920,10 +9979,11 @@
           <span class="section-kicker">decisions before execution</span>
         </div>
         <p class="section-lede">
-          These are the ways I step in when ambitious teams need to slow down just enough to clarify
-          their thinking before moving forward. I’m not a surface-level redesign partner. I step in
-          when the work needs clearer decisions, tighter structure, and fewer surprises during
-          build. Pick the lane based on what’s stuck. The decision rhythm stays the same.
+          These are the lanes I step into when founders feel pressure to commit, but the decision
+          logic is not solid yet. I’m not a surface-level redesign partner. I help you lock
+          direction, surface the tradeoffs, and translate strategy into buildable structure so
+          delivery has fewer surprises during build. Pick the lane based on what’s stuck. The same
+          rhythm stays in place.
         </p>
         <div class="section-card-stack">
           <aside
@@ -9966,7 +10026,7 @@
                   type="button"
                   data-hl-rgb="152,251,225"
                 >
-                  <span class="tab-highlight" data-hl-class="hl-mint">UX Strategy</span>
+                  <span class="tab-highlight" data-hl-class="hl-mint">Workflow clarity</span>
                 </button>
                 <button
                   class="help-tab"
@@ -9978,7 +10038,7 @@
                   type="button"
                   data-hl-rgb="206,151,251"
                 >
-                  <span class="tab-highlight" data-hl-class="hl-lilac">Design Systems</span>
+                  <span class="tab-highlight" data-hl-class="hl-lilac">UI consistency</span>
                 </button>
                 <button
                   class="help-tab"
@@ -9990,7 +10050,9 @@
                   type="button"
                   data-hl-rgb="250,169,157"
                 >
-                  <span class="tab-highlight" data-hl-class="hl-peach">Brand Strategy</span>
+                  <span class="tab-highlight" data-hl-class="hl-peach"
+                    >Positioning + narrative</span
+                  >
                 </button>
                 <button
                   class="help-tab"
@@ -10002,7 +10064,7 @@
                   type="button"
                   data-hl-rgb="240,223,126"
                 >
-                  <span class="tab-highlight" data-hl-class="hl-yellow">Training Guides</span>
+                  <span class="tab-highlight" data-hl-class="hl-yellow">Process that scales</span>
                 </button>
               </div>
 
@@ -10017,9 +10079,9 @@
                     <div class="help-detail-head">
                       <h3 class="help-panel__title">UX Strategy for Complex Workflows</h3>
                       <p class="section-lede">
-                        When teams keep asking the same questions, it usually means the thinking
-                        isn’t clear enough yet. I turn tribal knowledge into clear workflows,
-                        tighten the handoffs, and make the next step obvious.
+                        When teams keep asking the same questions, it usually means a key decision
+                        is still unsettled. I help you clarify roles, workflows, and edge cases so
+                        the team stops guessing and can ship with confidence.
                       </p>
                     </div>
                     <ul class="receipt-list">
@@ -10030,7 +10092,7 @@
                       <li>Simple, practical handoff that holds up in the real world</li>
                     </ul>
                     <div class="help-detail-cta">
-                      <a class="btn" href="#engagement-model">Talk It Through</a>
+                      <a class="btn" href="#engagement-model">Book a Clarity Call</a>
                       <a class="btn ghost" href="#case-studies">See Examples</a>
                     </div>
                   </div>
@@ -10047,9 +10109,9 @@
                     <div class="help-detail-head">
                       <h3 class="help-panel__title">Design Systems and UI Architecture</h3>
                       <p class="section-lede">
-                        If your interface depends on who designed it that week, you don’t have a
-                        system yet. I define the structure and rules that keep everything aligned,
-                        so quality doesn’t depend on memory or mood.
+                        If the interface changes based on who touched it last, the rules are not
+                        defined yet. I help you lock the standards, patterns, and constraints so the
+                        product stays coherent as the team scales.
                       </p>
                     </div>
 
@@ -10062,7 +10124,7 @@
                     </ul>
 
                     <div class="help-detail-cta">
-                      <a class="btn" href="#engagement-model">Talk It Through</a>
+                      <a class="btn" href="#engagement-model">Book a Clarity Call</a>
                       <a class="btn ghost" href="#case-studies">See Examples</a>
                     </div>
                   </div>
@@ -10081,9 +10143,10 @@
                         Brand Strategy, Copywriting, and Visual Design
                       </h3>
                       <p class="section-lede">
-                        If you sound different in every deck, page, and email, people can’t form a
-                        clear picture of you. I align voice, visuals, and messaging so customers
-                        immediately understand who you are and why you matter.
+                        When the story changes from deck to deck, it usually means the positioning
+                        decision is not locked. I help founders clarify what you do, who it is for,
+                        and why it wins, then translate that into messaging and visuals your team
+                        can reuse without drift.
                       </p>
                     </div>
 
@@ -10110,7 +10173,7 @@
                     </ul>
 
                     <div class="help-detail-cta">
-                      <a class="btn" href="#engagement-model">Talk It Through</a>
+                      <a class="btn" href="#engagement-model">Book a Clarity Call</a>
                       <a class="btn ghost" href="#case-studies">See Examples</a>
                     </div>
                   </div>
@@ -10127,9 +10190,9 @@
                     <div class="help-detail-head">
                       <h3 class="help-panel__title">Training That Scales</h3>
                       <p class="section-lede">
-                        Growth breaks when the know-how lives with one person. We capture your
-                        process and turn it into clear onboarding, training, and playbooks so the
-                        work stays good as the team gets bigger.
+                        Growth breaks when the work depends on one person’s memory. I help you
+                        capture the process, define what “good” looks like, and turn it into
+                        onboarding and playbooks the team can actually follow.
                       </p>
                     </div>
 
@@ -10142,7 +10205,7 @@
                     </ul>
 
                     <div class="help-detail-cta">
-                      <a class="btn" href="#engagement-model">Talk It Through</a>
+                      <a class="btn" href="#engagement-model">Book a Clarity Call</a>
                       <a class="btn ghost" href="#case-studies">See Examples</a>
                     </div>
                   </div>
@@ -10163,24 +10226,32 @@
             id="founders-note"
           >
             <div class="callout surface no-hover flow-m">
-              <h3 class="h3" id="founders-note-title">A Quick Note For Founders</h3>
+              <h3 class="h3" id="founders-note-title">A note for founders under pressure</h3>
               <p class="section-lede">
-                Sometimes the real bottleneck is not design or code. It is that two smart people are
-                holding two different versions of the product.
+                When two smart people hold two different versions of the product, execution turns
+                into thrash. My job is to turn that tension into one clear strategy and a plan your
+                team can actually run.
               </p>
               <p><strong>This shows up when:</strong></p>
               <ul class="receipt-list">
-                <li>one founder is optimizing for craft and brand</li>
-                <li>another is optimizing for operations and sales</li>
-                <li>both are right, and the product needs a shared decision system</li>
+                <li>
+                  you’re torn between craft and speed, and the team keeps switching priorities
+                </li>
+                <li>
+                  sales needs something now, but product needs it to be correct and repeatable
+                </li>
+                <li>
+                  the business wants growth, but the product still needs a tighter wedge and story
+                </li>
               </ul>
               <p>
                 My job is to turn that tension into clarity, then translate it into a plan your team
                 can actually execute.
               </p>
               <p class="meta-line">
-                Once the lane is clear, the work is about running a consistent process that locks
-                decisions and removes ambiguity before build.
+                Once the lane is clear, we run the same rhythm: a written Decision Summary of what
+                we chose, why we chose it, the tradeoffs we accepted, what is still open, and who
+                owns the next step.
               </p>
             </div>
           </aside>
@@ -10239,7 +10310,7 @@
 
               <p class="meta-line"><strong>Weekly outputs</strong></p>
               <ul class="receipt-list">
-                <li>Decision summary (call, rationale, owner)</li>
+                <li>Decision Summary (session, rationale, owner)</li>
                 <li>Workflow and edge-case updates</li>
                 <li>Requirements and acceptance criteria the team can build against</li>
                 <li>Clear next actions, by owner</li>
@@ -10354,14 +10425,113 @@
       <section id="engagement-model">
         <div class="section-head">
           <h2 class="section-title">Engagement Model</h2>
-          <span class="section-kicker">the right moment to intervene</span>
+          <span class="section-kicker">when pressure forces clarity</span>
         </div>
         <!-- Engagement Model -->
         <p class="section-lede">
-          Most teams start with one decision-working session. If the issue is structural, we extend
-          into a short embedded sprint using the same cadence. Each session ends with a written
-          decision summary: what we chose, why, what changed, and who owns the next step.
+          Most founders start with one Decision Session. If the issue is structural, we extend into
+          a short embedded sprint using the same rhythm. Each session ends with a written Decision
+          Summary: what we chose, why, the tradeoffs, what is still open, and who owns the next
+          step. The goal is not more meetings. It’s decisions that hold up when the board, the
+          market, and the build get real.
         </p>
+        <p class="meta-line">
+          I don’t add more voices to the room. I run the decision lane, produce the alignment
+          artifacts, and help the team execute with less thrash.
+        </p>
+        <div class="callout surface no-hover flow-s mt-16" id="decision-summary">
+          <p class="meta-line m-0"><strong>You’ll leave with:</strong></p>
+          <ul class="receipt-list">
+            <li>A one-sentence decision statement (what we’re committing to)</li>
+            <li>Tradeoffs (what we’re not doing, or not doing yet)</li>
+            <li>Next step (the smallest move that reduces risk)</li>
+            <li>Owner + checkpoint (who does what by when)</li>
+          </ul>
+        </div>
+        <div class="callout surface no-hover flow-s mt-16" id="decision-summary-example">
+          <p class="meta-line m-0"><strong>Decision Summary example:</strong></p>
+          <ul class="receipt-list">
+            <li>
+              <strong>Decision</strong>: Ship a “Request a callback” path on the pricing page this
+              sprint, and keep “Book a demo” as the primary CTA.
+            </li>
+            <li>
+              <strong>Why</strong>: Sales needs faster capture for high-intent visitors. Product
+              needs signal quality and a path that scales without creating manual chaos.
+            </li>
+            <li>
+              <strong>Tradeoffs</strong>: We accept a small increase in low-quality leads in
+              exchange for higher total volume. We protect sales capacity with basic qualification
+              fields and routing rules.
+            </li>
+            <li>
+              <strong>What’s true right now</strong>: Current form completion is low on mobile.
+              Sales response time is inconsistent. Engineering can ship a lightweight callback flow
+              without new infrastructure.
+            </li>
+            <li>
+              <strong>Open questions (if any)</strong>: Which fields are required for routing, and
+              what is the maximum acceptable response window?
+            </li>
+            <li>
+              <strong>Owner + checkpoint date</strong>: Owner: Head of Growth. Checkpoint: review
+              conversion rate and lead quality in two weeks, then decide whether to expand, adjust,
+              or roll back.
+            </li>
+          </ul>
+        </div>
+        <div class="callout surface no-hover flow-s mt-16" id="decision-inputs">
+          <p class="meta-line m-0">
+            <strong>Decision inputs (so we’re solving the real problem):</strong>
+          </p>
+          <ul class="receipt-list">
+            <li>
+              <strong>2–3 real examples</strong>: tickets, screenshots, support threads, call notes,
+              or workflow artifacts.
+            </li>
+            <li>
+              <strong>Known constraints</strong>: deadlines, capacity, compliance, technical limits,
+              or contractual commitments.
+            </li>
+            <li>
+              <strong>Who is affected</strong>: which teams and user roles feel the impact, and
+              where the handoffs break.
+            </li>
+            <li>
+              <strong>What “good” looks like</strong>: success metric, guardrails, and what we are
+              explicitly not optimizing for.
+            </li>
+            <li>
+              <strong>Decision owner</strong>: who makes the final call, plus the checkpoint date
+              for revisiting if reality changes.
+            </li>
+          </ul>
+        </div>
+        <div class="callout surface no-hover flow-s mt-16" id="assumptions">
+          <p class="meta-line m-0"><strong>What I assume going in:</strong></p>
+          <p class="m-0">
+            Decision clarity is not a workshop outcome, it is an operating agreement. The first
+            decision is often deciding who decides.
+          </p>
+          <ul class="receipt-list">
+            <li>
+              We agree on roles up front: who drives the decision, who makes the final call, and who
+              provides input.
+            </li>
+            <li>
+              We pull in the right voices at the right moment. We start small to reach a decision,
+              then expand to iterate and stress-test it.
+            </li>
+            <li>
+              We write down what we decided, why, and what we are trading off, then we execute
+              against that record until the checkpoint date.
+            </li>
+            <li>
+              If the truth is “we do not know yet,” we turn that into targeted discovery with a
+              clear owner and next step.
+            </li>
+          </ul>
+        </div>
         <span class="sr-only" id="calendlyHint"
           >Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a
           time.</span
@@ -10372,26 +10542,27 @@
               type="button"
               class="schedule-card surface"
               data-sched-url="https://calendly.com/mark-w3m/15-min-chat"
-              data-sched-title="15 Min Chat"
+              data-sched-title="15-Min Clarity Call"
               aria-haspopup="dialog"
-              aria-label="Book a 15 minute chat"
+              aria-label="Book a 15-Min Clarity Call"
               aria-describedby="calendlyHint"
             >
               <span class="schedule-body flow-m">
                 <span class="schedule-top">
                   <span class="schedule-headings">
-                    <span class="schedule-title">15 Min Chat</span>
-                    <span class="schedule-sub">Quick clarity and next steps</span>
+                    <span class="schedule-title">15-Min Clarity Call</span>
+                    <span class="schedule-sub">One decision, one next step</span>
                   </span>
                 </span>
                 <span class="schedule-desc">
-                  Best for a quick intro, one focused question, or a fast direction check. We’ll
-                  name what’s stuck, what “good” looks like, and the next best step.
+                  Best for one stuck decision, one focused question, or a fast direction check.
+                  We’ll identify the stuck decision, name the tradeoffs, and leave with a next step
+                  and owner.
                 </span>
               </span>
 
               <span class="schedule-footer">
-                <span class="schedule-cta">Book 15 Minutes</span>
+                <span class="schedule-cta">Book a Clarity Call</span>
                 <span class="schedule-clock" aria-hidden="true">
                   <span class="clock desktop">
                     <svg
@@ -10481,28 +10652,28 @@
               type="button"
               class="schedule-card surface"
               data-sched-url="https://calendly.com/mark-w3m/30-min-alignment"
-              data-sched-title="30 Min Sync"
+              data-sched-title="30-Min Decision Sync"
               aria-haspopup="dialog"
-              aria-label="Book a 30 minute meeting"
+              aria-label="Book a 30-Min Decision Sync"
               aria-describedby="calendlyHint"
             >
               <span class="schedule-body flow-m">
                 <span class="schedule-top">
                   <span class="schedule-headings">
-                    <span class="schedule-title">30 Min Sync</span>
-                    <span class="schedule-sub">Align, decide, unblock</span>
+                    <span class="schedule-title">30-Min Decision Sync</span>
+                    <span class="schedule-sub">Align and lock the decision</span>
                   </span>
                 </span>
 
                 <span class="schedule-desc">
                   Great for reviewing work in progress, clarifying requirements, or mapping a
-                  workflow. We’ll surface tradeoffs, make a clear decision, and define who does what
-                  next.
+                  workflow. We’ll make the decision, name the tradeoffs, and leave with next steps,
+                  owners, and a checkpoint.
                 </span>
               </span>
 
               <span class="schedule-footer">
-                <span class="schedule-cta">Book 30 Minutes</span>
+                <span class="schedule-cta">Book a Decision Sync</span>
                 <span class="schedule-clock" aria-hidden="true">
                   <span class="clock desktop">
                     <svg
@@ -10592,28 +10763,27 @@
               type="button"
               class="schedule-card surface"
               data-sched-url="https://calendly.com/mark-w3m/60-min-consult"
-              data-sched-title="60 Min Consult"
+              data-sched-title="60-Min Strategy Deep Dive"
               aria-haspopup="dialog"
-              aria-label="Book a 60 minute consult"
+              aria-label="Book a 60-Min Strategy Deep Dive"
               aria-describedby="calendlyHint"
             >
               <span class="schedule-body flow-m">
                 <span class="schedule-top">
                   <span class="schedule-headings">
-                    <span class="schedule-title">60 Min Consult</span>
-                    <span class="schedule-sub">Deep Dive and Strategize</span>
+                    <span class="schedule-title">60-Min Strategy Deep Dive</span>
+                    <span class="schedule-sub">Choose direction under pressure</span>
                   </span>
                 </span>
 
                 <span class="schedule-desc">
-                  Ideal when the problem is messy or the stakes are high. We’ll map the situation
-                  clearly, identify root causes, and leave with a practical plan you can act on
-                  right away.
+                  Ideal when the problem is messy or the stakes are high. We’ll map the situation,
+                  choose a direction, and leave with a plan, owners, and a checkpoint.
                 </span>
               </span>
 
               <span class="schedule-footer">
-                <span class="schedule-cta">Book 60 Minutes</span>
+                <span class="schedule-cta">Book a Deep Dive</span>
                 <span class="schedule-clock" aria-hidden="true">
                   <span class="clock desktop">
                     <svg
@@ -10699,6 +10869,10 @@
               </span>
             </button>
           </div>
+          <p class="fine mt-16">
+            Not sure which to pick? Start with the 15-Min Clarity Call. If we need more room, we’ll
+            expand from there.
+          </p>
 
           <!-- Overlay for Calendly embed -->
           <div
@@ -10711,7 +10885,7 @@
           >
             <div class="overlay-frame schedule-overlay__frame">
               <div class="overlay-chrome">
-                <h3 class="overlay-title" id="scheduleOverlayTitle">Book a time</h3>
+                <h3 class="overlay-title" id="scheduleOverlayTitle">Schedule</h3>
                 <div class="overlay-actions">
                   <button class="btn" type="button" id="scheduleOverlayClose">Close</button>
                 </div>
@@ -10735,13 +10909,13 @@
               </p>
               <p class="fine m-0">
                 <a class="link-accent" href="https://calendly.com/mark-w3m/15-min-chat"
-                  >Book 15 minutes</a
+                  >Book a 15-Min Clarity Call</a
                 ><br />
                 <a class="link-accent" href="https://calendly.com/mark-w3m/30-min-alignment"
-                  >Book 30 minutes</a
+                  >Book a 30-Min Decision Sync</a
                 ><br />
                 <a class="link-accent" href="https://calendly.com/mark-w3m/60-min-consult"
-                  >Book 60 minutes</a
+                  >Book a 60-Min Strategy Deep Dive</a
                 >
               </p>
             </div>
@@ -10771,7 +10945,7 @@
               <p>
                 I’m Mark Malcolm, a
                 <span class="hl hl-turquoise bio-highlight a1"
-                  >Product Strategist &amp; UX Consultant</span
+                  >Product Strategist &amp; UX Partner</span
                 >. I embed with ambitious teams on complex, cross-functional work and help them turn
                 ambiguity into a
                 <span class="hl hl-peach bio-highlight a2">clear, buildable path forward</span>.
@@ -11779,7 +11953,7 @@
                     </div>
                     <p class="research-item__desc">
                       A practical way to think about team boundaries and interaction modes. This is
-                      useful when adding more meetings is not fixing coordination, and the real
+                      useful when adding more sessions is not fixing coordination, and the real
                       issue is structure.
                     </p>
                     <div class="research-item__media" aria-hidden="true">
@@ -11896,7 +12070,7 @@ Footer
 
     <div class="chat-float">
       <span class="chat-float__hit" aria-hidden="true"></span>
-      <a class="chat-float__avatar-link" href="#engagement-model" aria-label="Book a Call">
+      <a class="chat-float__avatar-link" href="#engagement-model" aria-label="Book a Clarity Call">
         <img
           class="chat-float__img"
           src="assets/headshot/popout-headshot.png"
@@ -11908,7 +12082,7 @@ Footer
       <a class="chat-float__cta" href="#engagement-model">
         <span class="chat-float__cta-nudge">
           <span class="btn chat-float__cta-shell"
-            ><span class="chat-float__cta-label">Book a Call</span></span
+            ><span class="chat-float__cta-label">Book a Clarity Call</span></span
           >
         </span>
       </a>
@@ -12204,6 +12378,21 @@ Footer
         Calendly.initPopupWidget({ url: safeUrl });
       }
 
+      const LOCK_ATTR = 'data-scroll-locks';
+
+      function lockScroll() {
+        const n = Number(document.body.getAttribute(LOCK_ATTR) || 0) + 1;
+        document.body.setAttribute(LOCK_ATTR, String(n));
+        document.body.classList.add('scroll-locked');
+      }
+
+      function unlockScroll() {
+        const n = Number(document.body.getAttribute(LOCK_ATTR) || 0) - 1;
+        const next = Math.max(0, n);
+        document.body.setAttribute(LOCK_ATTR, String(next));
+        if (next === 0) document.body.classList.remove('scroll-locked');
+      }
+
       /* ==========================================================
 			 Schedule overlay: embed Calendly inline inside overlay
 			 ========================================================== */
@@ -12212,7 +12401,6 @@ Footer
         const iframe = document.getElementById('scheduleOverlayFrame');
         const titleEl = document.getElementById('scheduleOverlayTitle');
         const closeBtn = document.getElementById('scheduleOverlayClose');
-        const frame = overlay?.querySelector('.overlay-frame');
         const schedButtons = Array.from(document.querySelectorAll('[data-sched-url]'));
         if (!overlay || !iframe || !titleEl || !closeBtn || !schedButtons.length) return;
         overlay.tabIndex = -1;
@@ -12220,36 +12408,51 @@ Footer
         const FOCUSABLE_SELECTOR =
           'a[href], button:not([disabled]), textarea, input, select, details summary, [tabindex]:not([tabindex="-1"])';
         let lastTrigger = null;
+        let cleanupTrap = null;
 
         function open(url, title) {
           const safeUrl = (url || '').trim();
           if (!safeUrl) return;
+          const wasOpen = overlay.classList.contains('is-open');
           warmCalendlyOrigins();
+          titleEl.textContent = title || 'Schedule';
           const sep = safeUrl.includes('?') ? '&' : '?';
           const embedUrl = `${safeUrl}${sep}embed_domain=${location.hostname}&embed_type=Inline`;
           iframe.src = embedUrl;
-          titleEl.textContent = title || 'Schedule';
           overlay.classList.add('is-open');
           overlay.setAttribute('aria-hidden', 'false');
-          document.body.classList.add('nav-open');
+          document.body.classList.add('overlay-open');
+          if (!wasOpen) lockScroll();
           trapFocus();
+          // Move focus after paint so keyboard users land on a stable control.
+          requestAnimationFrame(() => closeBtn.focus({ preventScroll: true }));
         }
 
         function close() {
+          if (!overlay.classList.contains('is-open')) return;
+          const restoreTarget = lastTrigger;
+          lastTrigger = null;
+
+          if (cleanupTrap) cleanupTrap();
           overlay.classList.remove('is-open');
           overlay.setAttribute('aria-hidden', 'true');
-          iframe.src = '';
-          document.body.classList.remove('nav-open');
-          if (lastTrigger) lastTrigger.focus({ preventScroll: true });
+
+          iframe.removeAttribute('src');
+          iframe.src = 'about:blank';
+          titleEl.textContent = 'Schedule';
+          document.body.classList.remove('overlay-open');
+          unlockScroll();
+          if (restoreTarget) restoreTarget.focus({ preventScroll: true });
         }
 
         function trapFocus() {
+          if (cleanupTrap) cleanupTrap();
+
           const focusables = Array.from(overlay.querySelectorAll(FOCUSABLE_SELECTOR)).filter(
             (el) => el.offsetParent !== null
           );
           const first = focusables[0];
           const last = focusables[focusables.length - 1];
-          (frame || overlay).focus({ preventScroll: true });
 
           function handleTrap(e) {
             if (e.key !== 'Tab') return;
@@ -12266,16 +12469,12 @@ Footer
               }
             }
           }
+
           overlay.addEventListener('keydown', handleTrap);
-          const cleanup = () => overlay.removeEventListener('keydown', handleTrap);
-          closeBtn.addEventListener('click', cleanup, { once: true });
-          overlay.addEventListener(
-            'click',
-            (e) => {
-              if (e.target === overlay) cleanup();
-            },
-            { once: true }
-          );
+          cleanupTrap = () => {
+            overlay.removeEventListener('keydown', handleTrap);
+            cleanupTrap = null;
+          };
         }
 
         schedButtons.forEach((btn) => {
@@ -13914,7 +14113,7 @@ Footer
 							<button type="button" class="overlay-nav is-next" aria-label="Next" disabled>
 								<svg viewBox="0 0 24 24"><path d="M8.4 19.2 14.6 12 8.4 4.8l1.4-1.2L17 12l-7.2 8.4z"/></svg>
 							</button>
-							<a class="btn ghost overlay-open-tab" target="_blank" rel="noreferrer">Open in New Tab</a>
+							<a class="btn ghost overlay-new-tab" target="_blank" rel="noreferrer">Open in New Tab</a>
 							<button type="button" class="overlay-close btn" aria-label="Close overlay">Close</button>
 						</div>
 					</header>
@@ -13930,7 +14129,7 @@ Footer
         const prevBtn = overlay.querySelector('.overlay-nav.is-prev');
         const nextBtn = overlay.querySelector('.overlay-nav.is-next');
         const closeBtn = overlay.querySelector('.overlay-close');
-        const openTabBtn = overlay.querySelector('.overlay-open-tab');
+        const openTabBtn = overlay.querySelector('.overlay-new-tab');
 
         let items = [];
         let currentIndex = 0;
@@ -14392,6 +14591,8 @@ Footer
         }
 
         function setOpen(open) {
+          const wasOpen = panel.classList.contains('is-open');
+          if (open === wasOpen) return;
           if (open) {
             navRoot?.classList.remove('nav-hidden');
             panel.scrollTop = 0;
@@ -14402,29 +14603,36 @@ Footer
           syncToggleUi(open);
           document.body.classList.toggle('nav-open', open);
           if (open) {
+            lockScroll();
             lastFocus = document.activeElement;
             const first = panel.querySelector(focusableSelector);
             first?.focus({ preventScroll: true });
             panel.addEventListener('keydown', trapFocus);
           } else {
+            unlockScroll();
             panel.removeEventListener('keydown', trapFocus);
             lastFocus?.focus?.({ preventScroll: true });
           }
+        }
+
+        function closeNav() {
+          if (!panel.classList.contains('is-open')) return;
+          setOpen(false);
         }
 
         toggle.addEventListener('click', () => {
           setOpen(!panel.classList.contains('is-open'));
         });
 
-        closeBtn?.addEventListener('click', () => setOpen(false));
+        closeBtn?.addEventListener('click', closeNav);
         panel.addEventListener('click', (event) => {
-          if (event.target === panel) setOpen(false);
+          if (event.target === panel) closeNav();
         });
-        links.forEach((link) => link.addEventListener('click', () => setOpen(false)));
+        links.forEach((link) => link.addEventListener('click', closeNav));
 
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape' && panel.classList.contains('is-open')) {
-            setOpen(false);
+            closeNav();
           }
         });
 
