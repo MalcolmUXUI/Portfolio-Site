@@ -6,51 +6,51 @@ Goal: make CSS easy to scan, reduce accidental overrides, and keep cross-browser
 
 ### 1) Property order inside a selector
 
-1) Positioning & layout context
+1. Positioning & layout context
    - position, inset/top/right/bottom/left, z-index
    - display
    - float/clear
-   - flex: flex, flex-*, justify-*, align-*, place-*, gap, order
-   - grid: grid, grid-*, place-*, gap
+   - flex: flex, flex-_, justify-_, align-_, place-_, gap, order
+   - grid: grid, grid-_, place-_, gap
    - container-type/name (if used)
 
-2) Box model (size + spacing + borders)
+2. Box model (size + spacing + borders)
    - box-sizing
-   - width/height, min-*, max-*, aspect-ratio
+   - width/height, min-_, max-_, aspect-ratio
    - margin, padding
-   - border, border-*, border-radius
-   - outline/outline-* (if not grouped with interaction)
+   - border, border-\*, border-radius
+   - outline/outline-\* (if not grouped with interaction)
    - logical props (`margin-inline`, `padding-block`, etc.) live here too
 
-3) Overflow & scrolling
-   - overflow, overflow-*
-   - overscroll-behavior*
-   - scroll-behavior, scroll-margin*, scroll-padding*, scroll-snap-*
+3. Overflow & scrolling
+   - overflow, overflow-\*
+   - overscroll-behavior\*
+   - scroll-behavior, scroll-margin*, scroll-padding*, scroll-snap-\*
 
-4) Visual styling
-   - background, background-*
+4. Visual styling
+   - background, background-\*
    - color
    - opacity
    - box-shadow
    - filter, backdrop-filter (prefixed first)
 
-5) Typography
-   - font, font-*
+5. Typography
+   - font, font-\*
    - line-height
    - text-align, text-transform, letter-spacing
    - white-space, word-break, overflow-wrap, hyphens
-   - text-decoration*, text-rendering
+   - text-decoration\*, text-rendering
 
-6) Interaction
+6. Interaction
    - cursor, pointer-events, user-select (+ -webkit-)
    - appearance (+ -webkit-)
    - touch-action (if used)
    - outline (if kept here)
 
-7) Motion & transforms
+7. Motion & transforms
    - transform, transition, animation
 
-8) Misc / perf
+8. Misc / perf
    - will-change, contain, content-visibility, isolation, mix-blend-mode
 
 Notes: don’t alphabetize; keep related props near each other. Blank line between groups helps scanning.

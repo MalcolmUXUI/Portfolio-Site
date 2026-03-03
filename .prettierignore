@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+coverage
+vendor
+vendor/
+assets/vendor
+assets/vendor/
+*.min.js
+*.min.css
+backups
+ZZZ-AUX

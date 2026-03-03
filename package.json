@@ -1,5 +1,26 @@
 {
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:css": "stylelint \"**/*.{css,scss}\" --allow-empty-input",
+    "lint:css:fix": "stylelint \"**/*.{css,scss}\" --fix --allow-empty-input",
+    "lint-staged": "lint-staged",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{html,js,json,md}": "prettier --write",
+    "*.{css,scss}": [
+      "stylelint --fix",
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
-    "hint": "^7.1.13"
+    "hint": "^7.1.13",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
+    "prettier": "^3.8.1",
+    "stylelint": "^17.4.0",
+    "stylelint-config-clean-order": "^8.0.1",
+    "stylelint-config-standard": "^40.0.0"
   }
 }

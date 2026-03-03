@@ -1,5 +1,6 @@
 .DS_Store
-.vscode/
+.vscode/*
+!.vscode/settings.json
 *.code-workspace
 backups/
 # local storage / not part of website
