@@ -1825,6 +1825,9 @@
             .btn:not(.ticker-btn):not(.shot-hide),
             .schedule-cta,
             .diagnostic-nav,
+            .overlay-nav,
+            .research-group > summary,
+            details.callout > summary,
             .nav-toggle,
             .mobile-nav-close
           ) {
@@ -1988,6 +1991,9 @@
               .btn:not(.ticker-btn):not(.shot-hide),
               .schedule-cta,
               .diagnostic-nav,
+              .overlay-nav,
+              .research-group > summary,
+              details.callout > summary,
               .nav-toggle,
               .mobile-nav-close
             ) {
@@ -3808,31 +3814,43 @@
           outline-offset: 0;
         }
         .overlay-nav {
-          width: 44px;
-          height: 44px;
+          width: 40px;
+          height: 40px;
           padding: 0;
-          border: none;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.95);
-          box-shadow:
-            0 10px 24px rgba(0, 0, 0, 0.18),
-            0 0 0 1px rgba(0, 0, 0, 0.08);
+          border: 1px solid rgba(var(--text-rgb), 0.14);
+          border-radius: 999px;
+          background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+          color: var(--text);
+          box-shadow: var(--shadow-interactive-base);
           display: inline-flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          min-height: 44px;
+          min-height: 40px;
+          transition:
+            transform 0.15s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+        }
+        .overlay-nav:hover:not([disabled]),
+        .overlay-nav:focus-visible {
+          border-color: rgba(var(--text-rgb), 0.22);
+          box-shadow: var(--shadow-card);
+        }
+        .overlay-nav:active:not([disabled]) {
+          transform: none;
         }
         .overlay-nav[disabled] {
           opacity: 0.45;
           cursor: default;
           box-shadow: none;
+          transform: none;
         }
         .overlay-nav svg {
-          width: 16px;
-          height: 16px;
+          width: 18px;
+          height: 18px;
           fill: currentColor;
-          color: var(--text);
+          color: currentColor;
         }
         .overlay-body {
           position: relative;
@@ -4361,6 +4379,7 @@
           overflow: hidden;
         }
         .research-group > summary {
+          --button-accent-rgb: 255, 255, 255;
           list-style: none;
           cursor: pointer;
           display: flex;
@@ -4389,18 +4408,35 @@
           color: var(--text);
         }
         .research-caret {
-          display: inline-block;
-          font-size: 28px;
-          line-height: 1;
-          color: var(--text-muted);
+          display: inline-grid;
+          place-items: center;
+          flex: 0 0 auto;
+          inline-size: 40px;
+          block-size: 40px;
+          border-radius: 999px;
+          border: 1px solid rgba(var(--text-rgb), 0.14);
+          background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+          box-shadow: var(--shadow-interactive-base);
+          color: var(--text);
           transform: rotate(0deg);
           transform-origin: center;
           transition:
             transform 0.2s ease,
-            color 0.2s ease;
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+        }
+        .research-caret svg {
+          inline-size: 18px;
+          block-size: 18px;
+          display: block;
+          fill: currentColor;
+        }
+        .research-group > summary:hover .research-caret,
+        .research-group > summary:focus-visible .research-caret {
+          border-color: rgba(var(--text-rgb), 0.22);
+          box-shadow: var(--shadow-card);
         }
         .research-group[open] .research-caret {
-          color: var(--text);
           transform: rotate(90deg);
         }
         .research-panel {
@@ -5225,6 +5261,229 @@
         }
         .callout > p {
           margin: 0;
+        }
+
+        /* ============================================================
+        			 Engagement Model: Details / Summary polish
+        			 ============================================================ */
+        /* Make details feel like clickable rows inside your callouts */
+        details.callout > summary {
+          cursor: pointer;
+          user-select: none;
+          list-style: none; /* remove default marker in some browsers */
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: var(--space-sm);
+          padding: var(--space-sm) var(--space-sm);
+          border-radius: var(--radius-md);
+        }
+
+        /* Remove the default marker in WebKit */
+        details.callout > summary::-webkit-details-marker {
+          display: none;
+        }
+
+        /* Keep your meta-line look, but make summary feel tappable */
+        details.callout > summary.meta-line {
+          margin: 0;
+        }
+        details.callout > summary .summary-copy {
+          display: grid;
+          gap: 2px;
+          flex: 1 1 auto;
+          min-width: 0;
+        }
+
+        /* Add a subtle chevron indicator */
+        details.callout > summary .summary-chevron {
+          display: inline-grid;
+          place-items: center;
+          inline-size: 40px;
+          block-size: 40px;
+          flex: 0 0 auto;
+          border-radius: 999px;
+          border: 1px solid rgba(var(--text-rgb), 0.14);
+          background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+          box-shadow: var(--shadow-interactive-base);
+          color: var(--text);
+          transform: rotate(0deg);
+          transition:
+            transform 0.2s ease,
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            filter 0.2s ease;
+        }
+        details.callout > summary .summary-chevron svg {
+          inline-size: 18px;
+          block-size: 18px;
+          display: block;
+          fill: currentColor;
+        }
+
+        /* Rotate chevron when open */
+        details.callout[open] > summary .summary-chevron {
+          transform: rotate(90deg);
+        }
+        details.callout > summary:hover .summary-chevron,
+        details.callout > summary:focus-visible .summary-chevron {
+          border-color: rgba(var(--text-rgb), 0.22);
+          box-shadow: var(--shadow-card);
+        }
+
+        /* Focus ring for keyboard users */
+        details.callout > summary:focus-visible {
+          outline: 2px solid rgba(var(--accent-warm-rgb), 0.65);
+          outline-offset: 3px;
+        }
+
+        /* Hover affordance without changing your card hover system */
+        details.callout > summary:hover {
+          background: rgba(var(--text-rgb), 0.03);
+        }
+
+        /* Give the content breathing room inside the callout */
+        details.callout > *:not(summary) {
+          padding: 0 var(--space-sm) var(--space-sm);
+        }
+
+        /* Guard closed state in case other global rules touch details children */
+        details.callout:not([open]) > *:not(summary) {
+          display: none;
+        }
+
+        /* Reduce motion */
+        @media (prefers-reduced-motion: reduce) {
+          details.callout > summary .summary-chevron {
+            transition: none;
+          }
+        }
+
+        /* Lighter opened-state density (only inside expandable callouts) */
+        details.callout[open] ul.receipt-list {
+          margin-top: var(--space-xs);
+        }
+
+        details.callout[open] ul.receipt-list li + li {
+          margin-top: 6px; /* slightly tighter than your default */
+        }
+
+        /* Keep paragraphs inside details from looking like a block wall */
+        details.callout[open] p {
+          max-width: 72ch;
+        }
+
+        /* Optional: reduce bottom padding a hair when open */
+        details.callout[open] > *:not(summary) {
+          padding-bottom: var(--space-xs);
+        }
+
+        .accordion-controls {
+          display: flex;
+          gap: var(--space-sm);
+          flex-wrap: wrap;
+          align-items: center;
+        }
+        .accordion-mode {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          margin-left: var(--space-sm);
+        }
+        .accordion-mode input {
+          transform: translateY(1px);
+        }
+        .accordion-mode .fine {
+          white-space: nowrap;
+        }
+        .accordion-tip {
+          margin-top: var(--space-sm);
+          opacity: 0.85;
+        }
+
+        /* Engagement Model cards: align shell/spacing to Reference Library cards */
+        #engagement-model .engagement-accordion {
+          display: grid;
+          gap: var(--space-sm);
+        }
+        #engagement-model .engagement-accordion > details.callout {
+          margin: 0;
+          padding: 0;
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+          box-shadow: var(--nested-card-panel-shadow);
+          overflow: hidden;
+        }
+        #engagement-model .engagement-accordion > details.callout.surface::before,
+        #engagement-model .engagement-accordion > details.callout.surface::after {
+          content: none;
+        }
+        #engagement-model .engagement-accordion > details.callout.surface.no-hover:hover {
+          border-color: var(--border);
+          background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+          box-shadow: var(--nested-card-panel-shadow);
+        }
+        #engagement-model .engagement-accordion > details.callout > summary {
+          min-height: auto;
+          padding: var(--space-md) var(--space-lg);
+          background: transparent;
+          color: var(--text);
+          position: relative;
+          z-index: 2;
+        }
+        #engagement-model .engagement-accordion > details.callout > summary strong {
+          color: inherit;
+          font-family: 'Gloria Hallelujah', cursive;
+          font-weight: 400;
+          font-style: normal;
+          font-size: clamp(1.5rem, 1.12rem + 1.08vw, 2rem);
+          line-height: 1.18;
+          letter-spacing: 0.01em;
+          text-wrap: balance;
+        }
+        #engagement-model .engagement-accordion > details.callout > summary .schedule-sub {
+          margin: 0;
+          color: var(--text-muted);
+          font-size: clamp(0.92rem, 0.86rem + 0.14vw, 1rem);
+          line-height: 1.35;
+          text-transform: none;
+          letter-spacing: 0.01em;
+          font-weight: 400 !important;
+        }
+        #engagement-model .engagement-accordion > details.callout > summary:hover {
+          background: rgba(var(--text-rgb), 0.03);
+        }
+        #engagement-model .engagement-accordion > details.callout > summary:focus-visible {
+          outline: 2px solid rgba(var(--focus-ring-rgb), 0.5);
+          outline-offset: 3px;
+        }
+        #engagement-model .engagement-accordion > details.callout[open] > *:not(summary) {
+          padding-left: var(--space-lg);
+          padding-right: var(--space-lg);
+          color: var(--text);
+        }
+        #engagement-model .engagement-accordion > details.callout[open] p,
+        #engagement-model .engagement-accordion > details.callout[open] li,
+        #engagement-model .engagement-accordion > details.callout[open] .meta-line {
+          color: var(--text-muted);
+        }
+        #engagement-model .engagement-accordion > details.callout[open] strong {
+          color: var(--text);
+        }
+        @media (max-width: var(--bp-sm)) {
+          #engagement-model .engagement-accordion > details.callout > summary {
+            padding: var(--space-sm) var(--space-md);
+          }
+          #engagement-model .engagement-accordion > details.callout > summary strong {
+            font-size: clamp(1.3rem, 6.4vw, 1.75rem);
+          }
+          #engagement-model .engagement-accordion > details.callout[open] > *:not(summary) {
+            padding-left: var(--space-md);
+            padding-right: var(--space-md);
+          }
         }
 
         .link-accent {
@@ -7284,9 +7543,6 @@
           background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
           color: var(--text);
           font: inherit;
-          font-weight: 700;
-          font-size: 22px;
-          line-height: 1;
           cursor: pointer;
           box-shadow: var(--shadow-interactive-base);
           transition:
@@ -7295,8 +7551,17 @@
             box-shadow 0.2s ease;
           transform: translateY(-50%);
         }
+        .diagnostic-nav svg {
+          inline-size: 18px;
+          block-size: 18px;
+          display: block;
+          fill: currentColor;
+        }
         .diagnostic-nav[data-dir='prev'] {
           left: 0;
+        }
+        .diagnostic-nav[data-dir='prev'] svg {
+          transform: rotate(180deg);
         }
         .diagnostic-nav[data-dir='next'] {
           right: 0;
@@ -7306,7 +7571,7 @@
         }
 
         .diagnostic-nav:hover {
-          transform: translateY(calc(-50% - 1px));
+          transform: translateY(-50%);
           border-color: rgba(var(--text-rgb), 0.22);
           box-shadow: var(--shadow-card);
         }
@@ -7445,9 +7710,16 @@
             transition: none;
           }
         }
+        :is(
+          .diagnostic-nav,
+          .overlay-nav,
+          .research-caret,
+          details.callout > summary .summary-chevron
+        ) {
+          --button-accent-rgb: 255, 255, 255;
+        }
         .diagnostic-nav {
           --diagnostic-nav-glow-rgb: 255, 255, 255;
-          --button-accent-rgb: 255, 255, 255;
         }
         .diagnostic-nav[data-dir='prev'] {
           --diagnostic-nav-glow-rgb: 255, 255, 255;
@@ -7455,7 +7727,10 @@
         .diagnostic-nav[data-dir='next'] {
           --diagnostic-nav-glow-rgb: 255, 255, 255;
         }
-        html[data-theme='dark'] .diagnostic-nav {
+        html[data-theme='dark'] .diagnostic-nav,
+        html[data-theme='dark'] .overlay-nav,
+        html[data-theme='dark'] .research-caret,
+        html[data-theme='dark'] details.callout > summary .summary-chevron {
           color: var(--ui-btn-rest-text);
           background: var(--ui-btn-rest-fill);
           border-color: var(--ui-btn-rest-border);
@@ -7468,7 +7743,13 @@
             filter 0.72s cubic-bezier(0.16, 0.64, 0.08, 1);
         }
         html[data-theme='dark'] .diagnostic-nav:hover,
-        html[data-theme='dark'] .diagnostic-nav:focus-visible {
+        html[data-theme='dark'] .diagnostic-nav:focus-visible,
+        html[data-theme='dark'] .overlay-nav:hover:not([disabled]),
+        html[data-theme='dark'] .overlay-nav:focus-visible,
+        html[data-theme='dark'] .research-group > summary:hover .research-caret,
+        html[data-theme='dark'] .research-group > summary:focus-visible .research-caret,
+        html[data-theme='dark'] details.callout > summary:hover .summary-chevron,
+        html[data-theme='dark'] details.callout > summary:focus-visible .summary-chevron {
           color: var(--ui-btn-hover-text);
           background: var(--ui-btn-hover-fill);
           border-color: var(--ui-btn-hover-border);
@@ -7481,7 +7762,10 @@
           filter: var(--ui-btn-hover-filter);
           transition-duration: 0.14s, 0.16s, 0.14s, 0.14s, 0.16s, 0.16s;
         }
-        html[data-theme='dark'] .diagnostic-nav:active {
+        html[data-theme='dark'] .diagnostic-nav:active,
+        html[data-theme='dark'] .overlay-nav:active:not([disabled]),
+        html[data-theme='dark'] .research-group > summary:active .research-caret,
+        html[data-theme='dark'] details.callout > summary:active .summary-chevron {
           color: var(--ui-btn-active-text);
           background: var(--ui-btn-active-fill);
           border-color: rgba(var(--button-accent-rgb), 0.9);
@@ -7494,7 +7778,10 @@
           transition-duration: 0.1s, 0.12s, 0.1s, 0.1s, 0.12s, 0.12s;
         }
         @media (prefers-color-scheme: dark) {
-          html:not([data-theme]) .diagnostic-nav {
+          html:not([data-theme]) .diagnostic-nav,
+          html:not([data-theme]) .overlay-nav,
+          html:not([data-theme]) .research-caret,
+          html:not([data-theme]) details.callout > summary .summary-chevron {
             color: var(--ui-btn-rest-text);
             background: var(--ui-btn-rest-fill);
             border-color: var(--ui-btn-rest-border);
@@ -7507,7 +7794,13 @@
               filter 0.72s cubic-bezier(0.16, 0.64, 0.08, 1);
           }
           html:not([data-theme]) .diagnostic-nav:hover,
-          html:not([data-theme]) .diagnostic-nav:focus-visible {
+          html:not([data-theme]) .diagnostic-nav:focus-visible,
+          html:not([data-theme]) .overlay-nav:hover:not([disabled]),
+          html:not([data-theme]) .overlay-nav:focus-visible,
+          html:not([data-theme]) .research-group > summary:hover .research-caret,
+          html:not([data-theme]) .research-group > summary:focus-visible .research-caret,
+          html:not([data-theme]) details.callout > summary:hover .summary-chevron,
+          html:not([data-theme]) details.callout > summary:focus-visible .summary-chevron {
             color: var(--ui-btn-hover-text);
             background: var(--ui-btn-hover-fill);
             border-color: var(--ui-btn-hover-border);
@@ -7520,7 +7813,10 @@
             filter: var(--ui-btn-hover-filter);
             transition-duration: 0.14s, 0.16s, 0.14s, 0.14s, 0.16s, 0.16s;
           }
-          html:not([data-theme]) .diagnostic-nav:active {
+          html:not([data-theme]) .diagnostic-nav:active,
+          html:not([data-theme]) .overlay-nav:active:not([disabled]),
+          html:not([data-theme]) .research-group > summary:active .research-caret,
+          html:not([data-theme]) details.callout > summary:active .summary-chevron {
             color: var(--ui-btn-active-text);
             background: var(--ui-btn-active-fill);
             border-color: rgba(var(--button-accent-rgb), 0.9);
@@ -7535,7 +7831,13 @@
         }
         @media (prefers-reduced-motion: reduce) {
           html[data-theme='dark'] .diagnostic-nav,
-          html:not([data-theme]) .diagnostic-nav {
+          html[data-theme='dark'] .overlay-nav,
+          html[data-theme='dark'] .research-caret,
+          html[data-theme='dark'] details.callout > summary .summary-chevron,
+          html:not([data-theme]) .diagnostic-nav,
+          html:not([data-theme]) .overlay-nav,
+          html:not([data-theme]) .research-caret,
+          html:not([data-theme]) details.callout > summary .summary-chevron {
             transition: none;
           }
         }
@@ -9049,7 +9351,7 @@
         </p>
         <div class="hero-actions">
           <a class="btn" href="#engagement-model">Book a Clarity Call</a>
-          <a class="btn ghost hero-book-cta" href="#approach">See how I work</a>
+          <a class="btn ghost hero-book-cta" href="#case-studies">See examples</a>
         </div>
         <div class="hero-meta">
           <span
@@ -9201,8 +9503,7 @@
           <span class="section-kicker">strategy made visible</span>
         </div>
         <p class="section-lede">
-          A few examples of work where I helped leaders lock direction, surface tradeoffs, and
-          translate decisions into systems the team could actually build.
+          Proof that messy debates can turn into a clear direction and a buildable plan.
         </p>
         <div class="section-card-stack">
           <aside class="proof-quote proof-quote--work" aria-label="Proof quote from Sean Colandrea">
@@ -9263,13 +9564,13 @@
                     type="button"
                     data-open-stack="#shotStack"
                   >
-                    See Sample Pages
+                    See examples
                   </button>
                 </p>
               </div>
               <div class="card-media">
                 <button class="btn ghost work-see-more" type="button" data-open-stack="#shotStack">
-                  See More
+                  See examples
                 </button>
                 <div class="work-mosaic" aria-hidden="true">
                   <div class="work-mosaic__tiles">
@@ -9399,7 +9700,7 @@
                     data-brand-link
                     data-title="Cedar Bluff Technologies (SpecVision) Brand Guidelines"
                   >
-                    View Brand Guidelines
+                    See examples
                   </a>
                 </p>
               </div>
@@ -9436,7 +9737,7 @@
                     data-brand-link
                     data-title="Moss Rock Ranch – Brand Guidelines"
                   >
-                    View Brand Guidelines
+                    See examples
                   </a>
                 </p>
               </div>
@@ -9531,7 +9832,7 @@
                     </button>
                     <div class="case-cta">
                       <button class="btn" type="button" data-open-stack="#wildlifeStack">
-                        Open Case Study
+                        See examples
                       </button>
                     </div>
                   </div>
@@ -9654,7 +9955,7 @@
                     </button>
                     <div class="case-cta">
                       <button class="btn" type="button" data-open-stack="#flixStack">
-                        Open Case Study
+                        See examples
                       </button>
                     </div>
                   </div>
@@ -9772,8 +10073,8 @@
                   </header>
                   <p class="meta-line"><strong>Strategic Moves:</strong></p>
                   <ul class="receipt-list">
-                    <li>Defined a clear “what we do + how we help” structure</li>
-                    <li>Clear “what we do + how to help” story</li>
+                    <li>Defined a clear “what we do + who we serve” structure</li>
+                    <li>Clear “what we do + why it matters” story</li>
                     <li>Built repeatable messaging modules</li>
                     <li>Aligned site architecture to brand narrative</li>
                   </ul>
@@ -9811,7 +10112,7 @@
                     </button>
                     <div class="case-cta">
                       <button class="btn" type="button" data-open-stack="#flagrStack">
-                        Open Case Study
+                        See examples
                       </button>
                     </div>
                   </div>
@@ -9882,6 +10183,9 @@
             <h2 class="section-title">Common Triggers</h2>
             <span class="section-kicker">when direction feels unclear</span>
           </div>
+          <p class="section-lede">
+            If you've said any of these out loud recently, you're in the right place.
+          </p>
 
           <div
             class="diagnostic-carousel surface no-hover"
@@ -9955,7 +10259,9 @@
                   data-dir="prev"
                   aria-label="Previous statement"
                 >
-                  ‹
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M8.4 4.8 14.6 12 8.4 19.2l1.4 1.2L17 12 9.8 3.6z"></path>
+                  </svg>
                 </button>
                 <button
                   class="diagnostic-nav"
@@ -9963,7 +10269,9 @@
                   data-dir="next"
                   aria-label="Next statement"
                 >
-                  ›
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M8.4 4.8 14.6 12 8.4 19.2l1.4 1.2L17 12 9.8 3.6z"></path>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -9979,11 +10287,11 @@
           <span class="section-kicker">decisions before execution</span>
         </div>
         <p class="section-lede">
-          These are the lanes I step into when founders feel pressure to commit, but the decision
-          logic is not solid yet. I’m not a surface-level redesign partner. I help you lock
-          direction, surface the tradeoffs, and translate strategy into buildable structure so
-          delivery has fewer surprises during build. Pick the lane based on what’s stuck. The same
-          rhythm stays in place.
+          These are the lanes I step into when a founder needs a decision to hold up under real
+          constraints. I’m not a surface-level redesign partner. I help founders lock direction,
+          surface the tradeoffs, and translate strategy into buildable structure so delivery has
+          fewer surprises during build. Pick the lane based on what’s stuck. The same rhythm stays
+          in place.
         </p>
         <div class="section-card-stack">
           <aside
@@ -10093,7 +10401,7 @@
                     </ul>
                     <div class="help-detail-cta">
                       <a class="btn" href="#engagement-model">Book a Clarity Call</a>
-                      <a class="btn ghost" href="#case-studies">See Examples</a>
+                      <a class="btn ghost" href="#case-studies">See examples</a>
                     </div>
                   </div>
                 </div>
@@ -10125,7 +10433,7 @@
 
                     <div class="help-detail-cta">
                       <a class="btn" href="#engagement-model">Book a Clarity Call</a>
-                      <a class="btn ghost" href="#case-studies">See Examples</a>
+                      <a class="btn ghost" href="#case-studies">See examples</a>
                     </div>
                   </div>
                 </div>
@@ -10174,7 +10482,7 @@
 
                     <div class="help-detail-cta">
                       <a class="btn" href="#engagement-model">Book a Clarity Call</a>
-                      <a class="btn ghost" href="#case-studies">See Examples</a>
+                      <a class="btn ghost" href="#case-studies">See examples</a>
                     </div>
                   </div>
                 </div>
@@ -10206,7 +10514,7 @@
 
                     <div class="help-detail-cta">
                       <a class="btn" href="#engagement-model">Book a Clarity Call</a>
-                      <a class="btn ghost" href="#case-studies">See Examples</a>
+                      <a class="btn ghost" href="#case-studies">See examples</a>
                     </div>
                   </div>
                 </div>
@@ -10264,9 +10572,10 @@
           <span class="section-kicker">clarify then commit</span>
         </div>
         <p class="section-lede">
-          Before we design anything, we clarify the decision we’re actually making. I use a
-          repeatable framework that keeps decisions grounded and reduces rework as we go, but I’m
-          not precious about it. We’ll adjust to fit real constraints, timelines, and stakeholders.
+          First we name the decision. Then we define what “done” means, and what we are willing to
+          trade off. I use a repeatable framework that keeps decisions grounded and reduces rework
+          as we go, but I’m not precious about it. We’ll adjust to fit real constraints, timelines,
+          and stakeholders.
         </p>
         <p class="meta-line">
           This is the repeatable loop I use to turn messy reality into buildable direction.
@@ -10416,10 +10725,7 @@
       </section>
 
       <div class="wrap">
-        <p class="meta-line">
-          If you’re seeing recurring rework or unclear “next steps,” start with a working session
-          and we’ll lock the decision in writing.
-        </p>
+        <p class="meta-line">Not sure which lane? Start with a Clarity Call.</p>
       </div>
 
       <section id="engagement-model">
@@ -10429,156 +10735,240 @@
         </div>
         <!-- Engagement Model -->
         <p class="section-lede">
-          Most founders start with one Decision Session. If the issue is structural, we extend into
-          a short embedded sprint using the same rhythm. Each session ends with a written Decision
-          Summary: what we chose, why, the tradeoffs, what is still open, and who owns the next
-          step. The goal is not more meetings. It’s decisions that hold up when the board, the
-          market, and the build get real.
+          Most founders start with one Decision Session. You leave with a written Decision Summary
+          and a next step with a clear owner.
         </p>
-        <div class="callout surface no-hover flow-s mt-16" id="when-to-use">
-          <p class="meta-line m-0"><strong>When to use this:</strong></p>
-          <ul class="receipt-list">
-            <li>You are launching something new and the “why” or scope is still wobbly.</li>
-            <li>
-              You hit a roadblock and debate keeps repeating with no clean owner or next step.
-            </li>
-            <li>
-              The decision is cross-functional, and tradeoffs are getting buried instead of named.
-            </li>
-            <li>The call is high-stakes, and getting it wrong would create expensive rework.</li>
-            <li>
-              You need to allocate time, budget, or attention, and the team is pulling in different
-              directions.
-            </li>
-          </ul>
-        </div>
-        <div class="callout surface no-hover flow-s mt-16" id="not-a-fit">
-          <p class="meta-line m-0"><strong>Not a fit:</strong></p>
-          <ul class="receipt-list">
-            <li>
-              You need a purely execution-only designer, with decisions already made and locked
-              elsewhere.
-            </li>
-            <li>
-              No one can be named as the decision owner, or the final call must be made by
-              large-group consensus.
-            </li>
-            <li>
-              You cannot share real examples (tickets, screenshots, call notes, workflows), so we
-              would be forced to guess at “current reality.”
-            </li>
-            <li>
-              The goal is to generate options indefinitely, not to commit to a tradeoff and a next
-              step.
-            </li>
-            <li>
-              The timeline leaves no room to validate key unknowns, but the team will still hold the
-              work accountable for outcomes.
-            </li>
-          </ul>
-        </div>
-        <p class="meta-line">
-          I don’t add more voices to the room. I run the decision lane, produce the alignment
-          artifacts, and help the team execute with less thrash.
-        </p>
+
         <div class="callout surface no-hover flow-s mt-16" id="decision-summary">
-          <p class="meta-line m-0"><strong>You’ll leave with:</strong></p>
+          <p class="meta-line m-0"><strong>In a Decision Session, you leave with:</strong></p>
           <ul class="receipt-list">
             <li>A one-sentence decision statement (what we’re committing to)</li>
             <li>Tradeoffs (what we’re not doing, or not doing yet)</li>
             <li>Next step (the smallest move that reduces risk)</li>
             <li>Owner + checkpoint (who does what by when)</li>
           </ul>
-        </div>
-        <div class="callout surface no-hover flow-s mt-16" id="decision-summary-example">
-          <p class="meta-line m-0"><strong>Decision Summary example:</strong></p>
-          <ul class="receipt-list">
-            <li>
-              <strong>Decision</strong>: Ship a “Request a callback” path on the pricing page this
-              sprint, and keep “Book a demo” as the primary CTA.
-            </li>
-            <li>
-              <strong>Why</strong>: Sales needs faster capture for high-intent visitors. Product
-              needs signal quality and a path that scales without creating manual chaos.
-            </li>
-            <li>
-              <strong>Tradeoffs</strong>: We accept a small increase in low-quality leads in
-              exchange for higher total volume. We protect sales capacity with basic qualification
-              fields and routing rules.
-            </li>
-            <li>
-              <strong>What’s true right now</strong>: Current form completion is low on mobile.
-              Sales response time is inconsistent. Engineering can ship a lightweight callback flow
-              without new infrastructure.
-            </li>
-            <li>
-              <strong>Open questions (if any)</strong>: Which fields are required for routing, and
-              what is the maximum acceptable response window?
-            </li>
-            <li>
-              <strong>Owner + checkpoint date</strong>: Owner: Head of Growth. Checkpoint: review
-              conversion rate and lead quality in two weeks, then decide whether to expand, adjust,
-              or roll back.
-            </li>
-          </ul>
-        </div>
-        <div class="callout surface no-hover flow-s mt-16" id="decision-inputs">
-          <p class="meta-line m-0">
-            <strong>Decision inputs (so we’re solving the real problem):</strong>
+          <p class="fine m-0">
+            Expand a section to confirm fit, see what to bring, and preview the Decision Summary.
           </p>
-          <ul class="receipt-list">
-            <li>
-              <strong>2–3 real examples</strong>: tickets, screenshots, support threads, call notes,
-              or workflow artifacts.
-            </li>
-            <li>
-              <strong>Known constraints</strong>: deadlines, capacity, compliance, technical limits,
-              or contractual commitments.
-            </li>
-            <li>
-              <strong>Who is affected</strong>: which teams and user roles feel the impact, and
-              where the handoffs break.
-            </li>
-            <li>
-              <strong>What “good” looks like</strong>: success metric, guardrails, and what we are
-              explicitly not optimizing for.
-            </li>
-            <li>
-              <strong>Decision owner</strong>: who makes the final call, plus the checkpoint date
-              for revisiting if reality changes.
-            </li>
-          </ul>
         </div>
-        <div class="callout surface no-hover flow-s mt-16" id="assumptions">
-          <p class="meta-line m-0"><strong>What I assume going in:</strong></p>
-          <p class="m-0">
-            Decision clarity is not a workshop outcome, it is an operating agreement. The first
-            decision is often deciding who decides.
-          </p>
-          <ul class="receipt-list">
-            <li>
-              We agree on roles up front: who drives the decision, who makes the final call, and who
-              provides input.
-            </li>
-            <li>
-              We pull in the right voices at the right moment. We start small to reach a decision,
-              then expand to iterate and stress-test it.
-            </li>
-            <li>
-              We write down what we decided, why, and what we are trading off, then we execute
-              against that record until the checkpoint date.
-            </li>
-            <li>
-              If the truth is “we do not know yet,” we turn that into targeted discovery with a
-              clear owner and next step.
-            </li>
-          </ul>
+
+        <div class="accordion-controls mt-16" aria-label="Engagement details controls">
+          <button class="btn ghost accordion-toggle" type="button" data-accordion="expand">
+            Expand all
+          </button>
+          <button class="btn ghost accordion-toggle" type="button" data-accordion="collapse">
+            Collapse all
+          </button>
+          <label class="accordion-mode">
+            <input type="checkbox" id="accordionMode" />
+            <span class="fine"
+              >Accordion mode <span class="sr-only">,</span><span aria-hidden="true">:</span> one
+              section open</span
+            >
+          </label>
+        </div>
+        <p class="fine accordion-tip" id="accordionTip" hidden>
+          Tip: Collapse all to jump back to booking options.
+        </p>
+
+        <!-- Collapsible depth -->
+        <div class="flow-s mt-16 engagement-accordion">
+          <details class="callout surface no-hover flow-s" id="when-to-use">
+            <summary class="meta-line m-0">
+              <span class="summary-copy">
+                <strong>Should you book a Decision Session?</strong>
+                <span class="schedule-sub">5 signals it will save you rework</span>
+              </span>
+              <span class="summary-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6"></path>
+                </svg>
+              </span>
+            </summary>
+            <ul class="receipt-list">
+              <li>You are launching something new and the “why” or scope is still wobbly.</li>
+              <li>
+                You hit a roadblock and debate keeps repeating with no clean owner or next step.
+              </li>
+              <li>
+                The decision is cross-functional, and tradeoffs are getting buried instead of named.
+              </li>
+              <li>The call is high-stakes, and getting it wrong would create expensive rework.</li>
+              <li>
+                You need to allocate time, budget, or attention, and the team is pulling in
+                different directions.
+              </li>
+            </ul>
+          </details>
+
+          <details class="callout surface no-hover flow-s" id="not-a-fit">
+            <summary class="meta-line m-0">
+              <span class="summary-copy">
+                <strong>When not to book</strong>
+                <span class="schedule-sub"
+                  >If decisions are already set, or nobody can own the call</span
+                >
+              </span>
+              <span class="summary-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6"></path>
+                </svg>
+              </span>
+            </summary>
+            <ul class="receipt-list">
+              <li>
+                You need a purely execution-only designer, with decisions already made and locked
+                elsewhere.
+              </li>
+              <li>
+                No one can be named as the decision owner, or the final call must be made by
+                large-group consensus.
+              </li>
+              <li>
+                You cannot share real examples (tickets, screenshots, call notes, workflows), so we
+                would be forced to guess at “current reality.”
+              </li>
+              <li>
+                The goal is to generate options indefinitely, not to commit to a tradeoff and a next
+                step.
+              </li>
+              <li>
+                The timeline leaves no room to validate key unknowns, but the team will still hold
+                the work accountable for outcomes.
+              </li>
+            </ul>
+          </details>
+
+          <details class="callout surface no-hover flow-s" id="decision-inputs">
+            <summary class="meta-line m-0">
+              <span class="summary-copy">
+                <strong>What to bring</strong>
+                <span class="schedule-sub"
+                  >2–3 artifacts, constraints, success metric, decision owner</span
+                >
+              </span>
+              <span class="summary-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6"></path>
+                </svg>
+              </span>
+            </summary>
+            <ul class="receipt-list">
+              <li>
+                <strong>2–3 real examples</strong>: tickets, screenshots, support threads, call
+                notes, or workflow artifacts.
+              </li>
+              <li>
+                <strong>Known constraints</strong>: deadlines, capacity, compliance, technical
+                limits, or contractual commitments.
+              </li>
+              <li>
+                <strong>Who is affected</strong>: which teams and user roles feel the impact, and
+                where the handoffs break.
+              </li>
+              <li>
+                <strong>What “good” looks like</strong>: success metric, guardrails, and what we are
+                explicitly not optimizing for.
+              </li>
+              <li>
+                <strong>Decision owner</strong>: who makes the final call, plus the checkpoint date
+                for revisiting if reality changes.
+              </li>
+            </ul>
+          </details>
+
+          <details class="callout surface no-hover flow-s" id="decision-summary-example">
+            <summary class="meta-line m-0">
+              <span class="summary-copy">
+                <strong>Decision Summary, example</strong>
+                <span class="schedule-sub">What “good” looks like in practice</span>
+              </span>
+              <span class="summary-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6"></path>
+                </svg>
+              </span>
+            </summary>
+            <ul class="receipt-list">
+              <li>
+                <strong>Decision</strong>: Ship a “Request a callback” path on the pricing page this
+                sprint, and keep “Book a demo” as the primary CTA.
+              </li>
+              <li>
+                <strong>Why</strong>: Sales needs faster capture for high-intent visitors. Product
+                needs signal quality and a path that scales without creating manual chaos.
+              </li>
+              <li>
+                <strong>Tradeoffs</strong>: We accept a small increase in low-quality leads in
+                exchange for higher total volume. We protect sales capacity with basic qualification
+                fields and routing rules.
+              </li>
+              <li>
+                <strong>What’s true right now</strong>: Current form completion is low on mobile.
+                Sales response time is inconsistent. Engineering can ship a lightweight callback
+                flow without new infrastructure.
+              </li>
+              <li>
+                <strong>Open questions (if any)</strong>: Which fields are required for routing, and
+                what is the maximum acceptable response window?
+              </li>
+              <li>
+                <strong>Owner + checkpoint date</strong>: Owner: Head of Growth. Checkpoint: review
+                conversion rate and lead quality in two weeks, then decide whether to expand,
+                adjust, or roll back.
+              </li>
+            </ul>
+          </details>
+
+          <details class="callout surface no-hover flow-s" id="assumptions">
+            <summary class="meta-line m-0">
+              <span class="summary-copy">
+                <strong>How decisions get made</strong>
+                <span class="schedule-sub">Roles, who decides, and how we lock it</span>
+              </span>
+              <span class="summary-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6"></path>
+                </svg>
+              </span>
+            </summary>
+            <p class="m-0">
+              Decision clarity is not a workshop outcome. It is an operating agreement. The first
+              decision is often deciding who decides.
+            </p>
+            <ul class="receipt-list">
+              <li>
+                We agree on roles up front: who drives the decision, who makes the final call, and
+                who provides input.
+              </li>
+              <li>
+                We pull in the right voices at the right moment. We start small to reach a decision,
+                then expand to iterate and stress-test it.
+              </li>
+              <li>
+                We write down what we decided, why, and what we are trading off, then we execute
+                against that record until the checkpoint date.
+              </li>
+              <li>
+                If the truth is “we do not know yet,” we turn that into targeted discovery with a
+                clear owner and next step.
+              </li>
+            </ul>
+          </details>
         </div>
         <span class="sr-only" id="calendlyHint"
           >Scheduling opens in Calendly. You may see a quick cookie prompt before selecting a
           time.</span
         >
         <div class="section-card-stack mt-16">
+          <p class="fine">
+            1) Book a Decision Session. 2) Bring 2–3 real examples. 3) Leave with a written Decision
+            Summary and a next step your team can execute.
+          </p>
+          <p class="fine">
+            Not sure what lane this falls into? Book the 15-Min Clarity Call. We’ll identify the
+            stuck decision and route you to the right next step.
+          </p>
           <div class="schedule-grid">
             <button
               type="button"
@@ -10911,11 +11301,6 @@
               </span>
             </button>
           </div>
-          <p class="fine mt-16">
-            Not sure which to pick? Start with the 15-Min Clarity Call. If we need more room, we’ll
-            expand from there.
-          </p>
-
           <!-- Overlay for Calendly embed -->
           <div
             class="overlay-backdrop schedule-overlay"
@@ -10968,6 +11353,7 @@
               Email: <a class="link-accent" href="mailto:mark@we3.design">mark@we3.design</a><br />
             </p>
           </div>
+          <p class="fine m-0">Start with the 15-Min Clarity Call.</p>
         </div>
       </section>
 
@@ -10977,8 +11363,8 @@
           <span class="section-kicker">surface what teams assume</span>
         </div>
         <p class="section-lede">
-          I blend product strategy and UX to help expert teams clarify what they are building, why
-          it matters, and what needs to be true to ship with confidence.
+          I help expert teams make fewer guesses by turning assumptions into decisions, then turning
+          decisions into execution.
         </p>
 
         <div class="aboutCard surface stack-tight">
@@ -10988,7 +11374,7 @@
                 I’m Mark Malcolm, a
                 <span class="hl hl-turquoise bio-highlight a1"
                   >Product Strategist &amp; UX Partner</span
-                >. I embed with ambitious teams on complex, cross-functional work and help them turn
+                >. I embed with founders and leaders on complex, cross-functional work and turn
                 ambiguity into a
                 <span class="hl hl-peach bio-highlight a2">clear, buildable path forward</span>.
                 Think of me as a product partner who brings structure, not just screens.
@@ -11086,16 +11472,18 @@
       <section id="research" aria-labelledby="research-title">
         <h2 class="section-title" id="research-title">Reference Library</h2>
         <p class="section-lede research-intro">
-          A small, high-signal set of references that shape how I approach product strategy, product
-          design, and decision-making. This is here for clients who want to go deeper, without
-          getting lost in noise.
+          A small, high-signal library for clients who like to go deeper, without getting lost in
+          noise.
         </p>
 
         <div class="research-library">
           <details class="research-group">
             <summary>
               <span class="research-title">Foundations</span>
-              <span class="research-caret" aria-hidden="true">›</span>
+              <span class="research-caret" aria-hidden="true"
+                ><svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M8.4 4.8 14.6 12 8.4 19.2l1.4 1.2L17 12 9.8 3.6z"></path></svg
+              ></span>
             </summary>
             <div class="research-panel">
               <article class="research-item" data-format="book">
@@ -11264,7 +11652,10 @@
           <details class="research-group">
             <summary>
               <span class="research-title">Strategy &amp; Decision Quality</span>
-              <span class="research-caret" aria-hidden="true">›</span>
+              <span class="research-caret" aria-hidden="true"
+                ><svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M8.4 4.8 14.6 12 8.4 19.2l1.4 1.2L17 12 9.8 3.6z"></path></svg
+              ></span>
             </summary>
             <div class="research-panel">
               <article class="research-item" data-format="blog-site">
@@ -11544,7 +11935,10 @@
           <details class="research-group">
             <summary>
               <span class="research-title">Discovery &amp; Product Practice</span>
-              <span class="research-caret" aria-hidden="true">›</span>
+              <span class="research-caret" aria-hidden="true"
+                ><svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M8.4 4.8 14.6 12 8.4 19.2l1.4 1.2L17 12 9.8 3.6z"></path></svg
+              ></span>
             </summary>
             <div class="research-panel">
               <article class="research-item" data-format="book">
@@ -11747,7 +12141,10 @@
           <details class="research-group">
             <summary>
               <span class="research-title">Measurement &amp; Growth</span>
-              <span class="research-caret" aria-hidden="true">›</span>
+              <span class="research-caret" aria-hidden="true"
+                ><svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M8.4 4.8 14.6 12 8.4 19.2l1.4 1.2L17 12 9.8 3.6z"></path></svg
+              ></span>
             </summary>
             <div class="research-panel">
               <article class="research-item" data-format="book">
@@ -11924,7 +12321,10 @@
           <details class="research-group">
             <summary>
               <span class="research-title">Systems &amp; Org Design</span>
-              <span class="research-caret" aria-hidden="true">›</span>
+              <span class="research-caret" aria-hidden="true"
+                ><svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M8.4 4.8 14.6 12 8.4 19.2l1.4 1.2L17 12 9.8 3.6z"></path></svg
+              ></span>
             </summary>
             <div class="research-panel">
               <article class="research-item" data-format="essays">
@@ -13141,8 +13541,117 @@ Footer
       })();
 
       /* ==========================================================
-			 Help: Mobile accordion (one open at a time)
+			 Engagement Model: accordion controls + collapsed default
 			 ========================================================== */
+      (function initEngagementAccordion() {
+        function init() {
+          const scope = document.querySelector('#engagement-model');
+          if (!scope) return;
+
+          const details = Array.from(scope.querySelectorAll('details.callout'));
+          if (!details.length) return;
+
+          const expandBtn = scope.querySelector('[data-accordion="expand"]');
+          const collapseBtn = scope.querySelector('[data-accordion="collapse"]');
+          const accordionMode = scope.querySelector('#accordionMode');
+          const tip = scope.querySelector('#accordionTip');
+          const STORAGE_KEY = 'we3_engagement_accordion_mode';
+          let isBatchUpdating = false;
+
+          function safeReadMode() {
+            if (!window.localStorage) return null;
+            try {
+              return localStorage.getItem(STORAGE_KEY);
+            } catch (err) {
+              return null;
+            }
+          }
+          function safeWriteMode(value) {
+            if (!window.localStorage) return;
+            try {
+              localStorage.setItem(STORAGE_KEY, value);
+            } catch (err) {
+              /* ignore */
+            }
+          }
+
+          function updateTipVisibility() {
+            if (!tip) return;
+            const anyOpen = details.some((item) => item.hasAttribute('open'));
+            tip.hidden = !anyOpen;
+          }
+
+          function withBatchUpdates(fn) {
+            isBatchUpdating = true;
+            try {
+              fn();
+            } finally {
+              isBatchUpdating = false;
+            }
+          }
+
+          function collapseAll() {
+            withBatchUpdates(() => {
+              details.forEach((item) => item.removeAttribute('open'));
+            });
+            updateTipVisibility();
+          }
+
+          function expandAll() {
+            withBatchUpdates(() => {
+              details.forEach((item) => item.setAttribute('open', 'open'));
+            });
+            updateTipVisibility();
+          }
+
+          function handleToggle(event) {
+            if (isBatchUpdating) return;
+            if (!accordionMode || !accordionMode.checked) return;
+            const opened = event.target;
+            if (!opened.hasAttribute('open')) return;
+            details.forEach((item) => {
+              if (item !== opened) item.removeAttribute('open');
+            });
+          }
+
+          if (accordionMode) {
+            const saved = safeReadMode();
+            if (saved === 'true') accordionMode.checked = true;
+
+            accordionMode.addEventListener('change', () => {
+              safeWriteMode(String(accordionMode.checked));
+              if (!accordionMode.checked) return;
+              const firstOpen = details.find((item) => item.hasAttribute('open'));
+              if (!firstOpen) return;
+              withBatchUpdates(() => {
+                details.forEach((item) => {
+                  if (item !== firstOpen) item.removeAttribute('open');
+                });
+              });
+              updateTipVisibility();
+            });
+          }
+
+          if (expandBtn) expandBtn.addEventListener('click', expandAll);
+          if (collapseBtn) collapseBtn.addEventListener('click', collapseAll);
+          details.forEach((item) => item.addEventListener('toggle', handleToggle));
+          details.forEach((item) => item.addEventListener('toggle', updateTipVisibility));
+
+          collapseAll();
+          updateTipVisibility();
+          window.addEventListener('pageshow', collapseAll);
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init, { once: true });
+        } else {
+          init();
+        }
+      })();
+
+      /* ==========================================================
+				 Help: Mobile accordion (one open at a time)
+				 ========================================================== */
       (function initHelpAccordion() {
         function init() {
           const wrap = document.getElementById('helpAccordion');
