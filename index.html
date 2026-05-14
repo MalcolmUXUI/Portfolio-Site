@@ -3484,6 +3484,7 @@
           margin: 0;
           padding-left: var(--space-lg);
           line-height: var(--lh-body);
+          list-style-position: outside;
           z-index: 50;
         }
 
@@ -5367,6 +5368,7 @@
         /* Lighter opened-state density (only inside expandable callouts) */
         details.callout[open] ul.receipt-list {
           margin-top: var(--space-xs);
+          padding-left: var(--space-2xl);
         }
 
         details.callout[open] ul.receipt-list li + li {
@@ -5381,29 +5383,6 @@
         /* Optional: reduce bottom padding a hair when open */
         details.callout[open] > *:not(summary) {
           padding-bottom: var(--space-xs);
-        }
-
-        .accordion-controls {
-          display: flex;
-          gap: var(--space-sm);
-          flex-wrap: wrap;
-          align-items: center;
-        }
-        .accordion-mode {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          margin-left: var(--space-sm);
-        }
-        .accordion-mode input {
-          transform: translateY(1px);
-        }
-        .accordion-mode .fine {
-          white-space: nowrap;
-        }
-        .accordion-tip {
-          margin-top: var(--space-sm);
-          opacity: 0.85;
         }
 
         /* Engagement Model cards: align shell/spacing to Reference Library cards */
@@ -5447,15 +5426,6 @@
           letter-spacing: 0.01em;
           text-wrap: balance;
         }
-        #engagement-model .engagement-accordion > details.callout > summary .schedule-sub {
-          margin: 0;
-          color: var(--text-muted);
-          font-size: clamp(0.92rem, 0.86rem + 0.14vw, 1rem);
-          line-height: 1.35;
-          text-transform: none;
-          letter-spacing: 0.01em;
-          font-weight: 400 !important;
-        }
         #engagement-model .engagement-accordion > details.callout > summary:hover {
           background: rgba(var(--text-rgb), 0.03);
         }
@@ -5467,6 +5437,9 @@
           padding-left: var(--space-lg);
           padding-right: var(--space-lg);
           color: var(--text);
+        }
+        #engagement-model .engagement-accordion > details.callout[open] ul.receipt-list {
+          padding-left: var(--space-2xl);
         }
         #engagement-model .engagement-accordion > details.callout[open] p,
         #engagement-model .engagement-accordion > details.callout[open] li,
@@ -10630,9 +10603,19 @@
           </div>
 
           <div class="callout surface approach-card">
-            <h3 class="h3">
-              The framework below is how those decisions get made, tested, and carried through.
-            </h3>
+            <h3 class="h3">Decision-Making Framework</h3>
+            <div class="section-lede case-top__copy para-stack">
+              <p>
+                I came up through hospitality and high-touch customer experience, where clarity,
+                trust, and steady decision-making matter under pressure. If someone has to ask “what
+                do I do next?” twice, the system needs attention.
+              </p>
+              <p>
+                Today I bring that same discipline to complex products and brands. I embed with
+                teams, reduce ambiguity, and help the work hold up when the team grows, the stakes
+                rise, and the deadlines tighten.
+              </p>
+            </div>
             <ol class="process" aria-label="Project process steps">
               <li class="process-step">
                 <div class="process-body">
@@ -10701,28 +10684,10 @@
                 </div>
               </li>
             </ol>
-            <div class="case-top">
-              <h3 class="h3">Why I work this way</h3>
-              <div class="section-lede case-top__copy para-stack">
-                <p>
-                  I came up through hospitality and high-touch customer experience, where clarity,
-                  trust, and steady decision-making matter under pressure. If someone has to ask
-                  “what do I do next?” twice, the system needs attention.
-                </p>
-                <p>
-                  Today I bring that same discipline to complex products and brands. I embed with
-                  teams, reduce ambiguity, and help the work hold up when the team grows, the stakes
-                  rise, and the deadlines tighten.
-                </p>
-              </div>
-            </div>
+            <div class="case-top"></div>
           </div>
         </div>
       </section>
-
-      <div class="wrap">
-        <p class="meta-line">Not sure which lane? Start with a Clarity Call.</p>
-      </div>
 
       <section id="engagement-model">
         <div class="section-head">
@@ -10731,51 +10696,22 @@
         </div>
         <!-- Engagement Model -->
         <p class="section-lede">
-          Most founders and product leaders start with one Decision Session. You leave with a
-          written Decision Summary, clear tradeoffs, and a next step with a named owner.
+          Most founders and product leaders start with one Decision Session. A decision is one
+          commitment you can execute next—we surface tradeoffs, name one owner, and define what
+          "done" means so the team can move. You leave with a written Decision Summary, clear
+          tradeoffs, and a next step with a named owner.
+        </p>
+        <p class="section-lede">
+          <strong>In a Decision Session, you leave with:</strong>
         </p>
 
-        <div class="callout surface no-hover flow-s mt-16" id="decision-unit">
-          <p class="meta-line m-0"><strong>What I mean by “a decision”</strong></p>
-          <p class="fine m-0">
-            A decision is one commitment you can execute next. We surface tradeoffs, name one owner,
-            and define what “done” means so the team can move.
-          </p>
-        </div>
+        <ul class="receipt-list">
+          <li>A one-sentence decision statement (what we’re committing to)</li>
+          <li>Tradeoffs (what we’re not doing, or not doing yet)</li>
+          <li>Next step (the smallest move that reduces risk)</li>
+          <li>Owner + checkpoint (who does what by when)</li>
+        </ul>
 
-        <div class="callout surface no-hover flow-s mt-16" id="decision-summary">
-          <p class="meta-line m-0"><strong>In a Decision Session, you leave with:</strong></p>
-          <ul class="receipt-list">
-            <li>A one-sentence decision statement (what we’re committing to)</li>
-            <li>Tradeoffs (what we’re not doing, or not doing yet)</li>
-            <li>Next step (the smallest move that reduces risk)</li>
-            <li>Owner + checkpoint (who does what by when)</li>
-          </ul>
-          <p class="fine m-0">
-            Expand a section to confirm fit, see what to bring, and preview the Decision Summary.
-          </p>
-        </div>
-
-        <div class="accordion-controls mt-16" aria-label="Engagement details controls">
-          <button class="btn ghost accordion-toggle" type="button" data-accordion="expand">
-            Expand all
-          </button>
-          <button class="btn ghost accordion-toggle" type="button" data-accordion="collapse">
-            Collapse all
-          </button>
-          <label class="accordion-mode">
-            <input type="checkbox" id="accordionMode" />
-            <span class="fine"
-              >Accordion mode <span class="sr-only">,</span><span aria-hidden="true">:</span> one
-              section open</span
-            >
-          </label>
-        </div>
-        <p class="fine accordion-tip" id="accordionTip" hidden>
-          Tip: Collapse all to jump back to booking options.
-        </p>
-
-        <!-- Collapsible depth -->
         <div class="flow-s mt-16 engagement-accordion">
           <details class="callout surface no-hover flow-s" id="when-to-use">
             <summary class="meta-line m-0">
@@ -10965,29 +10901,21 @@
           time.</span
         >
         <div class="section-card-stack mt-16">
-          <p class="fine">
-            1) Book a Decision Session. 2) Bring 2–3 real examples. 3) Leave with a written Decision
-            Summary and a next step your team can execute.
-          </p>
-          <p class="fine">
-            Not sure what lane this falls into? Book the 15-Min Clarity Call. We’ll identify the
-            stuck decision and route you to the right next step.
-          </p>
           <div class="schedule-grid">
             <button
               type="button"
               class="schedule-card surface"
               data-sched-url="https://calendly.com/mark-w3m/15-min-chat"
-              data-sched-title="15-Min Clarity Call"
+              data-sched-title="Clarity Call"
               aria-haspopup="dialog"
-              aria-label="Book a 15-Min Clarity Call"
+              aria-label="Book 15-Min Call"
               aria-describedby="calendlyHint"
             >
               <span class="schedule-body flow-m">
                 <span class="schedule-top">
                   <span class="schedule-headings">
-                    <span class="schedule-title">15-Min Clarity Call</span>
-                    <span class="schedule-sub">Identify the real decision</span>
+                    <span class="schedule-title">Clarity Call</span>
+                    <span class="schedule-sub">Find the decision<br />15 mins</span>
                   </span>
                 </span>
                 <span class="schedule-desc">
@@ -11087,16 +11015,16 @@
               type="button"
               class="schedule-card surface"
               data-sched-url="https://calendly.com/mark-w3m/30-min-alignment"
-              data-sched-title="30-Min Decision Session"
+              data-sched-title="Decision Session"
               aria-haspopup="dialog"
-              aria-label="Book a 30-Min Decision Session"
+              aria-label="Book 30-Min Call"
               aria-describedby="calendlyHint"
             >
               <span class="schedule-body flow-m">
                 <span class="schedule-top">
                   <span class="schedule-headings">
-                    <span class="schedule-title">30-Min Decision Session</span>
-                    <span class="schedule-sub">Finalize the call</span>
+                    <span class="schedule-title">Decision Session</span>
+                    <span class="schedule-sub">Finalize decision<br />30 mins</span>
                   </span>
                 </span>
 
@@ -11107,7 +11035,7 @@
               </span>
 
               <span class="schedule-footer">
-                <span class="schedule-cta">Book a Decision Session</span>
+                <span class="schedule-cta">Book 30 Minutes</span>
                 <span class="schedule-clock" aria-hidden="true">
                   <span class="clock desktop">
                     <svg
@@ -11197,16 +11125,16 @@
               type="button"
               class="schedule-card surface"
               data-sched-url="https://calendly.com/mark-w3m/60-min-consult"
-              data-sched-title="60-Min Deep Decision Session"
+              data-sched-title="Deep Dive Session"
               aria-haspopup="dialog"
-              aria-label="Book a 60-Min Deep Decision Session"
+              aria-label="Book a 60-Min Deep Dive Session"
               aria-describedby="calendlyHint"
             >
               <span class="schedule-body flow-m">
                 <span class="schedule-top">
                   <span class="schedule-headings">
-                    <span class="schedule-title">60-Min Deep Decision Session</span>
-                    <span class="schedule-sub">Untangle the messy call</span>
+                    <span class="schedule-title">Deep Dive Session</span>
+                    <span class="schedule-sub">Untangle decision<br />60 mins</span>
                   </span>
                 </span>
 
@@ -11217,7 +11145,7 @@
               </span>
 
               <span class="schedule-footer">
-                <span class="schedule-cta">Book a Deep Decision Session</span>
+                <span class="schedule-cta">Book 60 Minutes</span>
                 <span class="schedule-clock" aria-hidden="true">
                   <span class="clock desktop">
                     <svg
@@ -11303,6 +11231,10 @@
               </span>
             </button>
           </div>
+          <p class="fine">
+            Not sure what lane you fall into? Book the 15-Min Clarity Call.<br />We’ll identify the
+            stuck decision and route you to the right next step.
+          </p>
           <!-- Overlay for Calendly embed -->
           <div
             class="overlay-backdrop schedule-overlay"
@@ -11338,13 +11270,13 @@
               </p>
               <p class="fine m-0">
                 <a class="link-accent" href="https://calendly.com/mark-w3m/15-min-chat"
-                  >Book a 15-Min Clarity Call</a
+                  >Book a Clarity Call</a
                 ><br />
                 <a class="link-accent" href="https://calendly.com/mark-w3m/30-min-alignment"
-                  >Book a 30-Min Decision Session</a
+                  >Book 30 Minutes</a
                 ><br />
                 <a class="link-accent" href="https://calendly.com/mark-w3m/60-min-consult"
-                  >Book a 60-Min Deep Decision Session</a
+                  >Book 60 Minutes</a
                 >
               </p>
             </div>
@@ -11355,7 +11287,6 @@
               Email: <a class="link-accent" href="mailto:mark@we3.design">mark@we3.design</a><br />
             </p>
           </div>
-          <p class="fine m-0">Start with the 15-Min Clarity Call.</p>
         </div>
       </section>
 
@@ -13551,8 +13482,8 @@ Footer
       })();
 
       /* ==========================================================
-			 Engagement Model: accordion controls + collapsed default
-			 ========================================================== */
+		 Engagement Model: collapsed default
+		 ========================================================== */
       (function initEngagementAccordion() {
         function init() {
           const scope = document.querySelector('#engagement-model');
@@ -13561,95 +13492,11 @@ Footer
           const details = Array.from(scope.querySelectorAll('details.callout'));
           if (!details.length) return;
 
-          const expandBtn = scope.querySelector('[data-accordion="expand"]');
-          const collapseBtn = scope.querySelector('[data-accordion="collapse"]');
-          const accordionMode = scope.querySelector('#accordionMode');
-          const tip = scope.querySelector('#accordionTip');
-          const STORAGE_KEY = 'we3_engagement_accordion_mode';
-          let isBatchUpdating = false;
-
-          function safeReadMode() {
-            if (!window.localStorage) return null;
-            try {
-              return localStorage.getItem(STORAGE_KEY);
-            } catch (err) {
-              return null;
-            }
-          }
-          function safeWriteMode(value) {
-            if (!window.localStorage) return;
-            try {
-              localStorage.setItem(STORAGE_KEY, value);
-            } catch (err) {
-              /* ignore */
-            }
-          }
-
-          function updateTipVisibility() {
-            if (!tip) return;
-            const anyOpen = details.some((item) => item.hasAttribute('open'));
-            tip.hidden = !anyOpen;
-          }
-
-          function withBatchUpdates(fn) {
-            isBatchUpdating = true;
-            try {
-              fn();
-            } finally {
-              isBatchUpdating = false;
-            }
-          }
-
           function collapseAll() {
-            withBatchUpdates(() => {
-              details.forEach((item) => item.removeAttribute('open'));
-            });
-            updateTipVisibility();
+            details.forEach((item) => item.removeAttribute('open'));
           }
-
-          function expandAll() {
-            withBatchUpdates(() => {
-              details.forEach((item) => item.setAttribute('open', 'open'));
-            });
-            updateTipVisibility();
-          }
-
-          function handleToggle(event) {
-            if (isBatchUpdating) return;
-            if (!accordionMode || !accordionMode.checked) return;
-            const opened = event.target;
-            if (!opened.hasAttribute('open')) return;
-            details.forEach((item) => {
-              if (item !== opened) item.removeAttribute('open');
-            });
-          }
-
-          if (accordionMode) {
-            const saved = safeReadMode();
-            if (saved === 'true') accordionMode.checked = true;
-
-            accordionMode.addEventListener('change', () => {
-              safeWriteMode(String(accordionMode.checked));
-              if (!accordionMode.checked) return;
-              const firstOpen = details.find((item) => item.hasAttribute('open'));
-              if (!firstOpen) return;
-              withBatchUpdates(() => {
-                details.forEach((item) => {
-                  if (item !== firstOpen) item.removeAttribute('open');
-                });
-              });
-              updateTipVisibility();
-            });
-          }
-
-          if (expandBtn) expandBtn.addEventListener('click', expandAll);
-          if (collapseBtn) collapseBtn.addEventListener('click', collapseAll);
-          details.forEach((item) => item.addEventListener('toggle', handleToggle));
-          details.forEach((item) => item.addEventListener('toggle', updateTipVisibility));
 
           collapseAll();
-          updateTipVisibility();
-          window.addEventListener('pageshow', collapseAll);
         }
 
         if (document.readyState === 'loading') {
